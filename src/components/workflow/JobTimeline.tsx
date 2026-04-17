@@ -26,8 +26,8 @@ export function JobTimeline({ currentStatus, className }: JobTimelineProps) {
   const currentIndex = ORDER.indexOf(currentStatus);
 
   return (
-    <div className={cn("w-full overflow-x-auto", className)}>
-      <div className="flex items-center min-w-max py-2">
+    <div className={cn("w-full scroll-x", className)}>
+      <div className="flex items-center min-w-max py-2 px-1">
         {STEPS.map((step, i) => {
           const done    = i < currentIndex;
           const active  = i === currentIndex;

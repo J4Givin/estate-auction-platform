@@ -9,7 +9,7 @@ import {
   Globe, MessageSquare, Tag, Truck, RotateCcw, Ban,
   Users, FileText, Radio, Scale, BarChart3, ClipboardList,
   PanelLeftClose, PanelLeftOpen, Bell, Search, ChevronDown,
-  CheckCircle, AlertTriangle, Zap,
+  CheckCircle, AlertTriangle, Zap, Menu, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -81,16 +81,20 @@ const navGroups: NavGroup[] = [
 ];
 
 /* ═══════════════════════════════════════
-   SIDEBAR — dark chrome
+   SIDEBAR — dark chrome with mobile drawer
    ═══════════════════════════════════════ */
 function Sidebar({
   role,
   collapsed,
   onCollapse,
+  mobileOpen,
+  onMobileClose,
 }: {
   role: Role;
   collapsed: boolean;
   onCollapse: () => void;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
 }) {
   const pathname = usePathname();
   const visibleGroups = navGroups.filter(g => g.roles.includes(role));
@@ -101,31 +105,51 @@ function Sidebar({
       : pathname === item.href || pathname.startsWith(item.href + "/");
 
   return (
-    <aside
-      className={cn(
-        "hidden md:flex flex-col shrink-0 overflow-hidden",
-        "transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
-        "border-r",
-        collapsed ? "w-[64px]" : "w-[232px]"
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden drawer-overlay"
+          onClick={onMobileClose}
+        />
       )}
-      style={{
-        background: "var(--color-chrome)",
-        borderColor: "var(--color-chrome-border)",
-      }}
-    >
-      {/* ── Logo ── */}
-      <div
+
+      <aside
         className={cn(
-          "flex h-[60px] items-center shrink-0 border-b px-4 gap-3",
-          collapsed && "justify-center px-0"
+          "fixed left-0 top-0 h-full z-50 flex flex-col",
+          "transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+          "border-r overflow-hidden",
+          "md:relative md:translate-x-0 md:z-auto",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          collapsed ? "md:w-[64px] w-[232px]" : "w-[232px]"
         )}
-        style={{ borderColor: "var(--color-chrome-border)" }}
+        style={{
+          background: "var(--color-chrome)",
+          borderColor: "var(--color-chrome-border)",
+        }}
       >
-        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-sapphire shrink-0">
-          <Gavel className="h-3.5 w-3.5 text-white" />
-        </div>
-        {!collapsed && (
-          <div className="min-w-0">
+        {/* Close button — mobile only */}
+        <button
+          onClick={onMobileClose}
+          className="md:hidden absolute top-4 right-4 tap-target rounded-lg hover:bg-white/10 z-10"
+          aria-label="Close menu"
+        >
+          <X className="h-4 w-4 text-white/60" />
+        </button>
+
+        {/* ── Logo ── */}
+        <div
+          className={cn(
+            "flex h-[60px] items-center shrink-0 border-b px-4 gap-3",
+            collapsed && "md:justify-center md:px-0"
+          )}
+          style={{ borderColor: "var(--color-chrome-border)" }}
+        >
+          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-sapphire shrink-0">
+            <Gavel className="h-3.5 w-3.5 text-white" />
+          </div>
+          {/* Show label always on mobile, conditionally on desktop */}
+          <div className={cn("min-w-0", collapsed && "md:hidden")}>
             <p
               className="text-[15px] font-medium text-white leading-none truncate"
               style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.01em" }}
@@ -136,98 +160,106 @@ function Sidebar({
               Platform
             </p>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* ── Navigation ── */}
-      <nav className="flex-1 overflow-y-auto py-3 overflow-x-hidden">
-        {visibleGroups.map((group, gi) => (
-          <div key={group.title} className={cn(gi > 0 && "mt-4")}>
-            {!collapsed && (
+        {/* ── Navigation ── */}
+        <nav className="flex-1 overflow-y-auto py-3 overflow-x-hidden">
+          {visibleGroups.map((group, gi) => (
+            <div key={group.title} className={cn(gi > 0 && "mt-4")}>
+              {/* Show group title always on mobile, conditionally on desktop */}
               <p
-                className="mb-1 px-4 text-[9.5px] font-semibold uppercase tracking-[0.12em]"
+                className={cn(
+                  "mb-1 px-4 text-[9.5px] font-semibold uppercase tracking-[0.12em]",
+                  collapsed && "md:hidden"
+                )}
                 style={{ color: "#4A5568" }}
               >
                 {group.title}
               </p>
-            )}
-            {collapsed && gi > 0 && (
-              <div className="mx-4 mb-3 h-px" style={{ background: "var(--color-chrome-border)" }} />
-            )}
-            <ul className="space-y-[2px] px-2">
-              {group.items.map(item => {
-                const Icon = item.icon;
-                const active = isActive(item);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      title={collapsed ? item.label : undefined}
-                      className={cn(
-                        "group relative flex items-center gap-2.5 rounded-[7px] px-2.5 py-[7px]",
-                        "text-[13px] font-medium leading-none",
-                        "transition-all duration-150 ease-out",
-                        collapsed && "justify-center px-0 py-[9px]",
-                        active
-                          ? "bg-white/10 text-white"
-                          : "text-[#94A3B8] hover:bg-white/5 hover:text-[#CBD5E1]"
-                      )}
-                    >
-                      {/* Active indicator — left glow bar */}
-                      {active && (
-                        <span
-                          className="absolute left-0 top-[6px] bottom-[6px] w-[3px] rounded-r-full"
-                          style={{ background: "var(--color-gold-bright)" }}
-                        />
-                      )}
-
-                      <Icon
+              {collapsed && gi > 0 && (
+                <div className="hidden md:block mx-4 mb-3 h-px" style={{ background: "var(--color-chrome-border)" }} />
+              )}
+              <ul className="space-y-[2px] px-2">
+                {group.items.map(item => {
+                  const Icon = item.icon;
+                  const active = isActive(item);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        title={collapsed ? item.label : undefined}
+                        onClick={onMobileClose}
                         className={cn(
-                          "shrink-0 transition-colors duration-150",
-                          collapsed ? "h-[18px] w-[18px]" : "h-4 w-4",
-                          active ? "text-white" : "text-[#64748B] group-hover:text-[#94A3B8]"
+                          "group relative flex items-center gap-2.5 rounded-[7px] px-2.5 py-[7px]",
+                          "text-[13px] font-medium leading-none",
+                          "transition-all duration-150 ease-out",
+                          collapsed && "md:justify-center md:px-0 md:py-[9px]",
+                          active
+                            ? "bg-white/10 text-white"
+                            : "text-[#94A3B8] hover:bg-white/5 hover:text-[#CBD5E1]"
                         )}
-                      />
+                      >
+                        {/* Active indicator — left glow bar */}
+                        {active && (
+                          <span
+                            className="absolute left-0 top-[6px] bottom-[6px] w-[3px] rounded-r-full"
+                            style={{ background: "var(--color-gold-bright)" }}
+                          />
+                        )}
 
-                      {!collapsed && (
-                        <span className="flex-1 truncate">{item.label}</span>
-                      )}
+                        <Icon
+                          className={cn(
+                            "shrink-0 transition-colors duration-150",
+                            collapsed ? "md:h-[18px] md:w-[18px] h-4 w-4" : "h-4 w-4",
+                            active ? "text-white" : "text-[#64748B] group-hover:text-[#94A3B8]"
+                          )}
+                        />
 
-                      {!collapsed && item.badge && (
-                        <span
-                          className="ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white"
-                          style={{ background: "var(--color-ruby)" }}
-                        >
-                          {item.badge}
+                        {/* Show label always on mobile, conditionally on desktop */}
+                        <span className={cn("flex-1 truncate", collapsed && "md:hidden")}>
+                          {item.label}
                         </span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
-      </nav>
 
-      {/* ── Collapse toggle ── */}
-      <div className="shrink-0 p-3 border-t" style={{ borderColor: "var(--color-chrome-border)" }}>
-        <button
-          onClick={onCollapse}
-          className={cn(
-            "flex w-full items-center rounded-lg px-2 py-1.5 gap-2",
-            "text-[#64748B] hover:text-[#94A3B8] hover:bg-white/5",
-            "transition-all duration-150 text-[12px]",
-            collapsed && "justify-center px-0"
-          )}
-        >
-          {collapsed
-            ? <PanelLeftOpen className="h-4 w-4 shrink-0" />
-            : <><PanelLeftClose className="h-4 w-4 shrink-0" /><span>Collapse</span></>
-          }
-        </button>
-      </div>
-    </aside>
+                        {/* Badge — show always on mobile, conditionally on desktop */}
+                        {item.badge && (
+                          <span
+                            className={cn(
+                              "ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white",
+                              collapsed && "md:hidden"
+                            )}
+                            style={{ background: "var(--color-ruby)" }}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        {/* ── Collapse toggle (desktop only) ── */}
+        <div className="shrink-0 p-3 border-t hidden md:block" style={{ borderColor: "var(--color-chrome-border)" }}>
+          <button
+            onClick={onCollapse}
+            className={cn(
+              "flex w-full items-center rounded-lg px-2 py-1.5 gap-2",
+              "text-[#64748B] hover:text-[#94A3B8] hover:bg-white/5",
+              "transition-all duration-150 text-[12px]",
+              collapsed && "justify-center px-0"
+            )}
+          >
+            {collapsed
+              ? <PanelLeftOpen className="h-4 w-4 shrink-0" />
+              : <><PanelLeftClose className="h-4 w-4 shrink-0" /><span>Collapse</span></>
+            }
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
 
@@ -264,13 +296,22 @@ function Topbar({
 
   return (
     <header
-      className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center gap-4 px-5 border-b"
+      className="sticky top-0 z-30 flex h-[60px] shrink-0 items-center gap-4 px-4 md:px-5 border-b"
       style={{
         background: "var(--color-ivory)",
         borderColor: "var(--color-border)",
         backdropFilter: "blur(12px)",
       }}
     >
+      {/* Hamburger — mobile only */}
+      <button
+        onClick={onMenuOpen}
+        className="md:hidden tap-target rounded-lg hover:bg-black/5 transition-colors shrink-0"
+        aria-label="Open menu"
+      >
+        <Menu className="h-5 w-5 text-[#1C1916]" />
+      </button>
+
       {/* Page title area */}
       <div className="flex-1 min-w-0">
         <p
@@ -315,7 +356,7 @@ function Topbar({
         </button>
 
         {/* Divider */}
-        <div className="h-5 w-px mx-1" style={{ background: "var(--color-border)" }} />
+        <div className="hidden sm:block h-5 w-px mx-1" style={{ background: "var(--color-border)" }} />
 
         {/* User chip */}
         <button
@@ -362,24 +403,31 @@ export function AppShell({
   pageTitle,
 }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="app-root">
-      <Sidebar role={role} collapsed={collapsed} onCollapse={() => setCollapsed(p => !p)} />
+      <Sidebar
+        role={role}
+        collapsed={collapsed}
+        onCollapse={() => setCollapsed(p => !p)}
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
+      />
 
       {/* Main column */}
-      <div className="flex flex-1 flex-col overflow-hidden" style={{ background: "var(--color-parchment)" }}>
+      <div className="flex flex-1 flex-col overflow-hidden min-w-0" style={{ background: "var(--color-parchment)" }}>
         <Topbar
           userName={userName}
           orgName={orgName}
           role={role}
           pageTitle={pageTitle}
-          onMenuOpen={() => {}}
+          onMenuOpen={() => setMobileOpen(true)}
         />
 
         {/* Scrollable content area */}
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-[1400px] p-6 sm:p-8 animate-fade-in">
+          <div className="mx-auto max-w-[1400px] p-4 sm:p-6 md:p-8 animate-fade-in">
             {children}
           </div>
         </main>
@@ -405,7 +453,7 @@ export function PageHeader({
   eyebrow?: string;
 }) {
   return (
-    <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+    <div className="mb-6 md:mb-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
       <div className="min-w-0">
         {eyebrow && (
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.1em]"
@@ -435,7 +483,7 @@ export function PageHeader({
         )}
       </div>
       {actions && (
-        <div className="flex shrink-0 items-center gap-2 mt-1 sm:mt-0">{actions}</div>
+        <div className="flex shrink-0 items-center gap-2">{actions}</div>
       )}
     </div>
   );
@@ -496,7 +544,7 @@ export function StatCard({
 
   return (
     <div
-      className="rounded-xl p-5 border relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
+      className="rounded-xl p-4 md:p-5 border relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
       style={{
         background: "var(--color-surface)",
         borderColor: "var(--color-border)",
@@ -512,16 +560,16 @@ export function StatCard({
         }}
       />
 
-      <div className="relative flex items-start justify-between gap-3">
+      <div className="relative flex items-start justify-between gap-2 md:gap-3">
         <div className="min-w-0">
           <p
-            className="text-[11px] font-semibold uppercase tracking-[0.08em] mb-2"
+            className="text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.08em] mb-1.5 md:mb-2"
             style={{ color: "var(--color-foreground-faint)" }}
           >
             {label}
           </p>
           <p
-            className="text-[1.625rem] font-semibold leading-none tabular price"
+            className="text-xl md:text-[1.625rem] font-semibold leading-none tabular price"
             style={{ color: c.value, fontVariantNumeric: "tabular-nums" }}
           >
             {value}
@@ -542,10 +590,10 @@ export function StatCard({
         </div>
         {Icon && (
           <div
-            className="rounded-lg p-2.5 shrink-0"
+            className="rounded-lg p-2 md:p-2.5 shrink-0"
             style={{ background: c.iconBg }}
           >
-            <Icon className="h-5 w-5" style={{ color: c.iconText }} />
+            <Icon className="h-4 w-4 md:h-5 md:w-5" style={{ color: c.iconText }} />
           </div>
         )}
       </div>
@@ -583,7 +631,7 @@ export function SectionCard({
     >
       {(title || actions) && (
         <div
-          className="flex items-center justify-between gap-4 px-5 py-4 border-b"
+          className="flex items-center justify-between gap-4 px-4 py-3 md:px-5 md:py-4 border-b"
           style={{ borderColor: "var(--color-border-subtle)" }}
         >
           <div>
@@ -601,7 +649,7 @@ export function SectionCard({
           {actions}
         </div>
       )}
-      <div className="p-5">{children}</div>
+      <div className="p-4 md:p-5">{children}</div>
     </div>
   );
 }

@@ -64,7 +64,7 @@ export default function QADashboard() {
         {stats.map(s => <StatCard key={s.label} {...s} />)}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Review Queue */}
         <Card className="lg:col-span-2">

@@ -57,11 +57,13 @@ export default function CustomerPortal() {
           <CardTitle className="text-base">Job Progress</CardTitle>
         </CardHeader>
         <CardContent>
-          <JobTimeline currentStatus="active_selling" />
+          <div className="scroll-x">
+            <JobTimeline currentStatus="active_selling" />
+          </div>
         </CardContent>
       </Card>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick actions */}
         <Card>
           <CardHeader className="pb-3">

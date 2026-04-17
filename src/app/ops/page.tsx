@@ -50,7 +50,7 @@ export default function OpsDashboard() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* SLA Alerts */}
         <Card className="border-ruby/20">
@@ -89,8 +89,8 @@ export default function OpsDashboard() {
             <CardTitle className="text-base">Recent Jobs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="scroll-x rounded-lg">
+              <table className="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr className="border-b border-border">
                     <th className="pb-2 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Client</th>

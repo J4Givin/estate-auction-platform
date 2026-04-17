@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MobileNavToggle } from "@/components/layout/MobileNav";
 
 const stats = [
   { value: "$4.2M+", label: "Client Proceeds" },
@@ -101,7 +102,7 @@ export default function LandingPage() {
 
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-50 bg-ivory/95 backdrop-blur border-b border-border">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <ShieldCheck className="h-5 w-5 text-sapphire" />
             <span
@@ -116,55 +117,62 @@ export default function LandingPage() {
             <Link href="/partners" className="px-3 py-2 rounded-lg hover:bg-platinum/20 hover:text-foreground transition-colors">Partners</Link>
             <Link href="/auth/login" className="px-3 py-2 rounded-lg hover:bg-platinum/20 hover:text-foreground transition-colors">Sign In</Link>
           </nav>
-          <Link href="/book">
-            <Button variant="primary" size="sm" className="hidden md:flex gap-1.5">
-              Book Free Walkthrough <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/book">
+              <Button variant="primary" size="sm" className="hidden md:flex gap-1.5">
+                Book Free Walkthrough <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </Link>
+            {/* Mobile hamburger */}
+            <MobileNavToggle />
+          </div>
         </div>
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-sapphire pb-24 pt-28">
+      <section className="relative overflow-hidden bg-sapphire pb-16 pt-20 md:pb-24 md:pt-28 min-h-[80svh] md:min-h-0 flex items-center">
         {/* Subtle texture overlay */}
         <div className="pointer-events-none absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           backgroundSize: "200px 200px" }} />
 
-        <div className="relative mx-auto max-w-3xl px-6 text-center">
+        {/* Bottom gradient fade */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-sapphire/80 to-transparent" />
+
+        <div className="relative mx-auto max-w-3xl px-6 text-center w-full">
           <Badge variant="gold" className="mb-6 text-xs px-3">
             <Star className="h-3 w-3" /> Verified Authentication • Multi-Channel Liquidation
           </Badge>
           <h1
-            className="text-5xl sm:text-6xl md:text-7xl font-light text-white leading-none tracking-tight"
+            className="text-hero font-light text-white tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Estate Inventory,{" "}
             <span className="italic text-gold-j-mid">Authenticated</span>{" "}
             & Sold.
           </h1>
-          <p className="mt-6 text-lg text-white/70 max-w-xl mx-auto">
+          <p className="mt-6 text-base md:text-lg text-white/70 max-w-xl mx-auto">
             We catalog every item, authenticate what matters, price everything accurately, and sell across 6+ channels simultaneously — so your family receives the most.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/book">
-              <Button size="xl" className="bg-gold-j-light text-white hover:bg-gold-j font-semibold gap-2">
+          <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 items-center justify-center">
+            <Link href="/book" className="w-full sm:w-auto">
+              <Button size="xl" className="w-full sm:w-auto bg-gold-j-light text-white hover:bg-gold-j font-semibold gap-2 active:scale-[0.97]">
                 Book a Free Walkthrough <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/how-it-works">
-              <Button variant="outline" size="xl" className="border-white/30 text-white hover:bg-white/10">
+            <Link href="/how-it-works" className="w-full sm:w-auto">
+              <Button variant="outline" size="xl" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 active:scale-[0.97]">
                 How It Works
               </Button>
             </Link>
           </div>
 
           {/* Stats strip */}
-          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10">
+          <div className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10">
             {stats.map(s => (
-              <div key={s.label} className="bg-sapphire-dim/60 backdrop-blur px-6 py-5 text-center">
-                <p className="text-2xl font-semibold text-gold-j-mid tabular-nums">{s.value}</p>
-                <p className="mt-1 text-xs text-white/60">{s.label}</p>
+              <div key={s.label} className="bg-sapphire-dim/60 backdrop-blur px-4 py-4 md:px-6 md:py-5 text-center">
+                <p className="text-xl md:text-2xl font-semibold text-gold-j-mid tabular-nums">{s.value}</p>
+                <p className="mt-1 text-[11px] md:text-xs text-white/60">{s.label}</p>
               </div>
             ))}
           </div>
@@ -172,15 +180,15 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-24 px-6">
+      <section className="py-16 md:py-24 px-6 overflow-hidden">
         <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 md:mb-16">
             <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">The Process</p>
-            <h2 className="text-4xl font-light" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 className="text-section-title font-light" style={{ fontFamily: "var(--font-display)" }}>
               From walkthrough to deposit — in days, not months.
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map(step => {
               const Icon = step.icon;
               return (
@@ -213,12 +221,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── Authentication highlight ── */}
-      <section className="py-20 px-6 bg-amethyst-muted">
+      <section className="py-16 md:py-20 px-6 bg-amethyst-muted overflow-hidden">
         <div className="mx-auto max-w-4xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
               <Badge variant="amethyst" className="mb-4">Authentication First</Badge>
-              <h2 className="text-4xl font-light mb-4" style={{ fontFamily: "var(--font-display)" }}>
+              <h2 className="text-section-title font-light mb-4" style={{ fontFamily: "var(--font-display)" }}>
                 Every high-value piece verified before it sells.
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
@@ -239,24 +247,24 @@ export default function LandingPage() {
                 ))}
               </ul>
             </div>
-            <div className="bg-white rounded-2xl border border-amethyst/20 p-8 shadow-md">
+            <div className="bg-white rounded-2xl border border-amethyst/20 p-6 md:p-8 shadow-md w-full">
               <div className="flex items-center gap-3 mb-6 pb-6 border-b border-border">
                 <div className="rounded-xl bg-gold-j-muted p-3">
                   <Award className="h-6 w-6 text-gold-j" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="font-semibold text-foreground">Authentication Certificate</p>
                   <p className="text-xs text-muted-foreground">Issued after expert review</p>
                 </div>
-                <Badge variant="gold" className="ml-auto">Verified</Badge>
+                <Badge variant="gold" className="ml-auto shrink-0">Verified</Badge>
               </div>
-              {["Provenance Documentation", "Maker Mark Photography", "Comparable Sales Research", "Expert Sign-Off"].map((item, i) => (
+              {["Provenance Documentation", "Maker Mark Photography", "Comparable Sales Research", "Expert Sign-Off"].map((item) => (
                 <div key={item} className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
                   <div className="h-5 w-5 rounded-full bg-emerald-j-muted flex items-center justify-center shrink-0">
                     <CheckCircle2 className="h-3 w-3 text-emerald-j" />
                   </div>
                   <span className="text-sm text-foreground">{item}</span>
-                  <span className="ml-auto text-xs text-emerald-j font-medium">Complete</span>
+                  <span className="ml-auto text-xs text-emerald-j font-medium shrink-0">Complete</span>
                 </div>
               ))}
             </div>
@@ -265,15 +273,15 @@ export default function LandingPage() {
       </section>
 
       {/* ── Channels ── */}
-      <section className="py-20 px-6">
+      <section className="py-16 md:py-20 px-6 overflow-hidden">
         <div className="mx-auto max-w-6xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">Sales Channels</p>
-          <h2 className="text-4xl font-light mb-12" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="text-section-title font-light mb-8 md:mb-12" style={{ fontFamily: "var(--font-display)" }}>
             Maximum exposure across every marketplace.
           </h2>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
             {channels.map(c => (
-              <span key={c} className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-foreground shadow-xs">
+              <span key={c} className="rounded-full border border-border bg-white px-4 py-2 md:px-5 md:py-2.5 text-sm font-medium text-foreground shadow-xs">
                 {c}
               </span>
             ))}
@@ -282,18 +290,18 @@ export default function LandingPage() {
       </section>
 
       {/* ── Partners ── */}
-      <section className="py-24 px-6 bg-cream">
+      <section className="py-16 md:py-24 px-6 bg-cream overflow-hidden">
         <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 md:mb-16">
             <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">Partner Program</p>
-            <h2 className="text-4xl font-light" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 className="text-section-title font-light" style={{ fontFamily: "var(--font-display)" }}>
               Built for the professionals who come first.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
               We work alongside the people who are already in the room — realtors, attorneys, movers, senior advisors. Refer a client and earn.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {partners.map(p => {
               const Icon = p.icon;
               const c = colorMap[p.color];
@@ -318,7 +326,7 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 text-center">
             <Link href="/partner/referrals/new">
-              <Button variant="primary" size="lg" className="gap-2">
+              <Button variant="primary" size="lg" className="gap-2 active:scale-[0.97]">
                 Become a Partner <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -327,19 +335,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-6 bg-sapphire">
+      <section className="py-16 md:py-24 px-6 bg-sapphire overflow-hidden">
         <div className="mx-auto max-w-2xl text-center">
           <h2
-            className="text-4xl sm:text-5xl font-light text-white mb-4"
+            className="text-section-title sm:text-5xl font-light text-white mb-4"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Ready to start?
           </h2>
-          <p className="text-white/70 mb-8 text-lg">
+          <p className="text-white/70 mb-8 text-base md:text-lg">
             Schedule a free on-site walkthrough. No commitment, no contract until you approve your job.
           </p>
           <Link href="/book">
-            <Button size="xl" className="bg-gold-j-light text-white hover:bg-gold-j gap-2 font-semibold">
+            <Button size="xl" className="bg-gold-j-light text-white hover:bg-gold-j gap-2 font-semibold active:scale-[0.97]">
               Book a Free Walkthrough <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -347,19 +355,21 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-onyx text-white/50 py-12 px-6">
-        <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-gold-j" />
-            <span className="text-white/70 font-medium" style={{ fontFamily: "var(--font-display)" }}>
-              Estate Liquidity
-            </span>
-          </div>
-          <p>Marina del Rey · Beverly Hills · West LA · Beach Cities</p>
-          <div className="flex gap-4">
-            <Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link>
-            <Link href="/book" className="hover:text-white transition-colors">Book</Link>
-            <Link href="/partners" className="hover:text-white transition-colors">Partners</Link>
+      <footer className="bg-onyx text-white/50 py-10 md:py-12 px-6">
+        <div className="mx-auto max-w-6xl flex flex-col gap-4 text-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-gold-j" />
+              <span className="text-white/70 font-medium" style={{ fontFamily: "var(--font-display)" }}>
+                Estate Liquidity
+              </span>
+            </div>
+            <p className="text-center">Marina del Rey · Beverly Hills · West LA · Beach Cities</p>
+            <div className="flex gap-4">
+              <Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link>
+              <Link href="/book" className="hover:text-white transition-colors">Book</Link>
+              <Link href="/partners" className="hover:text-white transition-colors">Partners</Link>
+            </div>
           </div>
         </div>
       </footer>
