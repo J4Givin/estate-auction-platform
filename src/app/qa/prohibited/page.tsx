@@ -1,9 +1,8 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
 import {
   Ban,
@@ -145,11 +144,9 @@ export default function ProhibitedItemsPage() {
   const [overrideItem, setOverrideItem] = useState<FlaggedItem | null>(null);
 
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar userName="QA Reviewer" role="qa" />
-      <div className="flex flex-1">
-        <Sidebar role="qa" />
-        <main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
+    <AppShell role="qa" userName="Maria Chen" orgName="QA & Appraisal">
+<div className="flex flex-1">
+<main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
           {/* Back link */}
           <Link
             href="/qa"
@@ -261,6 +258,6 @@ export default function ProhibitedItemsPage() {
           onClose={() => setOverrideItem(null)}
         />
       )}
-    </div>
+    </AppShell>
   );
 }

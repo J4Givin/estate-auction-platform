@@ -1,10 +1,10 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CreditCard, CheckCircle2, AlertCircle } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -62,9 +62,8 @@ function SellerOnboardingInner() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 p-6 max-w-lg mx-auto">
+    <AppShell role="admin" userName="Catherine Reynolds" orgName="Administration">
+<main className="flex-1 p-6 max-w-lg mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">
@@ -162,6 +161,6 @@ function SellerOnboardingInner() {
           </Card>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

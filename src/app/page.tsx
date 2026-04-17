@@ -1,251 +1,210 @@
 import Link from "next/link";
 import {
-  ArrowRight,
-  CheckCircle2,
-  ClipboardList,
-  Search,
-  Megaphone,
-  Building2,
-  Scale,
-  Heart,
-  Truck,
-  Warehouse,
-  Star,
-  ShieldCheck,
-  Award,
-  Users,
+  ArrowRight, ShieldCheck, BarChart3, Globe, Clock,
+  Building2, Scale, Heart, Truck, Warehouse, Star,
+  CheckCircle2, Award, ChevronRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const stats = [
-  { label: "Items Sold", value: "2,500+" },
-  { label: "Recovered", value: "$4.2M" },
-  { label: "Client Satisfaction", value: "98%" },
-  { label: "Authentication", value: "5-Star" },
+  { value: "$4.2M+", label: "Client Proceeds" },
+  { value: "2,500+", label: "Items Sold" },
+  { value: "98%",    label: "Client Satisfaction" },
+  { value: "48 hrs", label: "Avg. Time to Live" },
 ];
 
 const steps = [
   {
-    number: 1,
+    num: "01",
     title: "Schedule a Walkthrough",
-    description:
-      "We visit your property, photograph and catalog every item of value. Our team handles all the heavy lifting so you don't have to.",
-    icon: ClipboardList,
+    body: "We come to your property and photograph, catalog, and assess every item of value — typically in under two hours.",
+    icon: Clock,
   },
   {
-    number: 2,
-    title: "We Catalog & Authenticate",
-    description:
-      "AI-assisted pricing with human expert verification. High-value items receive full provenance authentication and professional appraisal.",
-    icon: Search,
+    num: "02",
+    title: "Catalog, Authenticate & Price",
+    body: "AI-assisted identification with human expert review. High-value pieces receive full provenance authentication and professional appraisal.",
+    icon: ShieldCheck,
+    highlight: true,
   },
   {
-    number: 3,
+    num: "03",
     title: "Multi-Channel Liquidation",
-    description:
-      "Items are listed across 6+ selling channels simultaneously for maximum recovery. Live auctions, online marketplaces, dealer networks, and more.",
-    icon: Megaphone,
+    body: "Items list simultaneously across 6+ channels — online storefront, eBay, Facebook Marketplace, Etsy, and live auction.",
+    icon: Globe,
+  },
+  {
+    num: "04",
+    title: "Direct Deposit to You",
+    body: "Net proceeds deposited after each settlement period. Full itemized statements with every transaction visible.",
+    icon: BarChart3,
   },
 ];
 
-const partnerTypes = [
+const partners = [
   {
+    type: "realtor",
     title: "Realtors",
-    description:
-      "Accelerate property sales with professional estate clearing and staging support.",
+    tagline: "Sell the house faster, sell the contents too.",
+    body: "We handle estate clearing so your listing is market-ready sooner. Co-branded materials available.",
     icon: Building2,
-    accent: "sapphire",
-    borderColor: "border-l-sapphire",
-    iconColor: "text-sapphire",
-    bgColor: "bg-sapphire-muted",
+    color: "sapphire",
   },
   {
+    type: "probate",
     title: "Estate Attorneys",
-    description:
-      "Streamlined estate liquidation with full documentation for probate proceedings.",
+    tagline: "Court-ready documentation, start to finish.",
+    body: "Full itemized appraisals, authenticated records, and final statements structured for probate proceedings.",
     icon: Scale,
-    accent: "amethyst",
-    borderColor: "border-l-amethyst",
-    iconColor: "text-amethyst",
-    bgColor: "bg-amethyst-muted",
+    color: "amethyst",
   },
   {
+    type: "senior",
     title: "Senior Transition Specialists",
-    description:
-      "Compassionate downsizing services with maximum recovery for your clients.",
+    tagline: "Compassionate downsizing with maximum recovery.",
+    body: "White-glove service for families navigating major life transitions. We handle logistics so you can focus on people.",
     icon: Heart,
-    accent: "emerald",
-    borderColor: "border-l-emerald",
-    iconColor: "text-emerald",
-    bgColor: "bg-emerald-muted",
+    color: "emerald",
   },
   {
+    type: "mover",
     title: "Moving Companies",
-    description:
-      "Reduce load volume and increase revenue through liquidation referrals.",
+    tagline: "A natural complement to every move.",
+    body: "Refer clients who need to liquidate before a move. Earn referral commissions on completed jobs.",
     icon: Truck,
-    accent: "gold-tone",
-    borderColor: "border-l-gold-tone",
-    iconColor: "text-gold-tone",
-    bgColor: "bg-gold-tone-muted",
+    color: "gold",
   },
   {
+    type: "storage",
     title: "Storage Facilities",
-    description:
-      "Convert abandoned and delinquent storage units into revenue efficiently.",
+    tagline: "Turn abandoned units into referral revenue.",
+    body: "Help tenants clear their units with professional liquidation — and earn a referral fee when they do.",
     icon: Warehouse,
-    accent: "ruby",
-    borderColor: "border-l-ruby",
-    iconColor: "text-ruby",
-    bgColor: "bg-ruby-muted",
+    color: "ruby",
   },
 ];
 
-const trustSignals = [
-  { icon: ShieldCheck, label: "Licensed & Bonded" },
-  { icon: Award, label: "Certified Appraisers" },
-  { icon: Users, label: "Family-Owned" },
-  { icon: Star, label: "A+ BBB Rating" },
-];
+const channels = ["Online Storefront", "eBay", "Facebook Marketplace", "Etsy", "OfferUp", "Live Auction"];
 
-export default function HomePage() {
+const colorMap: Record<string, { border: string; icon: string; bg: string }> = {
+  sapphire: { border: "border-sapphire/20",  icon: "text-sapphire",  bg: "bg-sapphire-muted" },
+  amethyst: { border: "border-amethyst/20",  icon: "text-amethyst",  bg: "bg-amethyst-muted" },
+  emerald:  { border: "border-emerald-j/20", icon: "text-emerald-j", bg: "bg-emerald-j-muted" },
+  gold:     { border: "border-gold-j/20",    icon: "text-gold-j",    bg: "bg-gold-j-muted" },
+  ruby:     { border: "border-ruby/20",      icon: "text-ruby",      bg: "bg-ruby-muted" },
+};
+
+export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80">
-        <div className="container flex h-16 max-w-screen-xl mx-auto items-center px-4">
-          <Link href="/" className="flex items-center gap-2 mr-8">
+    <div className="min-h-screen bg-background text-foreground" style={{ fontFamily: "var(--font-body)" }}>
+
+      {/* ── Navbar ── */}
+      <header className="sticky top-0 z-50 bg-ivory/95 backdrop-blur border-b border-border">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <ShieldCheck className="h-5 w-5 text-sapphire" />
             <span
-              className="text-2xl font-semibold text-sapphire"
+              className="text-xl font-semibold text-sapphire"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Estate Liquidity
             </span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link
-              href="/how-it-works"
-              className="text-pewter hover:text-sapphire transition-colors"
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/partners"
-              className="text-pewter hover:text-sapphire transition-colors"
-            >
-              Partners
-            </Link>
-            <Link
-              href="/book"
-              className="text-pewter hover:text-sapphire transition-colors"
-            >
-              Book a Consultation
-            </Link>
+          <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-pewter">
+            <Link href="/how-it-works" className="px-3 py-2 rounded-lg hover:bg-platinum/20 hover:text-foreground transition-colors">How It Works</Link>
+            <Link href="/partners" className="px-3 py-2 rounded-lg hover:bg-platinum/20 hover:text-foreground transition-colors">Partners</Link>
+            <Link href="/auth/login" className="px-3 py-2 rounded-lg hover:bg-platinum/20 hover:text-foreground transition-colors">Sign In</Link>
           </nav>
-          <div className="flex-1" />
-          <div className="flex items-center gap-3">
-            <Link href="/auth/login">
-              <button className="text-sm font-medium text-sapphire hover:text-sapphire-light transition-colors px-4 py-2">
-                Sign In
-              </button>
-            </Link>
-            <Link href="/book">
-              <button className="text-sm font-medium bg-sapphire text-white px-5 py-2 rounded-lg hover:bg-sapphire-light transition-colors">
-                Get Started
-              </button>
-            </Link>
-          </div>
+          <Link href="/book">
+            <Button variant="primary" size="sm" className="hidden md:flex gap-1.5">
+              Book Free Walkthrough <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-ivory to-cream">
-        <div className="container max-w-screen-xl mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1
-              className="text-4xl sm:text-5xl md:text-6xl text-onyx mb-6"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Estate Inventory, Authenticated & Sold
-            </h1>
-            <p className="text-lg md:text-xl text-pewter max-w-2xl mx-auto mb-10 leading-relaxed">
-              Professional estate liquidation powered by expert appraisals and
-              multi-channel selling. We help families, attorneys, and fiduciaries
-              recover maximum value from personal property.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/book">
-                <button className="inline-flex items-center gap-2 bg-sapphire text-white px-8 py-3.5 rounded-lg text-base font-medium hover:bg-sapphire-light transition-colors shadow-md">
-                  Book Your Free Consultation
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </Link>
-              <Link href="/how-it-works">
-                <button className="inline-flex items-center gap-2 border border-sapphire text-sapphire px-8 py-3.5 rounded-lg text-base font-medium hover:bg-sapphire-muted transition-colors">
-                  How It Works
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-sapphire pb-24 pt-28">
+        {/* Subtle texture overlay */}
+        <div className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundSize: "200px 200px" }} />
 
-      {/* Stats Strip */}
-      <section className="bg-sapphire py-8">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div
-                  className="text-2xl md:text-3xl font-semibold text-white mb-1"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {stat.value}
-                </div>
-                <div className="text-sm text-ivory/80">{stat.label}</div>
+        <div className="relative mx-auto max-w-3xl px-6 text-center">
+          <Badge variant="gold" className="mb-6 text-xs px-3">
+            <Star className="h-3 w-3" /> Verified Authentication • Multi-Channel Liquidation
+          </Badge>
+          <h1
+            className="text-5xl sm:text-6xl md:text-7xl font-light text-white leading-none tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Estate Inventory,{" "}
+            <span className="italic text-gold-j-mid">Authenticated</span>{" "}
+            & Sold.
+          </h1>
+          <p className="mt-6 text-lg text-white/70 max-w-xl mx-auto">
+            We catalog every item, authenticate what matters, price everything accurately, and sell across 6+ channels simultaneously — so your family receives the most.
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/book">
+              <Button size="xl" className="bg-gold-j-light text-white hover:bg-gold-j font-semibold gap-2">
+                Book a Free Walkthrough <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/how-it-works">
+              <Button variant="outline" size="xl" className="border-white/30 text-white hover:bg-white/10">
+                How It Works
+              </Button>
+            </Link>
+          </div>
+
+          {/* Stats strip */}
+          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10">
+            {stats.map(s => (
+              <div key={s.label} className="bg-sapphire-dim/60 backdrop-blur px-6 py-5 text-center">
+                <p className="text-2xl font-semibold text-gold-j-mid tabular-nums">{s.value}</p>
+                <p className="mt-1 text-xs text-white/60">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 md:py-24 bg-cream">
-        <div className="container max-w-screen-xl mx-auto px-4">
+      {/* ── How it works ── */}
+      <section className="py-24 px-6">
+        <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-4"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              How It Works
+            <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">The Process</p>
+            <h2 className="text-4xl font-light" style={{ fontFamily: "var(--font-display)" }}>
+              From walkthrough to deposit — in days, not months.
             </h2>
-            <p className="text-pewter text-lg max-w-2xl mx-auto">
-              A simple three-step process designed to maximize recovery while
-              minimizing your effort.
-            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            {steps.map((step) => {
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {steps.map(step => {
               const Icon = step.icon;
               return (
-                <div key={step.number} className="text-center">
-                  <div className="flex items-center justify-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-sapphire text-white flex items-center justify-center text-2xl font-semibold shadow-md"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      {step.number}
+                <div
+                  key={step.num}
+                  className={`relative rounded-2xl p-6 border transition-shadow hover:shadow-md ${
+                    step.highlight
+                      ? "bg-sapphire text-white border-sapphire shadow-lg"
+                      : "bg-white border-border"
+                  }`}
+                >
+                  {step.highlight && (
+                    <div className="absolute top-4 right-4">
+                      <Badge variant="gold" className="text-[10px]">Priority</Badge>
                     </div>
-                  </div>
-                  <Icon className="h-8 w-8 text-sapphire mx-auto mb-4" />
-                  <h3
-                    className="text-xl mb-3 text-onyx"
-                    style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p className="text-pewter leading-relaxed">
-                    {step.description}
+                  )}
+                  <p className={`text-xs font-bold tracking-widest mb-4 ${step.highlight ? "text-white/50" : "text-muted-foreground"}`}>
+                    {step.num}
                   </p>
+                  <div className={`inline-flex rounded-xl p-2.5 mb-4 ${step.highlight ? "bg-white/10" : "bg-sapphire-muted"}`}>
+                    <Icon className={`h-5 w-5 ${step.highlight ? "text-white" : "text-sapphire"}`} />
+                  </div>
+                  <h3 className={`text-lg font-semibold mb-2 font-sans ${step.highlight ? "text-white" : ""}`}>{step.title}</h3>
+                  <p className={`text-sm leading-relaxed ${step.highlight ? "text-white/75" : "text-muted-foreground"}`}>{step.body}</p>
                 </div>
               );
             })}
@@ -253,204 +212,158 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Partner Types */}
-      <section className="py-20 md:py-24 bg-ivory">
-        <div className="container max-w-screen-xl mx-auto px-4">
+      {/* ── Authentication highlight ── */}
+      <section className="py-20 px-6 bg-amethyst-muted">
+        <div className="mx-auto max-w-4xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge variant="amethyst" className="mb-4">Authentication First</Badge>
+              <h2 className="text-4xl font-light mb-4" style={{ fontFamily: "var(--font-display)" }}>
+                Every high-value piece verified before it sells.
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Our authentication workflow requires provenance documentation, maker-mark photography, and expert sign-off before any high-value item is published. Inconclusive pieces are flagged — never guessed.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Provenance & ownership documentation",
+                  "Maker marks, hallmarks & serial photography",
+                  "Comparable sales from major auction houses",
+                  "Expert human review on every high-value item",
+                  "Immutable authentication record for buyers",
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-amethyst mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-white rounded-2xl border border-amethyst/20 p-8 shadow-md">
+              <div className="flex items-center gap-3 mb-6 pb-6 border-b border-border">
+                <div className="rounded-xl bg-gold-j-muted p-3">
+                  <Award className="h-6 w-6 text-gold-j" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">Authentication Certificate</p>
+                  <p className="text-xs text-muted-foreground">Issued after expert review</p>
+                </div>
+                <Badge variant="gold" className="ml-auto">Verified</Badge>
+              </div>
+              {["Provenance Documentation", "Maker Mark Photography", "Comparable Sales Research", "Expert Sign-Off"].map((item, i) => (
+                <div key={item} className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
+                  <div className="h-5 w-5 rounded-full bg-emerald-j-muted flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="h-3 w-3 text-emerald-j" />
+                  </div>
+                  <span className="text-sm text-foreground">{item}</span>
+                  <span className="ml-auto text-xs text-emerald-j font-medium">Complete</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Channels ── */}
+      <section className="py-20 px-6">
+        <div className="mx-auto max-w-6xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">Sales Channels</p>
+          <h2 className="text-4xl font-light mb-12" style={{ fontFamily: "var(--font-display)" }}>
+            Maximum exposure across every marketplace.
+          </h2>
+          <div className="flex flex-wrap justify-center gap-3">
+            {channels.map(c => (
+              <span key={c} className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-foreground shadow-xs">
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Partners ── */}
+      <section className="py-24 px-6 bg-cream">
+        <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-4"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Who We Work With
+            <p className="text-xs font-semibold uppercase tracking-widest text-gold-j mb-3">Partner Program</p>
+            <h2 className="text-4xl font-light" style={{ fontFamily: "var(--font-display)" }}>
+              Built for the professionals who come first.
             </h2>
-            <p className="text-pewter text-lg max-w-2xl mx-auto">
-              Trusted partnerships across the estate services industry. Refer
-              your clients with confidence.
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+              We work alongside the people who are already in the room — realtors, attorneys, movers, senior advisors. Refer a client and earn.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {partnerTypes.map((partner) => {
-              const Icon = partner.icon;
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {partners.map(p => {
+              const Icon = p.icon;
+              const c = colorMap[p.color];
               return (
-                <Link key={partner.title} href="/partners">
-                  <div
-                    className={cn(
-                      "bg-white rounded-xl p-6 border border-border/60 hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4",
-                      partner.borderColor
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "w-12 h-12 rounded-lg flex items-center justify-center mb-4",
-                        partner.bgColor
-                      )}
-                    >
-                      <Icon className={cn("h-6 w-6", partner.iconColor)} />
-                    </div>
-                    <h3
-                      className="text-lg mb-2 text-onyx"
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {partner.title}
-                    </h3>
-                    <p className="text-sm text-pewter leading-relaxed">
-                      {partner.description}
-                    </p>
+                <Link
+                  key={p.type}
+                  href={`/partners/${p.type}`}
+                  className={`group rounded-2xl bg-white border ${c.border} p-6 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5`}
+                >
+                  <div className={`inline-flex rounded-xl p-2.5 mb-4 ${c.bg}`}>
+                    <Icon className={`h-5 w-5 ${c.icon}`} />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-1">{p.title}</h3>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">{p.tagline}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{p.body}</p>
+                  <div className="mt-4 flex items-center gap-1 text-sm font-medium text-sapphire">
+                    Learn more <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </Link>
               );
             })}
           </div>
-          <div className="text-center mt-10">
-            <Link href="/partners">
-              <button className="inline-flex items-center gap-2 text-sapphire font-medium hover:text-sapphire-light transition-colors">
-                View All Partner Programs
-                <ArrowRight className="h-4 w-4" />
-              </button>
+          <div className="mt-10 text-center">
+            <Link href="/partner/referrals/new">
+              <Button variant="primary" size="lg" className="gap-2">
+                Become a Partner <ArrowRight className="h-4 w-4" />
+              </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Trust Section */}
-      <section className="py-20 md:py-24 bg-cream">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-4"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Trusted by Families & Fiduciaries
-            </h2>
-            <p className="text-pewter text-lg max-w-2xl mx-auto">
-              Families, executors, and professional fiduciaries across Los
-              Angeles rely on us for sensitive estate liquidation.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {trustSignals.map((signal) => {
-              const Icon = signal.icon;
-              return (
-                <div
-                  key={signal.label}
-                  className="flex flex-col items-center text-center p-6 bg-white rounded-xl border border-border/60"
-                >
-                  <div className="w-14 h-14 rounded-full bg-sapphire-muted flex items-center justify-center mb-4">
-                    <Icon className="h-7 w-7 text-sapphire" />
-                  </div>
-                  <span className="text-sm font-medium text-onyx">
-                    {signal.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 md:py-24 bg-ivory">
-        <div className="container max-w-screen-md mx-auto px-4 text-center">
+      {/* ── CTA ── */}
+      <section className="py-24 px-6 bg-sapphire">
+        <div className="mx-auto max-w-2xl text-center">
           <h2
-            className="text-3xl md:text-4xl text-onyx mb-4"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
+            className="text-4xl sm:text-5xl font-light text-white mb-4"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            Ready to Get Started?
+            Ready to start?
           </h2>
-          <p className="text-pewter text-lg mb-8 max-w-xl mx-auto">
-            Schedule your free consultation today. Our team will walk through
-            your property and provide a no-obligation recovery estimate.
+          <p className="text-white/70 mb-8 text-lg">
+            Schedule a free on-site walkthrough. No commitment, no contract until you approve your job.
           </p>
           <Link href="/book">
-            <button className="inline-flex items-center gap-2 bg-gold-tone text-white px-8 py-3.5 rounded-lg text-base font-medium hover:bg-gold-tone-light transition-colors shadow-md">
-              Book Now
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <Button size="xl" className="bg-gold-j-light text-white hover:bg-gold-j gap-2 font-semibold">
+              Book a Free Walkthrough <ArrowRight className="h-4 w-4" />
+            </Button>
           </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-ivory border-t border-border/40 py-12">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-1">
-              <span
-                className="text-xl font-semibold text-sapphire block mb-3"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Estate Liquidity
-              </span>
-              <p className="text-sm text-pewter leading-relaxed">
-                Professional estate inventory, authentication, appraisal, and
-                multi-channel liquidation services.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-onyx mb-3">Services</h4>
-              <ul className="space-y-2 text-sm text-pewter">
-                <li>
-                  <Link href="/how-it-works" className="hover:text-sapphire transition-colors">
-                    How It Works
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/book" className="hover:text-sapphire transition-colors">
-                    Book a Consultation
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-onyx mb-3">Partners</h4>
-              <ul className="space-y-2 text-sm text-pewter">
-                <li>
-                  <Link href="/partners" className="hover:text-sapphire transition-colors">
-                    Partner Programs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/partners/realtor" className="hover:text-sapphire transition-colors">
-                    For Realtors
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/partners/probate" className="hover:text-sapphire transition-colors">
-                    For Attorneys
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-onyx mb-3">Account</h4>
-              <ul className="space-y-2 text-sm text-pewter">
-                <li>
-                  <Link href="/auth/login" className="hover:text-sapphire transition-colors">
-                    Sign In
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth/register" className="hover:text-sapphire transition-colors">
-                    Create Account
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="hover:text-sapphire transition-colors">
-                    Dashboard
-                  </Link>
-                </li>
-              </ul>
-            </div>
+      {/* ── Footer ── */}
+      <footer className="bg-onyx text-white/50 py-12 px-6">
+        <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-gold-j" />
+            <span className="text-white/70 font-medium" style={{ fontFamily: "var(--font-display)" }}>
+              Estate Liquidity
+            </span>
           </div>
-          <div className="border-t border-border/40 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-pewter">
-            <p>&copy; {new Date().getFullYear()} Estate Liquidity. All rights reserved.</p>
-            <p className="mt-2 md:mt-0">Los Angeles, California</p>
+          <p>Marina del Rey · Beverly Hills · West LA · Beach Cities</p>
+          <div className="flex gap-4">
+            <Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link>
+            <Link href="/book" className="hover:text-white transition-colors">Book</Link>
+            <Link href="/partners" className="hover:text-white transition-colors">Partners</Link>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Play, ImageIcon } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotStatusBadge } from "@/components/auction/LotStatusBadge";
@@ -49,32 +49,27 @@ export default function LotDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1 p-6">
+      <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6">
           <p className="text-muted-foreground">Loading...</p>
         </main>
-      </div>
+      </AppShell>
     );
   }
 
   if (!lot) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1 p-6">
-          <p className="text-muted-foreground">Lot not found.</p>
-        </main>
-      </div>
+      <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+        <p className="text-muted-foreground p-6">Lot not found.</p>
+      </AppShell>
     );
   }
 
   const bidEvents = events.filter((e) => e.event_type === "bid_placed");
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 p-6 max-w-screen-xl mx-auto w-full space-y-6">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6 max-w-screen-xl mx-auto w-full space-y-6">
         <div className="flex items-center gap-3">
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">
@@ -249,6 +244,6 @@ export default function LotDetailPage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

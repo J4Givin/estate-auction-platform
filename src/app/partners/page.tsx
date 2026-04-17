@@ -1,3 +1,4 @@
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,7 +12,6 @@ import {
   FileText,
   CheckCircle2,
 } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 
 const partnerTypes = [
   {
@@ -89,10 +89,8 @@ const benefits = [
 
 export default function PartnersPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-
-      {/* Hero */}
+    <AppShell role="partner" userName="Partner" orgName="Partner Portal">
+{/* Hero */}
       <section className="bg-gradient-to-b from-ivory to-cream py-20 md:py-28">
         <div className="container max-w-screen-xl mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -265,6 +263,6 @@ export default function PartnersPage() {
           </Link>
         </div>
       </section>
-    </div>
+    </AppShell>
   );
 }

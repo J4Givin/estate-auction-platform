@@ -1,9 +1,8 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
 import {
   Zap,
@@ -68,13 +67,9 @@ export default function StrategySelection() {
   const activeSchedule = selectedStrategy === "sell-fast" ? sellFastSchedule : maxValueSchedule;
 
   return (
-    <div className="flex min-h-screen flex-col bg-ivory">
-      <Navbar userName="Margaret Mitchell" role="customer" />
-
-      <div className="flex flex-1">
-        <Sidebar role="customer" />
-
-        <main className="flex-1 overflow-y-auto">
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+<div className="flex flex-1">
+<main className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-5xl px-6 py-8">
             {/* Page Header */}
             <h1 className="text-3xl font-semibold text-charcoal font-[family-name:var(--font-display)]">
@@ -346,6 +341,6 @@ export default function StrategySelection() {
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

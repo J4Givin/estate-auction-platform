@@ -1,10 +1,10 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Radio, PlusCircle } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,30 +47,27 @@ export default function ShowDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1 p-6">
+      <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6">
           <p className="text-muted-foreground">Loading...</p>
         </main>
-      </div>
+      </AppShell>
     );
   }
 
   if (!show) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1 p-6">
+      <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6">
           <p className="text-muted-foreground">Show not found.</p>
         </main>
-      </div>
+    </AppShell>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 p-6 max-w-screen-xl mx-auto w-full space-y-6">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6 max-w-screen-xl mx-auto w-full space-y-6">
         <div className="flex items-center gap-3">
           <Link href="/shows">
             <Button variant="ghost" size="icon">
@@ -80,7 +77,7 @@ export default function ShowDetailPage() {
           <div className="flex-1">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold">{show.title}</h1>
-              <Badge variant={show.status === "live" ? "destructive" : "secondary"}>
+              <Badge variant={show.status === "live" ? "ruby" : "platinum"}>
                 {show.status}
               </Badge>
             </div>
@@ -151,6 +148,6 @@ export default function ShowDetailPage() {
           )}
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

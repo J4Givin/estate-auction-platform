@@ -1,8 +1,7 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState } from "react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
 import {
   FileText,
@@ -113,11 +112,9 @@ export default function PoliciesPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar userName="Catherine Reynolds" role="admin" />
-      <div className="flex flex-1">
-        <Sidebar role="admin" />
-        <main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
+    <AppShell role="admin" userName="Catherine Reynolds" orgName="Administration">
+<div className="flex flex-1">
+<main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
           {/* Heading */}
           <h1
             className="text-2xl md:text-3xl text-onyx"
@@ -284,6 +281,6 @@ export default function PoliciesPage() {
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

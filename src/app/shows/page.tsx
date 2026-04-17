@@ -1,10 +1,9 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -77,11 +76,9 @@ export default function ShowsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-6 space-y-6">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<div className="flex flex-1">
+<main className="flex-1 p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Shows</h1>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -132,7 +129,7 @@ export default function ShowsPage() {
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <CardTitle className="text-base">{show.title}</CardTitle>
-                        <Badge variant={show.status === "live" ? "destructive" : "secondary"}>
+                        <Badge variant={show.status === "live" ? "ruby" : "platinum"}>
                           {show.status}
                         </Badge>
                       </div>
@@ -160,6 +157,6 @@ export default function ShowsPage() {
           )}
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

@@ -1,3 +1,4 @@
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -14,7 +15,6 @@ import {
   BarChart3,
   Store,
 } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 
 const steps = [
   {
@@ -54,10 +54,8 @@ const steps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-
-      {/* Hero */}
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+{/* Hero */}
       <section className="bg-gradient-to-b from-ivory to-cream py-20 md:py-28">
         <div className="container max-w-screen-xl mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -255,6 +253,6 @@ export default function HowItWorksPage() {
           </Link>
         </div>
       </section>
-    </div>
+    </AppShell>
   );
 }

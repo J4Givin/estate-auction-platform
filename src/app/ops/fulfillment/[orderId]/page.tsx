@@ -1,9 +1,8 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { use, useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -64,11 +63,9 @@ export default function OrderPackingPage({ params }: { params: Promise<{ orderId
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar userName="Sarah" orgName="Estate Liquidity" role="ops" />
-      <div className="flex flex-1">
-        <Sidebar role="ops" />
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<div className="flex flex-1">
+<main className="flex-1 overflow-y-auto p-6 lg:p-8">
           {/* Breadcrumb */}
           <div className="mb-4">
             <Link
@@ -272,6 +269,6 @@ export default function OrderPackingPage({ params }: { params: Promise<{ orderId
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

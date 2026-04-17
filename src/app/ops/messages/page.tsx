@@ -1,8 +1,7 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState } from "react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
 import { Send, ChevronDown } from "lucide-react";
 
@@ -138,11 +137,9 @@ export default function MessagesPage() {
   const [showTemplates, setShowTemplates] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar userName="Sarah" orgName="Estate Liquidity" role="ops" />
-      <div className="flex flex-1">
-        <Sidebar role="ops" />
-        <main className="flex-1 overflow-hidden">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<div className="flex flex-1">
+<main className="flex-1 overflow-hidden">
           <div className="flex h-[calc(100vh-4rem)]">
             {/* Left Panel — Conversations List */}
             <div className="w-80 border-r border-platinum/50 bg-white flex flex-col">
@@ -309,6 +306,6 @@ export default function MessagesPage() {
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

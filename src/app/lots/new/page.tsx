@@ -1,11 +1,10 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,11 +105,9 @@ function NewLotPageInner() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-6 max-w-2xl">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<div className="flex flex-1">
+<main className="flex-1 p-6 max-w-2xl">
           <div className="flex items-center gap-3 mb-6">
             <Link href="/dashboard">
               <Button variant="ghost" size="icon">
@@ -280,6 +277,6 @@ function NewLotPageInner() {
           </form>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

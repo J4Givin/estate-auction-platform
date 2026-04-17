@@ -1,276 +1,116 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { JobTimeline } from "@/components/workflow/JobTimeline";
+import { Package, CheckCircle, ShoppingCart, DollarSign, ClipboardList, ThumbsUp, BookOpen, AlertTriangle, ShieldCheck, Tag, TrendingUp } from "lucide-react";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
+import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { cn } from "@/lib/utils";
-import {
-  Package,
-  CheckCircle,
-  ShoppingCart,
-  DollarSign,
-  ClipboardList,
-  ThumbsUp,
-  BookOpen,
-  AlertTriangle,
-  ShieldCheck,
-  Tag,
-  Gavel,
-  TrendingUp,
-  Clock,
-} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { JobTimeline } from "@/components/workflow/JobTimeline";
 
-interface StatCard {
-  label: string;
-  value: string;
-  color: string;
-  bgColor: string;
-  icon: React.ElementType;
-}
-
-interface ActivityItem {
-  id: string;
-  message: string;
-  timestamp: string;
-  icon: React.ElementType;
-  iconColor: string;
-}
-
-interface QuickAction {
-  label: string;
-  href: string;
-  color: string;
-  hoverColor: string;
-  icon: React.ElementType;
-}
-
-const stats: StatCard[] = [
-  {
-    label: "Estimated Items",
-    value: "52",
-    color: "text-sapphire",
-    bgColor: "bg-sapphire/10",
-    icon: Package,
-  },
-  {
-    label: "Items Approved",
-    value: "38",
-    color: "text-emerald",
-    bgColor: "bg-emerald/10",
-    icon: CheckCircle,
-  },
-  {
-    label: "Active Listings",
-    value: "24",
-    color: "text-amethyst",
-    bgColor: "bg-amethyst/10",
-    icon: ShoppingCart,
-  },
-  {
-    label: "Total Earned",
-    value: "$12,450",
-    color: "text-gold-tone",
-    bgColor: "bg-gold-tone/10",
-    icon: DollarSign,
-  },
+const stats = [
+  { label: "Estimated Items", value: "52",    color: "sapphire" as const, icon: Package },
+  { label: "Items Approved",  value: "38",    color: "emerald"  as const, icon: CheckCircle },
+  { label: "Active Listings", value: "29",    color: "amethyst" as const, icon: Tag },
+  { label: "Total Earned",    value: "$4,820",color: "gold"     as const, icon: DollarSign },
 ];
 
-const recentActivity: ActivityItem[] = [
-  {
-    id: "act-1",
-    message: "Georgian Silver Tea Set authenticated by Worthington & Associates",
-    timestamp: "2 hours ago",
-    icon: ShieldCheck,
-    iconColor: "text-gold-tone",
-  },
-  {
-    id: "act-2",
-    message: "New offer received on Eames Lounge Chair — $2,800",
-    timestamp: "5 hours ago",
-    icon: Tag,
-    iconColor: "text-sapphire",
-  },
-  {
-    id: "act-3",
-    message: "Tiffany Table Lamp listed on three marketplace channels",
-    timestamp: "1 day ago",
-    icon: Gavel,
-    iconColor: "text-amethyst",
-  },
-  {
-    id: "act-4",
-    message: "Appraisal complete for Herend Porcelain Collection — estimated $4,200",
-    timestamp: "2 days ago",
-    icon: TrendingUp,
-    iconColor: "text-emerald",
-  },
-  {
-    id: "act-5",
-    message: "Authority documents received and verified for the Mitchell Estate",
-    timestamp: "3 days ago",
-    icon: Clock,
-    iconColor: "text-pewter",
-  },
+const activity = [
+  { id: "1", msg: "12 items approved and published to storefront",    time: "2 hrs ago", icon: CheckCircle, color: "text-emerald-j" },
+  { id: "2", msg: "Victorian writing desk sold — $480 net",           time: "5 hrs ago", icon: DollarSign,  color: "text-gold-j" },
+  { id: "3", msg: "Authentication complete on Tiffany lamp",          time: "1 day ago", icon: ShieldCheck, color: "text-amethyst" },
+  { id: "4", msg: "Offer received on mid-century sofa — review now",  time: "1 day ago", icon: Tag,         color: "text-sapphire" },
+  { id: "5", msg: "3 items flagged for QA review",                    time: "2 days ago",icon: AlertTriangle,color: "text-ruby" },
 ];
 
-const quickActions: QuickAction[] = [
-  {
-    label: "Review Inventory",
-    href: "/portal/jobs/job-001/inventory",
-    color: "bg-sapphire",
-    hoverColor: "hover:bg-sapphire-light",
-    icon: ClipboardList,
-  },
-  {
-    label: "Approve Job",
-    href: "/portal/jobs/job-001/approve",
-    color: "bg-emerald",
-    hoverColor: "hover:bg-emerald-light",
-    icon: ThumbsUp,
-  },
-  {
-    label: "View Ledger",
-    href: "/portal/jobs/job-001/ledger",
-    color: "bg-gold-tone",
-    hoverColor: "hover:bg-gold-tone-light",
-    icon: BookOpen,
-  },
-  {
-    label: "Raise Issue",
-    href: "/portal/jobs/job-001",
-    color: "bg-ruby",
-    hoverColor: "hover:bg-ruby-light",
-    icon: AlertTriangle,
-  },
+const quickActions = [
+  { label: "Review Inventory",  href: "/portal/jobs/demo/inventory", icon: Package,     color: "bg-sapphire-muted text-sapphire" },
+  { label: "Approve Listings",  href: "/portal/jobs/demo/approve",   icon: ThumbsUp,    color: "bg-emerald-j-muted text-emerald-j" },
+  { label: "View Ledger",       href: "/portal/jobs/demo/ledger",    icon: BookOpen,    color: "bg-gold-j-muted text-gold-j" },
+  { label: "Raise an Issue",    href: "/portal/jobs/demo/disputes",  icon: AlertTriangle,color: "bg-ruby-muted text-ruby" },
 ];
 
-export default function PortalDashboard() {
-  const [currentJobStatus] = useState("review");
-
+export default function CustomerPortal() {
   return (
-    <div className="flex min-h-screen flex-col bg-ivory">
-      <Navbar userName="Margaret Mitchell" role="customer" />
+    <AppShell role="customer" userName="Sarah Johnson" orgName="Johnson Estate">
+      <PageHeader
+        title="Your Estate Portal"
+        subtitle="Track progress, review inventory, and monitor your earnings."
+        badge={<StatusBadge status="active_selling" type="job" />}
+        actions={
+          <Link href="/book">
+            <Button variant="gold" size="sm">Book Another Scan</Button>
+          </Link>
+        }
+      />
 
-      <div className="flex flex-1">
-        <Sidebar role="customer" />
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map(s => (
+          <StatCard key={s.label} label={s.label} value={s.value} color={s.color} icon={s.icon} />
+        ))}
+      </div>
 
-        <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-6 py-8">
-            {/* Page Title */}
-            <h1 className="text-3xl font-semibold text-charcoal font-[family-name:var(--font-display)]">
-              Your Estate Dashboard
-            </h1>
-            <p className="mt-2 text-sm text-pewter">
-              Mitchell Estate — 742 Evergreen Terrace, Pasadena, CA
-            </p>
+      {/* Job timeline */}
+      <Card className="mb-8">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Job Progress</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <JobTimeline currentStatus="active_selling" />
+        </CardContent>
+      </Card>
 
-            {/* Job Status Timeline */}
-            <div className="mt-8 rounded-xl border border-platinum/50 bg-white p-6 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-medium text-charcoal font-[family-name:var(--font-display)]">
-                  Job Progress
-                </h2>
-                <StatusBadge status={currentJobStatus} type="job" />
-              </div>
-              <JobTimeline currentStatus={currentJobStatus} />
-            </div>
-
-            {/* Key Stats Row */}
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map((stat) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl border border-platinum/50 bg-white p-5 shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "flex h-10 w-10 items-center justify-center rounded-lg",
-                          stat.bgColor
-                        )}
-                      >
-                        <Icon className={cn("h-5 w-5", stat.color)} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wider text-pewter">
-                          {stat.label}
-                        </p>
-                        <p
-                          className={cn(
-                            "text-2xl font-semibold tabular-nums font-[family-name:var(--font-display)]",
-                            stat.color
-                          )}
-                        >
-                          {stat.value}
-                        </p>
-                      </div>
-                    </div>
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Quick actions */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-2">
+            {quickActions.map(a => {
+              const Icon = a.icon;
+              return (
+                <Link
+                  key={a.label}
+                  href={a.href}
+                  className="flex flex-col items-center gap-2 rounded-xl p-4 border border-border hover:border-sapphire/30 hover:shadow-sm transition-all text-center"
+                >
+                  <div className={`rounded-lg p-2.5 ${a.color}`}>
+                    <Icon className="h-4 w-4" />
                   </div>
+                  <span className="text-xs font-medium text-foreground leading-tight">{a.label}</span>
+                </Link>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Recent activity */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {activity.map(a => {
+                const Icon = a.icon;
+                return (
+                  <li key={a.id} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+                    <div className="rounded-full bg-muted p-1.5 mt-0.5 shrink-0">
+                      <Icon className={`h-3.5 w-3.5 ${a.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground leading-snug">{a.msg}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                    </div>
+                  </li>
                 );
               })}
-            </div>
-
-            {/* Recent Activity Feed */}
-            <div className="mt-8 rounded-xl border border-platinum/50 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-lg font-medium text-charcoal font-[family-name:var(--font-display)]">
-                Recent Activity
-              </h2>
-              <ul className="divide-y divide-platinum/30">
-                {recentActivity.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <li key={item.id} className="flex items-start gap-3 py-3">
-                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ivory">
-                        <Icon className={cn("h-4 w-4", item.iconColor)} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-charcoal">{item.message}</p>
-                        <p className="mt-0.5 text-xs text-pewter">
-                          {item.timestamp}
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="mt-8">
-              <h2 className="mb-4 text-lg font-medium text-charcoal font-[family-name:var(--font-display)]">
-                Quick Actions
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {quickActions.map((action) => {
-                  const Icon = action.icon;
-                  return (
-                    <Link
-                      key={action.label}
-                      href={action.href}
-                      className={cn(
-                        "flex flex-col items-center justify-center gap-3 rounded-xl px-4 py-6 text-white shadow-sm transition-all",
-                        action.color,
-                        action.hoverColor,
-                        "hover:shadow-md"
-                      )}
-                    >
-                      <Icon className="h-7 w-7" />
-                      <span className="text-sm font-semibold">
-                        {action.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </main>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </AppShell>
   );
 }

@@ -1,3 +1,4 @@
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -10,7 +11,6 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 
 interface PartnerData {
   title: string;
@@ -248,10 +248,8 @@ export default async function PartnerTypePage({ params }: PartnerTypePageProps) 
   const Icon = data.icon;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-
-      {/* Hero */}
+    <AppShell role="partner" userName="Partner" orgName="Partner Portal">
+{/* Hero */}
       <section className="bg-gradient-to-b from-ivory to-cream py-20 md:py-28">
         <div className="container max-w-screen-xl mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -371,6 +369,6 @@ export default async function PartnerTypePage({ params }: PartnerTypePageProps) 
           </div>
         </div>
       </section>
-    </div>
+    </AppShell>
   );
 }

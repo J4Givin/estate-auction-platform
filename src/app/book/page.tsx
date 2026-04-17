@@ -1,4 +1,5 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -13,7 +14,6 @@ import {
   Loader2,
   DollarSign,
 } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 import { cn } from "@/lib/utils";
 
 const TOTAL_STEPS = 4;
@@ -116,10 +116,8 @@ export default function BookPage() {
   const stepLabels = ["Contact", "Property", "Goals", "Confirm"];
 
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar />
-
-      <main className="flex-1 py-10 md:py-16">
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+<main className="flex-1 py-10 md:py-16">
         <div className="container max-w-screen-sm mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-8">
@@ -535,6 +533,6 @@ export default function BookPage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

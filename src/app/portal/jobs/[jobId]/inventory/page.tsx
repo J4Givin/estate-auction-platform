@@ -1,9 +1,8 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useMemo } from "react";
 import { useParams } from "next/navigation";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { DispositionPicker } from "@/components/catalog/DispositionPicker";
 import { CoverageScore } from "@/components/catalog/CoverageScore";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -134,13 +133,9 @@ export default function InventoryReview() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-ivory">
-      <Navbar userName="Margaret Mitchell" role="customer" />
-
-      <div className="flex flex-1">
-        <Sidebar role="customer" />
-
-        <main className="flex-1 overflow-y-auto pb-24">
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+<div className="flex flex-1">
+<main className="flex-1 overflow-y-auto pb-24">
           <div className="mx-auto max-w-6xl px-6 py-8">
             {/* Header Row */}
             <div className="flex items-start justify-between gap-6">
@@ -337,6 +332,6 @@ export default function InventoryReview() {
           )}
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

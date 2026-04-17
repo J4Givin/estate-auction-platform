@@ -1,257 +1,139 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { LotStatusBadge } from "@/components/auction/LotStatusBadge";
-import { formatCents } from "@/lib/utils";
-import { Building2, Package, CheckCircle2, XCircle } from "lucide-react";
-import type { Org, Lot } from "@/types";
+import Link from "next/link";
+import { Users, Scale, BarChart3, Radio, ShieldCheck, Package, DollarSign, AlertTriangle, CheckCircle, TrendingUp } from "lucide-react";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-export default function AdminPage() {
-  const [orgs, setOrgs] = useState<Org[]>([]);
-  const [lots, setLots] = useState<Lot[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"orgs" | "lots">("orgs");
+const stats = [
+  { label: "Active Jobs",      value: "12",    color: "sapphire" as const, icon: Package },
+  { label: "Open Disputes",    value: "3",     color: "ruby"     as const, icon: Scale },
+  { label: "Gross This Month", value: "$68.4k",color: "emerald"  as const, icon: DollarSign },
+  { label: "Sell-Through",     value: "84%",   color: "gold"     as const, icon: TrendingUp },
+];
 
-  const userId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+const adminLinks = [
+  { href: "/admin/users",     label: "User Management",  icon: Users,      desc: "RBAC roles and permissions",           color: "sapphire" },
+  { href: "/admin/policies",  label: "Policies",         icon: ShieldCheck,desc: "Prohibited items, floors, disclosures", color: "amethyst" },
+  { href: "/admin/channels",  label: "Channels",         icon: Radio,      desc: "Marketplace credentials & health",      color: "emerald" },
+  { href: "/admin/disputes",  label: "Disputes",         icon: Scale,      desc: "All open disputes & legal holds",       color: "ruby" },
+  { href: "/admin/analytics", label: "Analytics",        icon: BarChart3,  desc: "Sell-through, labor, channel perf",     color: "gold" },
+  { href: "/admin/audit",     label: "Audit Log",        icon: CheckCircle,desc: "Immutable action history",              color: "platinum" },
+];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!userId) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const [orgsRes, lotsRes] = await Promise.all([
-          fetch("/api/orgs", { headers: { "x-user-id": userId } }),
-          fetch("/api/lots", { headers: { "x-user-id": userId } }),
-        ]);
-        if (orgsRes.ok) {
-          const json = await orgsRes.json();
-          setOrgs(json.data || []);
-        }
-        if (lotsRes.ok) {
-          const json = await lotsRes.json();
-          setLots(json.data || []);
-        }
-      } catch (err) {
-        console.error("Failed to fetch admin data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [userId]);
+const colorMap: Record<string, { bg: string; icon: string; border: string }> = {
+  sapphire: { bg: "bg-sapphire-muted",  icon: "text-sapphire",  border: "border-sapphire/20" },
+  amethyst: { bg: "bg-amethyst-muted",  icon: "text-amethyst",  border: "border-amethyst/20" },
+  emerald:  { bg: "bg-emerald-j-muted", icon: "text-emerald-j", border: "border-emerald-j/20" },
+  ruby:     { bg: "bg-ruby-muted",      icon: "text-ruby",      border: "border-ruby/20" },
+  gold:     { bg: "bg-gold-j-muted",    icon: "text-gold-j",    border: "border-gold-j/20" },
+  platinum: { bg: "bg-platinum/20",     icon: "text-pewter",    border: "border-border" },
+};
 
+const recentAlerts = [
+  { msg: "Dispute opened — Rivera Estate ownership claim",     type: "ruby",   time: "1h ago" },
+  { msg: "Channel error: eBay rate limit reached",             type: "ruby",   time: "3h ago" },
+  { msg: "2 items prohibited — ivory figurines flagged",       type: "gold",   time: "5h ago" },
+  { msg: "Ledger adjustment requires dual approval",           type: "gold",   time: "6h ago" },
+];
+
+export default function AdminDashboard() {
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-6 md:p-8 space-y-8">
-          <h1
-            className="text-2xl md:text-3xl text-onyx"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-          >
-            Admin Panel
-          </h1>
+    <AppShell role="admin" userName="Admin" orgName="Estate Liquidity">
+      <PageHeader
+        title="Administration"
+        subtitle="System overview, disputes, user management, and platform health."
+      />
 
-          {/* Stat cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
-            <div
-              className="bg-white rounded-xl p-5 border border-border/60 border-l-[3px] border-l-sapphire"
-              style={{ boxShadow: "0 1px 3px rgba(15,14,13,0.06)" }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-pewter">
-                  Organizations
-                </span>
-                <div className="w-9 h-9 rounded-lg bg-sapphire-muted flex items-center justify-center">
-                  <Building2 className="h-4 w-4 text-sapphire" />
-                </div>
-              </div>
-              <div
-                className="text-3xl font-semibold text-onyx"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {orgs.length}
-              </div>
-            </div>
-            <div
-              className="bg-white rounded-xl p-5 border border-border/60 border-l-[3px] border-l-amethyst"
-              style={{ boxShadow: "0 1px 3px rgba(15,14,13,0.06)" }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-pewter">
-                  All Lots
-                </span>
-                <div className="w-9 h-9 rounded-lg bg-amethyst-muted flex items-center justify-center">
-                  <Package className="h-4 w-4 text-amethyst" />
-                </div>
-              </div>
-              <div
-                className="text-3xl font-semibold text-onyx"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {lots.length}
-              </div>
-            </div>
-          </div>
-
-          {loading ? (
-            <p className="text-pewter">Loading...</p>
-          ) : (
-            <>
-              {/* Tab Selector */}
-              <div className="flex gap-1 bg-white rounded-lg border border-border/60 p-1 w-fit">
-                <button
-                  onClick={() => setActiveTab("orgs")}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === "orgs"
-                      ? "bg-sapphire text-white"
-                      : "text-pewter hover:text-charcoal"
-                  }`}
-                >
-                  Organizations ({orgs.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab("lots")}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === "lots"
-                      ? "bg-sapphire text-white"
-                      : "text-pewter hover:text-charcoal"
-                  }`}
-                >
-                  All Lots ({lots.length})
-                </button>
-              </div>
-
-              {/* Orgs Tab */}
-              {activeTab === "orgs" && (
-                <div className="space-y-4">
-                  {orgs.length > 0 ? (
-                    orgs.map((org) => (
-                      <div
-                        key={org.id}
-                        className="bg-white rounded-xl border border-border/60 p-5"
-                        style={{
-                          boxShadow: "0 1px 3px rgba(15,14,13,0.06)",
-                        }}
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <h3
-                            className="text-base text-onyx"
-                            style={{
-                              fontFamily: "var(--font-display)",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {org.name}
-                          </h3>
-                          {org.stripe_account_id ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-muted text-emerald">
-                              <CheckCircle2 className="h-3 w-3" />
-                              Stripe Connected
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-ivory text-pewter">
-                              <XCircle className="h-3 w-3" />
-                              No Stripe
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-sm text-pewter space-y-1">
-                          <p>
-                            ID:{" "}
-                            <span className="font-mono text-xs">{org.id}</span>
-                          </p>
-                          <p>
-                            Created:{" "}
-                            {new Date(org.created_at).toLocaleDateString()}
-                          </p>
-                          {org.stripe_account_id && (
-                            <p>
-                              Stripe:{" "}
-                              <span className="font-mono text-xs">
-                                {org.stripe_account_id}
-                              </span>
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="bg-white rounded-xl border border-border/60 p-8 text-center text-pewter">
-                      No organizations found.
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Lots Tab */}
-              {activeTab === "lots" && (
-                <div>
-                  {lots.length > 0 ? (
-                    <div className="bg-white rounded-xl border border-border/60 overflow-hidden">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="bg-ivory">
-                            <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">
-                              Title
-                            </th>
-                            <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">
-                              Status
-                            </th>
-                            <th className="text-right p-3 font-medium text-pewter text-xs uppercase tracking-wide">
-                              Start Price
-                            </th>
-                            <th className="text-right p-3 font-medium text-pewter text-xs uppercase tracking-wide">
-                              Bids
-                            </th>
-                            <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">
-                              Created
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/60">
-                          {lots.map((lot) => (
-                            <tr
-                              key={lot.id}
-                              className="hover:bg-ivory/50 transition-colors"
-                            >
-                              <td className="p-3 font-medium text-charcoal">
-                                {lot.title}
-                              </td>
-                              <td className="p-3">
-                                <LotStatusBadge status={lot.status} />
-                              </td>
-                              <td className="p-3 text-right text-charcoal">
-                                {formatCents(lot.start_price_cents)}
-                              </td>
-                              <td className="p-3 text-right text-charcoal">
-                                {lot.last_bid_seq}
-                              </td>
-                              <td className="p-3 text-pewter">
-                                {new Date(lot.created_at).toLocaleDateString()}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="bg-white rounded-xl border border-border/60 p-8 text-center text-pewter">
-                      No lots found.
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-        </main>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map(s => <StatCard key={s.label} {...s} />)}
       </div>
-    </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+
+        {/* Admin modules */}
+        <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
+          {adminLinks.map(link => {
+            const Icon = link.icon;
+            const c = colorMap[link.color];
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`group rounded-xl bg-white border ${c.border} p-5 hover:shadow-md transition-all`}
+              >
+                <div className={`inline-flex rounded-lg p-2.5 mb-3 ${c.bg}`}>
+                  <Icon className={`h-5 w-5 ${c.icon}`} />
+                </div>
+                <h3 className="font-semibold text-sm text-foreground mb-1">{link.label}</h3>
+                <p className="text-xs text-muted-foreground">{link.desc}</p>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Alerts */}
+        <div className="space-y-4">
+          <Card className="border-ruby/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-ruby" />
+                System Alerts
+                <Badge variant="ruby" className="ml-1">4</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {recentAlerts.map((a, i) => (
+                  <li key={i} className="flex gap-3 py-2 border-b border-border last:border-0">
+                    <div className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${a.type === "ruby" ? "bg-ruby" : "bg-gold-j"}`} />
+                    <div>
+                      <p className="text-sm text-foreground leading-snug">{a.msg}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3">
+                <Link href="/admin/disputes">
+                  <Button variant="outline" size="sm" className="w-full">View All</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Radio className="h-4 w-4 text-emerald-j" /> Channel Health
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {[
+                { name: "Storefront",         ok: true },
+                { name: "eBay",               ok: false },
+                { name: "Facebook Marketplace",ok: true },
+                { name: "Etsy",               ok: true },
+                { name: "OfferUp",            ok: true },
+              ].map(ch => (
+                <div key={ch.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <span className="text-sm text-foreground">{ch.name}</span>
+                  <Badge variant={ch.ok ? "emerald" : "ruby"}>{ch.ok ? "Healthy" : "Error"}</Badge>
+                </div>
+              ))}
+              <div className="mt-3">
+                <Link href="/admin/channels">
+                  <Button variant="outline" size="sm" className="w-full">Manage Channels</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+      </div>
+    </AppShell>
   );
 }

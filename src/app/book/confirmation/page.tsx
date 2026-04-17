@@ -1,15 +1,13 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import Link from "next/link";
 import { CheckCircle2, Calendar, RefreshCw, ArrowRight } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 
 export default function BookingConfirmationPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar />
-
-      <main className="flex-1 flex items-center justify-center py-16 px-4">
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+<main className="flex-1 flex items-center justify-center py-16 px-4">
         <div
           className="w-full max-w-lg bg-white rounded-xl p-8 md:p-10 text-center"
           style={{
@@ -102,6 +100,6 @@ export default function BookingConfirmationPage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

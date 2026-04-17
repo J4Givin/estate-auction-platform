@@ -1,8 +1,7 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useCallback } from "react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { DocumentUpload } from "@/components/workflow/DocumentUpload";
 import type { Document } from "@/components/workflow/DocumentUpload";
 import { cn } from "@/lib/utils";
@@ -117,13 +116,9 @@ export default function DocumentsPage() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-ivory">
-      <Navbar userName="Margaret Mitchell" role="customer" />
-
-      <div className="flex flex-1">
-        <Sidebar role="customer" />
-
-        <main className="flex-1 overflow-y-auto">
+    <AppShell role="customer" userName="Client" orgName="My Portal">
+<div className="flex flex-1">
+<main className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-4xl px-6 py-8">
             {/* Page Header */}
             <h1 className="text-3xl font-semibold text-charcoal font-[family-name:var(--font-display)]">
@@ -226,6 +221,6 @@ export default function DocumentsPage() {
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Play, Square, SkipForward } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -89,9 +89,8 @@ export default function ShowLivePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 p-6 max-w-screen-xl mx-auto w-full">
+    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+<main className="flex-1 p-6 max-w-screen-xl mx-auto w-full">
         <div className="flex items-center gap-3 mb-6">
           <Link href={`/shows/${showId}`}>
             <Button variant="ghost" size="icon">
@@ -223,6 +222,6 @@ export default function ShowLivePage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

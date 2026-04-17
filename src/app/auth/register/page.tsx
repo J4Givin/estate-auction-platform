@@ -1,182 +1,66 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ShieldCheck, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          displayName: displayName || undefined,
-        }),
-      });
-
-      const json = await res.json();
-
-      if (res.ok) {
-        router.push("/auth/login?registered=true");
-      } else {
-        setError(json.message || "Registration failed");
-      }
-    } catch {
-      setError("Network error — please try again");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div
-      className="flex min-h-screen items-center justify-center p-4"
-      style={{ backgroundColor: "#F5F2EC" }}
-    >
-      <div className="w-full max-w-md">
-        <div
-          className="bg-white rounded-xl p-8 md:p-10"
-          style={{
-            boxShadow:
-              "0 4px 24px rgba(15,14,13,0.08), 0 1px 4px rgba(15,14,13,0.04)",
-            borderRadius: "12px",
-          }}
-        >
-          {/* Wordmark */}
-          <div className="text-center mb-8">
-            <Link href="/">
-              <span
-                className="text-2xl text-sapphire"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
-              >
-                Estate Liquidity
-              </span>
-            </Link>
-            <p className="text-pewter text-sm mt-2">
-              Create your account
-            </p>
-          </div>
+    <div className="min-h-screen bg-sapphire flex items-center justify-center px-4">
+      <div className="pointer-events-none fixed inset-0 opacity-[0.04]"
+        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="rounded-lg bg-ruby-muted p-3 text-sm text-ruby border border-ruby/20">
-                {error}
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center gap-2.5">
+            <ShieldCheck className="h-7 w-7 text-gold-j-mid" />
+            <span className="text-2xl font-medium text-white" style={{ fontFamily: "var(--font-display)" }}>
+              Estate Liquidity
+            </span>
+          </Link>
+          <p className="mt-2 text-sm text-white/60">Create your account</p>
+        </div>
+
+        <Card className="shadow-xl border-white/10">
+          <CardContent className="pt-6 pb-6">
+            <form className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>First Name</Label>
+                  <Input placeholder="Jane" autoComplete="given-name" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Last Name</Label>
+                  <Input placeholder="Smith" autoComplete="family-name" />
+                </div>
               </div>
-            )}
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="displayName"
-                className="block text-sm font-medium text-charcoal"
-              >
-                Full Name
-              </label>
-              <input
-                id="displayName"
-                placeholder="Jane Smith"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-charcoal placeholder:text-silver text-sm focus:outline-none focus:ring-2 focus:ring-sapphire/30 focus:border-sapphire transition-colors"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-charcoal"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-charcoal placeholder:text-silver text-sm focus:outline-none focus:ring-2 focus:ring-sapphire/30 focus:border-sapphire transition-colors"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-charcoal"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Min 8 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-white text-charcoal placeholder:text-silver text-sm focus:outline-none focus:ring-2 focus:ring-sapphire/30 focus:border-sapphire transition-colors pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-pewter transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
+              <div className="space-y-1.5">
+                <Label>Email</Label>
+                <Input type="email" placeholder="you@example.com" />
               </div>
-              <p className="text-xs text-silver mt-1">
-                Must be at least 8 characters
+              <div className="space-y-1.5">
+                <Label>Password</Label>
+                <Input type="password" placeholder="At least 8 characters" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Referral Code <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                <Input placeholder="Partner code" />
+              </div>
+              <Button type="submit" variant="primary" size="default" className="w-full gap-2 mt-2">
+                Create Account <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </form>
+            <div className="mt-5 pt-4 border-t border-border text-center">
+              <p className="text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link href="/auth/login" className="font-medium text-sapphire hover:underline">Sign in</Link>
               </p>
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-sapphire text-white py-2.5 rounded-lg text-sm font-medium hover:bg-sapphire-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating account...
-                </>
-              ) : (
-                "Create Account"
-              )}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-pewter">
-              Already have an account?{" "}
-              <Link
-                href="/auth/login"
-                className="text-sapphire font-medium hover:text-sapphire-light transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

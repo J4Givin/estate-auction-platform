@@ -1,7 +1,7 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
 import { cn } from "@/lib/utils";
 import {
   Users,
@@ -65,9 +65,8 @@ const recentReferrals: RecentReferral[] = [
 
 export default function PartnerDashboard() {
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar userName="Robert Hargreaves" role="partner" />
-      <main className="flex-1 p-6 md:p-8 max-w-screen-xl mx-auto w-full space-y-8">
+    <AppShell role="partner" userName="Partner" orgName="Partner Portal">
+<main className="flex-1 p-6 md:p-8 max-w-screen-xl mx-auto w-full space-y-8">
         {/* Heading */}
         <div>
           <h1
@@ -219,6 +218,6 @@ export default function PartnerDashboard() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

@@ -1,10 +1,9 @@
 "use client";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PlusCircle, Radio, Package, Layers, Briefcase } from "lucide-react";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { LotCard } from "@/components/auction/LotCard";
 import type { Lot, Show } from "@/types";
 
@@ -88,11 +87,9 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-6 md:p-8 space-y-8">
+    <AppShell role="admin" userName="Catherine Reynolds" orgName="Administration">
+<div className="flex flex-1">
+<main className="flex-1 p-6 md:p-8 space-y-8">
           {/* Page Header */}
           <div className="flex items-center justify-between">
             <h1
@@ -227,6 +224,6 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
-    </div>
+    </AppShell>
   );
 }

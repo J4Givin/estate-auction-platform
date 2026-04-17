@@ -1,328 +1,152 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { cn } from "@/lib/utils";
-import {
-  ClipboardCheck,
-  Star,
-  Ban,
-  ArrowRight,
-  Clock,
-  ChevronRight,
-} from "lucide-react";
+import { ShieldCheck, Star, Ban, AlertTriangle, Clock, CheckCircle } from "lucide-react";
+import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
-/* ------------------------------------------------------------------ */
-/*  Mock data                                                          */
-/* ------------------------------------------------------------------ */
-
-interface QAItem {
-  id: string;
-  title: string;
-  category: string;
-  valueRange: string;
-  confidence: number;
-  assignedTo: string;
-  sla: string;
-  slaUrgent: boolean;
-}
-
-interface AuthQueueItem {
-  id: string;
-  title: string;
-  category: string;
-  requestedBy: string;
-  dateRequested: string;
-}
-
-const awaitingReview: QAItem[] = [
-  { id: "ITM-4201", title: "Chippendale Tall-Boy Chest c.1780", category: "Furniture", valueRange: "$4,500 - $7,200", confidence: 0.88, assignedTo: "Sarah M.", sla: "4h remaining", slaUrgent: false },
-  { id: "ITM-4195", title: "Tiffany & Co. Sterling Tea Set (6 pc)", category: "Silver", valueRange: "$3,200 - $5,100", confidence: 0.91, assignedTo: "James K.", sla: "2h remaining", slaUrgent: true },
-  { id: "ITM-4188", title: "Persian Tabriz Silk Rug 9x12", category: "Rugs & Textiles", valueRange: "$8,000 - $14,500", confidence: 0.72, assignedTo: "Sarah M.", sla: "6h remaining", slaUrgent: false },
-  { id: "ITM-4182", title: "Patek Philippe Calatrava Ref.5196", category: "Watches & Jewelry", valueRange: "$18,000 - $28,000", confidence: 0.65, assignedTo: "Unassigned", sla: "1h remaining", slaUrgent: true },
-  { id: "ITM-4177", title: "Winslow Homer Watercolor (attrib.)", category: "Fine Art", valueRange: "$12,000 - $22,000", confidence: 0.58, assignedTo: "James K.", sla: "8h remaining", slaUrgent: false },
-  { id: "ITM-4170", title: "George III Mahogany Breakfront", category: "Furniture", valueRange: "$5,800 - $9,200", confidence: 0.82, assignedTo: "Laura P.", sla: "3h remaining", slaUrgent: true },
-  { id: "ITM-4165", title: "Meissen Porcelain Figurine Group", category: "Ceramics", valueRange: "$2,800 - $4,600", confidence: 0.79, assignedTo: "Laura P.", sla: "5h remaining", slaUrgent: false },
-  { id: "ITM-4160", title: "Cartier Art Deco Diamond Bracelet", category: "Watches & Jewelry", valueRange: "$15,000 - $24,000", confidence: 0.70, assignedTo: "Sarah M.", sla: "2h remaining", slaUrgent: true },
-  { id: "ITM-4155", title: "Steinway Model B Grand Piano 1928", category: "Musical Instruments", valueRange: "$22,000 - $38,000", confidence: 0.84, assignedTo: "James K.", sla: "7h remaining", slaUrgent: false },
-  { id: "ITM-4150", title: "Early American Sampler c.1810", category: "Folk Art", valueRange: "$1,800 - $3,200", confidence: 0.76, assignedTo: "Unassigned", sla: "4h remaining", slaUrgent: false },
-  { id: "ITM-4148", title: "Louis XVI Ormolu Mantel Clock", category: "Clocks", valueRange: "$3,500 - $5,800", confidence: 0.83, assignedTo: "Laura P.", sla: "6h remaining", slaUrgent: false },
-  { id: "ITM-4145", title: "Chinese Export Armorial Plate Set", category: "Ceramics", valueRange: "$4,200 - $7,000", confidence: 0.69, assignedTo: "Sarah M.", sla: "3h remaining", slaUrgent: true },
-  { id: "ITM-4140", title: "Stickley Morris Chair #332", category: "Furniture", valueRange: "$6,000 - $9,500", confidence: 0.87, assignedTo: "James K.", sla: "5h remaining", slaUrgent: false },
-  { id: "ITM-4135", title: "Lalique Crystal Bacchantes Vase", category: "Glass & Crystal", valueRange: "$2,200 - $3,800", confidence: 0.90, assignedTo: "Laura P.", sla: "8h remaining", slaUrgent: false },
-  { id: "ITM-4130", title: "Federal Period Girandole Mirror", category: "Mirrors", valueRange: "$3,000 - $5,200", confidence: 0.77, assignedTo: "Unassigned", sla: "4h remaining", slaUrgent: false },
-  { id: "ITM-4125", title: "Hermes Birkin 35 Gold Togo", category: "Fashion & Accessories", valueRange: "$9,000 - $14,000", confidence: 0.92, assignedTo: "Sarah M.", sla: "2h remaining", slaUrgent: true },
-  { id: "ITM-4120", title: "Japanese Meiji Bronze Incense Burner", category: "Asian Art", valueRange: "$1,500 - $2,800", confidence: 0.81, assignedTo: "James K.", sla: "6h remaining", slaUrgent: false },
-  { id: "ITM-4115", title: "Handel Reverse-Painted Table Lamp", category: "Lighting", valueRange: "$4,800 - $7,500", confidence: 0.74, assignedTo: "Laura P.", sla: "5h remaining", slaUrgent: false },
+const stats = [
+  { label: "Awaiting Review",  value: "18", color: "gold"     as const, icon: Clock },
+  { label: "Auth Queue",       value: "6",  color: "amethyst" as const, icon: ShieldCheck },
+  { label: "Approved Today",   value: "24", color: "emerald"  as const, icon: CheckCircle },
+  { label: "Prohibited Flags", value: "2",  color: "ruby"     as const, icon: Ban },
 ];
 
-const authQueue: AuthQueueItem[] = [
-  { id: "ITM-4182", title: "Patek Philippe Calatrava Ref.5196", category: "Watches & Jewelry", requestedBy: "Sarah M.", dateRequested: "2026-04-16" },
-  { id: "ITM-4177", title: "Winslow Homer Watercolor (attrib.)", category: "Fine Art", requestedBy: "James K.", dateRequested: "2026-04-15" },
-  { id: "ITM-4160", title: "Cartier Art Deco Diamond Bracelet", category: "Watches & Jewelry", requestedBy: "Sarah M.", dateRequested: "2026-04-16" },
-  { id: "ITM-4125", title: "Hermes Birkin 35 Gold Togo", category: "Fashion & Accessories", requestedBy: "Laura P.", dateRequested: "2026-04-15" },
-  { id: "ITM-4155", title: "Steinway Model B Grand Piano 1928", category: "Musical Instruments", requestedBy: "James K.", dateRequested: "2026-04-14" },
-  { id: "ITM-4145", title: "Chinese Export Armorial Plate Set", category: "Ceramics", requestedBy: "Sarah M.", dateRequested: "2026-04-16" },
-  { id: "ITM-4188", title: "Persian Tabriz Silk Rug 9x12", category: "Rugs & Textiles", requestedBy: "Laura P.", dateRequested: "2026-04-13" },
+const reviewQueue = [
+  { id: "ITEM001", title: "Tiffany Studios Bronze Lamp",     category: "Lighting",  confidence: 0.61, value: "$2,400", auth: "pending" },
+  { id: "ITEM002", title: "18k Gold Diamond Ring",           category: "Jewelry",   confidence: 0.55, value: "$3,800", auth: "in_progress" },
+  { id: "ITEM003", title: "Edwardian Mahogany Secretary",    category: "Furniture", confidence: 0.72, value: "$680",  auth: "not_required" },
+  { id: "ITEM004", title: "Signed Watercolor — Landscape",   category: "Art",       confidence: 0.48, value: "$1,100", auth: "pending" },
+  { id: "ITEM005", title: "Victorian Silver Tea Service",    category: "Silver",    confidence: 0.67, value: "$940",  auth: "pending" },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Stat Card                                                          */
-/* ------------------------------------------------------------------ */
+const authQueue = [
+  { id: "ITEM006", title: "Art Deco Diamond Brooch",   category: "Jewelry", stage: "Extra photos required", urgent: true },
+  { id: "ITEM007", title: "Signed Picasso Lithograph", category: "Art",     stage: "Provenance review",     urgent: true },
+  { id: "ITEM008", title: "Rolex Datejust Watch",      category: "Watches", stage: "Serial verification",   urgent: false },
+];
 
-function StatCard({
-  label,
-  value,
-  icon: Icon,
-  borderColor,
-  iconBg,
-  iconColor,
-}: {
-  label: string;
-  value: number;
-  icon: React.ElementType;
-  borderColor: string;
-  iconBg: string;
-  iconColor: string;
-}) {
+function ConfidenceBar({ value }: { value: number }) {
+  const pct = Math.round(value * 100);
+  const color = pct >= 75 ? "bg-emerald-j" : pct >= 65 ? "bg-gold-j-light" : "bg-ruby";
   return (
-    <div
-      className={cn(
-        "bg-white rounded-xl p-5 border border-border/60 border-l-[3px]",
-        borderColor
-      )}
-      style={{ boxShadow: "0 1px 3px rgba(15,14,13,0.06)" }}
-    >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-pewter">{label}</span>
-        <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center", iconBg)}>
-          <Icon className={cn("h-4 w-4", iconColor)} />
-        </div>
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <div
-        className="text-3xl font-semibold text-onyx"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        {value}
-      </div>
+      <span className={`text-xs font-medium tabular-nums ${pct >= 75 ? "text-emerald-j" : pct >= 65 ? "text-gold-j" : "text-ruby"}`}>
+        {pct}%
+      </span>
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
-
 export default function QADashboard() {
-  const [sortField] = useState<"value" | "sla">("value");
-
-  const sortedItems = [...awaitingReview].sort((a, b) => {
-    if (sortField === "value") {
-      const aVal = parseInt(a.valueRange.replace(/[^0-9]/g, ""));
-      const bVal = parseInt(b.valueRange.replace(/[^0-9]/g, ""));
-      return bVal - aVal;
-    }
-    return 0;
-  });
-
   return (
-    <div className="flex flex-col min-h-screen bg-ivory">
-      <Navbar userName="QA Reviewer" role="qa" />
-      <div className="flex flex-1">
-        <Sidebar role="qa" />
-        <main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
-          {/* Heading */}
-          <h1
-            className="text-2xl md:text-3xl text-onyx"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-          >
-            Quality Assurance
-          </h1>
+    <AppShell role="qa" userName="Maria Chen" orgName="QA & Appraisal">
+      <PageHeader
+        title="QA & Authentication"
+        subtitle="Review queue, authentication pipeline, and compliance flags."
+        actions={
+          <Link href="/qa/items/demo">
+            <Button variant="primary" size="sm" className="gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5" /> Start Review
+            </Button>
+          </Link>
+        }
+      />
 
-          {/* Stat cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard
-              label="Awaiting Review"
-              value={18}
-              icon={ClipboardCheck}
-              borderColor="border-l-gold-tone"
-              iconBg="bg-gold-tone-muted"
-              iconColor="text-gold-tone"
-            />
-            <StatCard
-              label="Authentication Queue"
-              value={7}
-              icon={Star}
-              borderColor="border-l-gold-tone"
-              iconBg="bg-gold-tone-muted"
-              iconColor="text-gold-tone"
-            />
-            <StatCard
-              label="Prohibited Flags"
-              value={3}
-              icon={Ban}
-              borderColor="border-l-ruby"
-              iconBg="bg-ruby-muted"
-              iconColor="text-ruby"
-            />
-          </div>
-
-          {/* Items Awaiting Review Table */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2
-                className="text-xl text-onyx"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-              >
-                Items Awaiting Review
-              </h2>
-              <span className="text-sm text-pewter">Sorted by value (high to low)</span>
-            </div>
-
-            <div className="bg-white rounded-xl border border-border/60 overflow-hidden" style={{ boxShadow: "0 1px 3px rgba(15,14,13,0.06)" }}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-ivory">
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Item</th>
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Category</th>
-                      <th className="text-right p-3 font-medium text-pewter text-xs uppercase tracking-wide">Value Range</th>
-                      <th className="text-center p-3 font-medium text-pewter text-xs uppercase tracking-wide">Confidence</th>
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Assigned To</th>
-                      <th className="text-right p-3 font-medium text-pewter text-xs uppercase tracking-wide">SLA</th>
-                      <th className="text-center p-3 font-medium text-pewter text-xs uppercase tracking-wide" />
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/60">
-                    {sortedItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-ivory/50 transition-colors">
-                        <td className="p-3">
-                          <div className="font-medium text-charcoal">{item.title}</div>
-                          <div className="text-xs text-pewter">{item.id}</div>
-                        </td>
-                        <td className="p-3 text-pewter">{item.category}</td>
-                        <td className="p-3 text-right tabular-nums font-medium text-charcoal">{item.valueRange}</td>
-                        <td className="p-3 text-center">
-                          <span
-                            className={cn(
-                              "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-                              item.confidence >= 0.85
-                                ? "bg-emerald/15 text-emerald"
-                                : item.confidence >= 0.7
-                                ? "bg-gold-tone/15 text-gold-tone"
-                                : "bg-ruby/15 text-ruby"
-                            )}
-                          >
-                            {Math.round(item.confidence * 100)}%
-                          </span>
-                        </td>
-                        <td className="p-3 text-pewter">
-                          {item.assignedTo === "Unassigned" ? (
-                            <span className="text-ruby italic">Unassigned</span>
-                          ) : (
-                            item.assignedTo
-                          )}
-                        </td>
-                        <td className="p-3 text-right">
-                          <span
-                            className={cn(
-                              "inline-flex items-center gap-1 text-xs font-medium",
-                              item.slaUrgent ? "text-ruby" : "text-pewter"
-                            )}
-                          >
-                            <Clock className="h-3 w-3" />
-                            {item.sla}
-                          </span>
-                        </td>
-                        <td className="p-3 text-center">
-                          <Link
-                            href={`/qa/items/${item.id}`}
-                            className="inline-flex items-center gap-1 text-sapphire text-xs font-medium hover:text-sapphire-light transition-colors"
-                          >
-                            Review
-                            <ChevronRight className="h-3 w-3" />
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-
-          {/* Authentication Queue */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2
-                className="text-xl text-onyx"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-              >
-                Authentication Queue
-              </h2>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-gold-tone">
-                <Star className="h-3.5 w-3.5" />
-                {authQueue.length} items pending authentication
-              </span>
-            </div>
-
-            <div
-              className="bg-white rounded-xl border border-border/60 border-l-[3px] border-l-gold-tone overflow-hidden"
-              style={{ boxShadow: "0 1px 3px rgba(15,14,13,0.06)" }}
-            >
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gold-tone-muted/50">
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Item</th>
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Category</th>
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Requested By</th>
-                      <th className="text-left p-3 font-medium text-pewter text-xs uppercase tracking-wide">Date</th>
-                      <th className="text-center p-3 font-medium text-pewter text-xs uppercase tracking-wide" />
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/60">
-                    {authQueue.map((item) => (
-                      <tr key={item.id} className="hover:bg-ivory/50 transition-colors">
-                        <td className="p-3">
-                          <div className="font-medium text-charcoal">{item.title}</div>
-                          <div className="text-xs text-pewter">{item.id}</div>
-                        </td>
-                        <td className="p-3 text-pewter">{item.category}</td>
-                        <td className="p-3 text-pewter">{item.requestedBy}</td>
-                        <td className="p-3 text-pewter">{item.dateRequested}</td>
-                        <td className="p-3 text-center">
-                          <Link
-                            href={`/qa/auth/${item.id}`}
-                            className="inline-flex items-center gap-1 text-gold-tone text-xs font-medium hover:text-gold-tone-light transition-colors"
-                          >
-                            Authenticate
-                            <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-
-          {/* Quick Links */}
-          <section>
-            <Link
-              href="/qa/prohibited"
-              className="inline-flex items-center gap-2 rounded-lg border border-ruby/30 bg-ruby-muted px-4 py-3 text-sm font-medium text-ruby hover:bg-ruby/15 transition-colors"
-            >
-              <Ban className="h-4 w-4" />
-              View Prohibited Items Queue (3 flagged)
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </section>
-        </main>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map(s => <StatCard key={s.label} {...s} />)}
       </div>
-    </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+
+        {/* Review Queue */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Clock className="h-4 w-4 text-gold-j" /> Review Queue
+              <Badge variant="gold" className="ml-1">18 items</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {reviewQueue.map(item => (
+                <div key={item.id} className="flex items-center gap-4 rounded-lg border border-border p-3 hover:bg-muted/30 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium text-sm text-foreground truncate">{item.title}</p>
+                      <StatusBadge status={item.auth} type="auth" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground">{item.category}</span>
+                      <span className="text-xs text-muted-foreground">·</span>
+                      <span className="text-xs font-semibold text-foreground tabular-nums">{item.value}</span>
+                    </div>
+                    <div className="mt-2 max-w-[180px]">
+                      <p className="text-[10px] text-muted-foreground mb-1">AI Confidence</p>
+                      <ConfidenceBar value={item.confidence} />
+                    </div>
+                  </div>
+                  <Link href={`/qa/items/${item.id}`}>
+                    <Button variant="outline" size="sm">Review</Button>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Auth Queue */}
+        <div className="space-y-4">
+          <Card className="border-amethyst/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Star className="h-4 w-4 text-gold-j" /> Authentication Queue
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {authQueue.map(item => (
+                  <div key={item.id} className={`rounded-lg p-3 border ${item.urgent ? "border-ruby/30 bg-ruby-muted" : "border-border bg-muted/20"}`}>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <p className="text-sm font-medium text-foreground leading-snug">{item.title}</p>
+                      {item.urgent && <Badge variant="ruby" className="text-[10px] shrink-0">Urgent</Badge>}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">{item.stage}</p>
+                    <Link href={`/qa/auth/${item.id}`}>
+                      <Button variant={item.urgent ? "destructive" : "outline"} size="sm" className="w-full text-xs">
+                        {item.urgent ? "Review Now" : "Continue"}
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-ruby/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Ban className="h-4 w-4 text-ruby" /> Prohibited Flags
+                <Badge variant="ruby" className="ml-1">2</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">Items flagged by the AI risk classifier require manual review before any action.</p>
+              <Link href="/qa/prohibited">
+                <Button variant="destructive" size="sm" className="w-full">Review Flags</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+
+      </div>
+    </AppShell>
   );
 }
