@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Estate Auctions - Live Commerce Platform",
-  description: "Professional estate auction live commerce platform with realtime bidding, appraisals, and secure payments.",
+  title: "Estate Liquidity — Authenticated Estate Inventory & Liquidation",
+  description: "AI-enabled estate inventory, authentication, appraisal, and multi-channel liquidation. Trusted by families and fiduciaries across Los Angeles.",
 };
 
 export default function RootLayout({
@@ -23,11 +12,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className="h-full antialiased">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className="min-h-full flex flex-col"
+        style={{
+          fontFamily: "var(--font-body)",
+          backgroundColor: "var(--color-background)",
+          color: "var(--color-foreground)",
+        }}
+      >
+        {children}
+      </body>
     </html>
   );
 }

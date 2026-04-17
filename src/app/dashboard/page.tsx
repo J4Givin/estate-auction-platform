@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PlusCircle, Radio, Package } from "lucide-react";
+import { PlusCircle, Radio, Package, Layers, Briefcase } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotCard } from "@/components/auction/LotCard";
 import type { Lot, Show } from "@/types";
 
@@ -16,7 +14,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   // In production, get from auth context
-  const userId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,73 +50,109 @@ export default function DashboardPage() {
 
   const activeLots = lots.filter((l) => l.status === "live_bidding");
   const recentLots = lots.slice(0, 6);
+  const activeShows = shows.filter((s) => s.status === "live");
+
+  const statCards = [
+    {
+      label: "Active Shows",
+      value: activeShows.length,
+      icon: Radio,
+      borderColor: "border-l-sapphire",
+      iconColor: "text-sapphire",
+      bgColor: "bg-sapphire-muted",
+    },
+    {
+      label: "Live Lots",
+      value: activeLots.length,
+      icon: Package,
+      borderColor: "border-l-emerald",
+      iconColor: "text-emerald",
+      bgColor: "bg-emerald-muted",
+    },
+    {
+      label: "Total Lots",
+      value: lots.length,
+      icon: Layers,
+      borderColor: "border-l-amethyst",
+      iconColor: "text-amethyst",
+      bgColor: "bg-amethyst-muted",
+    },
+    {
+      label: "Estate Jobs",
+      value: shows.length,
+      icon: Briefcase,
+      borderColor: "border-l-gold-tone",
+      iconColor: "text-gold-tone",
+      bgColor: "bg-gold-tone-muted",
+    },
+  ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-ivory">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 space-y-6">
+        <main className="flex-1 p-6 md:p-8 space-y-8">
+          {/* Page Header */}
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <h1
+              className="text-2xl md:text-3xl text-onyx"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
+            >
+              Dashboard
+            </h1>
             <div className="flex gap-2">
               <Link href="/lots/new">
-                <Button className="gap-2">
+                <button className="inline-flex items-center gap-2 bg-sapphire text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-sapphire-light transition-colors">
                   <PlusCircle className="h-4 w-4" />
                   New Lot
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Active Shows
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <Radio className="h-5 w-5 text-red-500" />
-                  <span className="text-2xl font-bold">
-                    {shows.filter((s) => s.status === "live").length}
-                  </span>
+          {/* Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {statCards.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={stat.label}
+                  className={`bg-white rounded-xl p-5 border border-border/60 border-l-[3px] ${stat.borderColor}`}
+                  style={{
+                    boxShadow: "0 1px 3px rgba(15,14,13,0.06)",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-pewter">
+                      {stat.label}
+                    </span>
+                    <div
+                      className={`w-9 h-9 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                    >
+                      <Icon className={`h-4.5 w-4.5 ${stat.iconColor}`} />
+                    </div>
+                  </div>
+                  <div
+                    className="text-3xl font-semibold text-onyx"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {stat.value}
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Live Lots
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <Package className="h-5 w-5 text-green-500" />
-                  <span className="text-2xl font-bold">{activeLots.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Total Lots
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <span className="text-2xl font-bold">{lots.length}</span>
-              </CardContent>
-            </Card>
+              );
+            })}
           </div>
 
           {/* Active lots */}
           {activeLots.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold mb-3">Live Now</h2>
+              <h2
+                className="text-xl text-onyx mb-4"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+              >
+                Live Now
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {activeLots.map((lot) => (
                   <LotCard key={lot.id} lot={lot} />
@@ -128,9 +163,14 @@ export default function DashboardPage() {
 
           {/* Recent lots */}
           <div>
-            <h2 className="text-lg font-semibold mb-3">Recent Lots</h2>
+            <h2
+              className="text-xl text-onyx mb-4"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+            >
+              Recent Lots
+            </h2>
             {loading ? (
-              <p className="text-muted-foreground">Loading...</p>
+              <p className="text-pewter">Loading...</p>
             ) : recentLots.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {recentLots.map((lot) => (
@@ -138,43 +178,51 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <Card>
-                <CardContent className="py-8 text-center text-muted-foreground">
-                  No lots yet. Create your first lot to get started.
-                </CardContent>
-              </Card>
+              <div className="bg-white rounded-xl border border-border/60 p-8 text-center text-pewter">
+                No lots yet. Create your first lot to get started.
+              </div>
             )}
           </div>
 
           {/* Shows */}
           <div>
-            <h2 className="text-lg font-semibold mb-3">Shows</h2>
+            <h2
+              className="text-xl text-onyx mb-4"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+            >
+              Shows
+            </h2>
             {shows.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {shows.map((show) => (
                   <Link key={show.id} href={`/shows/${show.id}`}>
-                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                      <CardHeader>
-                        <CardTitle className="text-base">{show.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                          {show.description || "No description"}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Status: {show.status}
-                        </p>
-                      </CardContent>
-                    </Card>
+                    <div className="bg-white rounded-xl border border-border/60 p-5 hover:shadow-md transition-shadow cursor-pointer">
+                      <h3
+                        className="text-base font-semibold text-onyx mb-1"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        {show.title}
+                      </h3>
+                      <p className="text-sm text-pewter mb-2">
+                        {show.description || "No description"}
+                      </p>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          show.status === "live"
+                            ? "bg-emerald-muted text-emerald"
+                            : "bg-sapphire-muted text-sapphire"
+                        }`}
+                      >
+                        {show.status}
+                      </span>
+                    </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <Card>
-                <CardContent className="py-8 text-center text-muted-foreground">
-                  No shows yet.
-                </CardContent>
-              </Card>
+              <div className="bg-white rounded-xl border border-border/60 p-8 text-center text-pewter">
+                No shows yet.
+              </div>
             )}
           </div>
         </main>
