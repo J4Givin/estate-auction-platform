@@ -222,40 +222,13 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* 2 lines space after marquee */}
-      <div className="h-16 md:h-20 lg:h-28 bg-white" />
-
-      {/* ── STATS ── */}
-      <Reveal>
-        <section className="border-t border-b border-[#E0E0E0]">
-          <div className="max-w-[1440px] mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E0E0E0]">
-              {[
-                { n: '$4.2M+', l: 'Client Proceeds' },
-                { n: '2,500+', l: 'Items Sold' },
-                { n: '98%',    l: 'Client Satisfaction' },
-                { n: '48 hrs', l: 'Avg. Time to Live' },
-              ].map(s => (
-                <div key={s.l} className="px-8 md:px-16 lg:px-20 py-16 flex flex-col gap-3">
-                  <span className="display-md text-[#826DEE]">{s.n}</span>
-                  <span className="label">{s.l}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      {/* Space beneath stats */}
-      <div className="h-20 md:h-28 lg:h-36 bg-white" />
-
       {/* ── FEATURED PRODUCTS — Gallery ── */}
       <section id="featured" className="pb-32 md:pb-48 lg:pb-64">
         <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
 
           {/* Section header */}
           <Reveal>
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-20 md:mb-32">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-28 md:mb-40">
               <div>
                 <span className="label block mb-5">Top Sellers / Highest Value</span>
                 <h2 className="display-lg text-[#0A0A0A]">Recent<br/>Highlights.</h2>
@@ -326,8 +299,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Spacer above HOW IT WORKS */}
+      <div className="h-20 md:h-28 lg:h-36 bg-white" />
+
       {/* ── HOW IT WORKS ── */}
-      <section id="process" className="py-28 md:py-44 lg:py-60 bg-[#F5F5F5]">
+      <section id="process" className="pt-28 md:pt-44 lg:pt-60 pb-28 md:pb-44 lg:pb-60 bg-[#F5F5F5]">
         <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 md:mb-32">
@@ -349,10 +325,12 @@ export default function LandingPage() {
               <Reveal key={step.n} delay={idx * 60}>
                 <div
                   className="group border-t border-[#E0E0E0] px-8 md:px-12 lg:px-16 py-16 md:py-20 flex flex-col gap-7 bg-[#F5F5F5] hover:bg-white transition-colors duration-200">
-                  <div className="flex items-start justify-between">
-                    <span className="label">{step.n}</span>
-                    <span className="w-3 h-3 mt-0.5" style={{ background: step.accent }} />
-                  </div>
+                  <span
+                    className="display-md leading-none"
+                    style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', color: step.accent }}
+                  >
+                    {step.n}
+                  </span>
                   <h3 className="display-md leading-tight" style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)' }}>{step.title}</h3>
                   <p className="body-light leading-relaxed">{step.body}</p>
                 </div>
@@ -361,6 +339,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Spacer below HOW IT WORKS */}
+      <div className="h-20 md:h-28 lg:h-36 bg-white" />
 
       {/* ── AUTHENTICATION — dark editorial ── */}
       <section className="bg-[#0A0A0A] py-28 md:py-44 lg:py-60">
@@ -398,8 +379,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Spacer above SERVICES */}
+      <div className="h-20 md:h-28 lg:h-36 bg-white" />
+
       {/* ── SERVICES ── */}
-      <section className="py-28 md:py-44 lg:py-60">
+      <section className="pt-28 md:pt-44 lg:pt-60 pb-0">
         <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 md:mb-32">
@@ -423,10 +407,12 @@ export default function LandingPage() {
               <Reveal key={svc.n} delay={(idx % 3) * 60}>
                 <div
                   className="border-t border-l border-[#E0E0E0] px-8 md:px-10 py-14 md:py-16 flex flex-col gap-5 hover:bg-[#F5F5F5] transition-colors h-full">
-                  <div className="flex items-center justify-between">
-                    <span className="label">{svc.n}</span>
-                    <span className="w-3 h-3" style={{ background: svc.color }} />
-                  </div>
+                  <span
+                    className="display-md leading-none"
+                    style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.2rem)', color: svc.color }}
+                  >
+                    {svc.n}
+                  </span>
                   <h3 className="display-md" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.2rem)' }}>{svc.title}</h3>
                   <p className="body-light leading-relaxed">{svc.body}</p>
                 </div>
@@ -435,6 +421,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Spacer below SERVICES */}
+      <div className="h-20 md:h-28 lg:h-36 bg-white" />
 
       {/* ── TRUST STRIP ── */}
       <Reveal>
