@@ -190,7 +190,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
 
       {/* ── Top Rail ── */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E0E0E0]">
-        <div className="h-14 px-6 md:px-10 flex items-center gap-6">
+        <div className="h-14 px-8 md:px-16 lg:px-20 flex items-center gap-6">
           {/* Role accent dot + brand */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-4">
             <span className="w-2 h-2 rounded-full" style={{ background: accent }} />
@@ -257,7 +257,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
 
       {/* ── Content ── */}
       <main className="flex-1 pt-14">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-12 md:py-16">
+        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20 py-16 md:py-20">
           {children}
         </div>
       </main>

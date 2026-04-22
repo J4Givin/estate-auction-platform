@@ -6,7 +6,7 @@ export default function PortalPage() {
   return (
     <AppShell role="customer" userName="Sarah Johnson" orgName="Johnson Estate">
       {/* Page header */}
-      <div className="border-b border-[#E0E0E0] pb-10 mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div className="border-b border-[#E0E0E0] pb-14 mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <span className="label block mb-3">Client Portal</span>
           <h1 className="display-lg" style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}>Johnson Estate.</h1>
