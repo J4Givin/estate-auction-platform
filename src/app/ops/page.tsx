@@ -1,144 +1,60 @@
 "use client";
 
 import Link from "next/link";
-import { ListChecks, MessageSquare, Globe, ShieldCheck, AlertTriangle, Clock, Package, TrendingUp, Truck } from "lucide-react";
-import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-
-const stats = [
-  { label: "Items in QA",       value: "14",  color: "gold"     as const, icon: ShieldCheck, subtitle: "3 SLA overdue" },
-  { label: "Pending Publish",   value: "27",  color: "sapphire" as const, icon: Globe },
-  { label: "Open Orders",       value: "8",   color: "emerald"  as const, icon: Truck },
-  { label: "Unread Messages",   value: "5",   color: "ruby"     as const, icon: MessageSquare, subtitle: "2 past SLA" },
-];
-
-const recentJobs = [
-  { id: "J001", client: "Johnson Estate",      status: "active_selling", items: 52, coverage: 94 },
-  { id: "J002", client: "Rivera Family Trust", status: "review",          items: 31, coverage: 87 },
-  { id: "J003", client: "Chen Probate",        status: "processing",      items: 18, coverage: 72 },
-  { id: "J004", client: "Martinez Downsizing", status: "scheduled",       items: 0,  coverage: 0 },
-];
-
-const slaAlerts = [
-  { item: "Tiffany Studios Lamp #SKU-3F2A",  age: "3h 12m", type: "QA Review",   color: "ruby" },
-  { item: "Message from buyer — eBay #1920", age: "2h 45m", type: "Message SLA",  color: "ruby" },
-  { item: "Offer review — Sapphire necklace",age: "1h 58m", type: "Offer Expiry", color: "gold" },
-];
+import { AppShell, PageHeader, SectionCard, StatCard } from '@/components/layout/AppShell'
 
 export default function OpsDashboard() {
   return (
     <AppShell role="ops" userName="Alex Rivera" orgName="Estate Liquidity Ops">
       <PageHeader
-        title="Operations Dashboard"
-        subtitle="Thursday, April 16 · Active queue, SLA status, and recent jobs."
+        title="Operations"
+        subtitle="Active queue, SLA status, and recent jobs."
         actions={
-          <Link href="/ops/queue">
-            <Button variant="primary" size="sm" className="gap-1.5">
-              <ListChecks className="h-3.5 w-3.5" /> Open Queue
-            </Button>
-          </Link>
+          <Link href="/ops/queue" className="btn btn-ink">Open Queue</Link>
         }
       />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(s => (
-          <StatCard key={s.label} {...s} />
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 mb-16 border-b border-[#E0E0E0]">
+        <StatCard title="Active Jobs" value="4" color="violet" />
+        <StatCard title="Pending QA" value="14" color="yellow" />
+        <StatCard title="Items Cataloged" value="186" color="pink" />
+        <StatCard title="Revenue MTD" value="$12.4k" delta="8% vs last month" deltaUp={true} color="vermillion" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* SLA Alerts */}
-        <Card className="border-ruby/20">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-ruby" />
-              SLA Alerts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {slaAlerts.map((a, i) => (
-              <div key={i} className={`flex items-start gap-3 py-3 border-b border-border last:border-0 ${a.color === "ruby" ? "" : ""}`}>
-                <div className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${a.color === "ruby" ? "bg-ruby" : "bg-gold-j"}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{a.item}</p>
-                  <div className="mt-1 flex items-center gap-2">
-                    <Badge variant={a.color === "ruby" ? "ruby" : "gold"} className="text-[10px]">{a.type}</Badge>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="h-3 w-3" />{a.age}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="mt-3">
-              <Link href="/ops/queue">
-                <Button variant="outline" size="sm" className="w-full">View Full Queue</Button>
-              </Link>
+      <SectionCard title="SLA Alerts" description="Items approaching or past service level targets.">
+        <div className="flex flex-col">
+          {[
+            { label: 'Tiffany Studios Lamp #SKU-3F2A — QA Review overdue', time: '3h 12m', color: '#F94500' },
+            { label: 'Message from buyer — eBay #1920 — past SLA', time: '2h 45m', color: '#F94500' },
+            { label: 'Offer review — Sapphire necklace — expiring soon', time: '1h 58m', color: '#FFDB15' },
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-4 border-b border-[#E0E0E0] py-4">
+              <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: item.color }} />
+              <span className="body-light flex-1">{item.label}</span>
+              <span className="label flex-shrink-0">{item.time}</span>
             </div>
-          </CardContent>
-        </Card>
+          ))}
+        </div>
+      </SectionCard>
 
-        {/* Recent Jobs */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Recent Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="scroll-x rounded-lg">
-              <table className="w-full text-sm min-w-[500px]">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="pb-2 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Client</th>
-                    <th className="pb-2 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
-                    <th className="pb-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Items</th>
-                    <th className="pb-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Coverage</th>
-                    <th className="pb-2" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentJobs.map(j => (
-                    <tr key={j.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <td className="py-3">
-                        <div>
-                          <p className="font-medium text-foreground">{j.client}</p>
-                          <p className="text-xs text-muted-foreground">{j.id}</p>
-                        </div>
-                      </td>
-                      <td className="py-3"><StatusBadge status={j.status} type="job" /></td>
-                      <td className="py-3 text-right tabular-nums text-muted-foreground">{j.items || "—"}</td>
-                      <td className="py-3 text-right">
-                        {j.coverage > 0 ? (
-                          <span className={`text-sm font-medium tabular-nums ${j.coverage >= 90 ? "text-emerald-j" : j.coverage >= 75 ? "text-gold-j" : "text-ruby"}`}>
-                            {j.coverage}%
-                          </span>
-                        ) : "—"}
-                      </td>
-                      <td className="py-3 text-right">
-                        <Link href={`/ops/jobs/${j.id}`}>
-                          <Button variant="ghost" size="icon-sm">
-                            <TrendingUp className="h-3.5 w-3.5" />
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <SectionCard title="Recent Jobs" description="Latest estate engagements.">
+        <div className="flex flex-col">
+          {[
+            { client: 'Johnson Estate', status: 'Active Selling', items: 52, color: '#826DEE' },
+            { client: 'Rivera Family Trust', status: 'In Review', items: 31, color: '#FFDB15' },
+            { client: 'Chen Probate', status: 'Processing', items: 18, color: '#FF99DC' },
+            { client: 'Martinez Downsizing', status: 'Scheduled', items: 0, color: '#6B6B6B' },
+          ].map((job, i) => (
+            <div key={i} className="flex items-center gap-4 border-b border-[#E0E0E0] py-4">
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: job.color }} />
+              <span className="body-light flex-1">{job.client}</span>
+              <span className="label">{job.status}</span>
+              <span className="label">{job.items || '—'} items</span>
             </div>
-            <div className="mt-4">
-              <Link href="/ops/jobs">
-                <Button variant="outline" size="sm">View All Jobs</Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-
-      </div>
+          ))}
+        </div>
+      </SectionCard>
     </AppShell>
-  );
+  )
 }

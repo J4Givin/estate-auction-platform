@@ -6,54 +6,59 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
-    "font-medium transition-all duration-150 select-none",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sapphire focus-visible:ring-offset-2",
+    "font-mono text-[11px] font-bold tracking-[0.14em] uppercase",
+    "min-h-[44px] transition-all duration-150 select-none",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#826DEE] focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-40",
-    "active:scale-[0.98]",
+    "active:scale-[0.97] rounded-none border-0",
   ].join(" "),
   {
     variants: {
       variant: {
-        // Solid sapphire — primary action
-        primary:
-          "bg-sapphire text-white shadow-sm hover:bg-sapphire-light rounded-lg text-sm",
-        // Solid gold — premium CTA
-        gold:
-          "bg-gold-j-light text-white shadow-sm hover:bg-gold-j rounded-lg text-sm",
-        // Solid amethyst — luxury / high-value
-        amethyst:
-          "bg-amethyst text-white shadow-sm hover:bg-amethyst-light rounded-lg text-sm",
-        // Solid emerald — success / verify
-        emerald:
-          "bg-emerald-j text-white shadow-sm hover:bg-emerald-j-light rounded-lg text-sm",
-        // Solid ruby — destructive
-        destructive:
-          "bg-ruby text-white shadow-sm hover:bg-ruby-light rounded-lg text-sm",
-        // Outlined sapphire
-        outline:
-          "border border-sapphire/30 bg-transparent text-sapphire hover:bg-sapphire-muted rounded-lg text-sm",
-        // Subtle ghost
-        ghost:
-          "bg-transparent text-pewter hover:bg-ivory hover:text-charcoal rounded-lg text-sm",
-        // Plain link
-        link: "text-sapphire underline-offset-4 hover:underline rounded-none text-sm p-0 h-auto",
-        // Default (maps to primary)
         default:
-          "bg-sapphire text-white shadow-sm hover:bg-sapphire-light rounded-lg text-sm",
+          "bg-[#0A0A0A] text-white hover:bg-[#2a2a2a]",
+        primary:
+          "bg-[#0A0A0A] text-white hover:bg-[#2a2a2a]",
         secondary:
-          "bg-sapphire-muted text-sapphire hover:bg-sapphire/20 rounded-lg text-sm",
+          "border-[1.5px] border-[#0A0A0A] bg-transparent text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white",
+        destructive:
+          "bg-[#F94500] text-white hover:bg-[#d93b00]",
+        ghost:
+          "bg-transparent text-[#0A0A0A] hover:bg-[#F5F5F5]",
+        link:
+          "text-[#826DEE] underline-offset-4 hover:underline p-0 h-auto min-h-0",
+        outline:
+          "border-[1.5px] border-[#0A0A0A] bg-transparent text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white",
+        violet:
+          "bg-[#826DEE] text-white hover:bg-[#6a59d4]",
+        yellow:
+          "bg-[#FFDB15] text-[#0A0A0A] hover:bg-[#e8c800]",
+        pink:
+          "bg-[#FF99DC] text-[#0A0A0A] hover:bg-[#e880c4]",
+        platinum:
+          "border-[1.5px] border-[#E0E0E0] text-[#6B6B6B] bg-transparent hover:bg-[#F5F5F5]",
+        ruby:
+          "bg-[#F94500] text-white hover:bg-[#d93b00]",
+        sapphire:
+          "bg-[#826DEE] text-white hover:bg-[#6a59d4]",
+        emerald:
+          "border-[1.5px] border-[#826DEE] text-[#826DEE] bg-transparent hover:bg-[#826DEE] hover:text-white",
+        gold:
+          "bg-[#FFDB15] text-[#0A0A0A] hover:bg-[#e8c800]",
+        amethyst:
+          "bg-[#826DEE] text-white hover:bg-[#6a59d4]",
       },
       size: {
-        sm:      "h-8 px-3 text-xs rounded-md",
-        default: "h-9 px-4",
-        lg:      "h-11 px-6 text-base",
-        xl:      "h-12 px-8 text-base",
-        icon:    "h-9 w-9 p-0",
-        "icon-sm": "h-7 w-7 p-0 rounded-md",
+        sm:        "h-8 px-3 text-[10px]",
+        default:   "h-10 px-5",
+        lg:        "h-12 px-7",
+        xl:        "h-14 px-9",
+        icon:      "h-10 w-10 p-0",
+        "icon-sm": "h-8 w-8 p-0",
       },
     },
     defaultVariants: {
-      variant: "primary",
+      variant: "default",
       size: "default",
     },
   }
