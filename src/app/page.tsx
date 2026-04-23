@@ -108,7 +108,7 @@ export default function LandingPage() {
 
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E0E0E0]">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 h-16 flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-[#6B6B6B]">Estate</span>
             <span className="w-px h-4 bg-[#E0E0E0]" />
@@ -139,7 +139,7 @@ export default function LandingPage() {
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-[#E0E0E0] px-8 py-10 flex flex-col gap-7">
+          <div className="md:hidden bg-white border-t border-[#E0E0E0] px-6 sm:px-10 py-10 flex flex-col gap-7">
             {[
               { label: 'Top Sellers', href: '#featured' },
               { label: 'How It Works', href: '#process' },
@@ -156,22 +156,33 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="pt-16 min-h-screen flex flex-col bg-white">
-        {/* Top meta row */}
-        <div className="max-w-[1440px] mx-auto w-full px-8 md:px-16 lg:px-24 pt-16 pb-10 flex items-center justify-between">
+      {/*
+        Nav is 64px fixed. We pad the section top by 64px so content
+        starts flush beneath the nav bar. Then a generous top padding
+        pushes the meta row + heading into comfortable view — no clipping.
+        The section grows to fill the viewport minus the nav height.
+        The marquee is placed OUTSIDE this section so it sits flush
+        immediately below it, with no gap.
+      */}
+      <section
+        className="flex flex-col bg-white"
+        style={{ paddingTop: '64px', minHeight: 'calc(100vh - 64px)' }}
+      >
+        {/* Top meta row — clear of nav */}
+        <div className="max-w-[1440px] mx-auto w-full px-6 sm:px-10 md:px-16 lg:px-24 pt-10 md:pt-14 lg:pt-16 pb-8 flex items-center justify-between">
           <span className="label text-[#6B6B6B]">Est. 2024 — Los Angeles, CA</span>
-          <span className="label text-[#6B6B6B]">Verified Appraisals</span>
+          <span className="label text-[#6B6B6B] hidden sm:block">Verified Appraisals</span>
         </div>
 
-        {/* Headline — reduced from display-xl to display-lg-hero */}
-        <div className="px-8 md:px-16 lg:px-24">
+        {/* Headline */}
+        <div className="max-w-[1440px] mx-auto w-full px-6 sm:px-10 md:px-16 lg:px-24">
           <h1
-            className="text-[#0A0A0A] leading-none"
+            className="text-[#0A0A0A]"
             style={{
               fontFamily: 'var(--font-display-family)',
               fontWeight: 900,
-              fontSize: 'clamp(3rem, 9vw, 9rem)',
-              lineHeight: 0.9,
+              fontSize: 'clamp(2.6rem, 8vw, 8.5rem)',
+              lineHeight: 0.92,
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
             }}
@@ -183,11 +194,11 @@ export default function LandingPage() {
           </h1>
         </div>
 
-        {/* Empty line between heading and sub */}
-        <div className="h-10 md:h-14 lg:h-16" />
+        {/* Spacer between heading and subheading */}
+        <div className="h-8 md:h-12 lg:h-14" />
 
-        {/* Sub row — subheading */}
-        <div className="max-w-[1440px] mx-auto w-full px-8 md:px-16 lg:px-24 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+        {/* Subheading row */}
+        <div className="max-w-[1440px] mx-auto w-full px-6 sm:px-10 md:px-16 lg:px-24 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <p className="body-light max-w-sm text-base leading-relaxed">
             We catalog every item, authenticate what matters, and sell across 6+ channels simultaneously — so your family receives the most.
           </p>
@@ -197,13 +208,14 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* 2 lines space before marquee */}
-        <div className="h-16 md:h-20 lg:h-24" />
+        {/* Flex-grow pushes the bottom divider down to fill remaining viewport height */}
+        <div className="flex-1" />
 
-        <div className="divider" />
+        {/* Bottom hairline — marquee will sit flush against this */}
+        <div className="border-t border-[#E0E0E0] mt-10 md:mt-16" />
       </section>
 
-      {/* ── MARQUEE ── */}
+      {/* ── MARQUEE — flush against the hero bottom ── */}
       <div className="bg-[#FFDB15] py-4 overflow-hidden">
         <div className="marquee-track">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -224,7 +236,7 @@ export default function LandingPage() {
 
       {/* ── FEATURED PRODUCTS — Gallery ── */}
       <section id="featured" className="pb-32 md:pb-48 lg:pb-64">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
 
           {/* Section header */}
           <Reveal>
@@ -304,7 +316,7 @@ export default function LandingPage() {
 
       {/* ── HOW IT WORKS ── */}
       <section id="process" className="pt-28 md:pt-44 lg:pt-60 pb-28 md:pb-44 lg:pb-60 bg-[#F5F5F5]">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 md:mb-32">
               <div>
@@ -324,7 +336,7 @@ export default function LandingPage() {
             ].map((step, idx) => (
               <Reveal key={step.n} delay={idx * 60}>
                 <div
-                  className="group border-t border-[#E0E0E0] px-8 md:px-12 lg:px-16 py-16 md:py-20 flex flex-col gap-7 bg-[#F5F5F5] hover:bg-white transition-colors duration-200">
+                  className="group border-t border-[#E0E0E0] px-6 sm:px-10 md:px-12 lg:px-16 py-16 md:py-20 flex flex-col gap-7 bg-[#F5F5F5] hover:bg-white transition-colors duration-200">
                   <span
                     className="display-md leading-none"
                     style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', color: step.accent }}
@@ -345,7 +357,7 @@ export default function LandingPage() {
 
       {/* ── AUTHENTICATION — dark editorial ── */}
       <section className="bg-[#0A0A0A] py-28 md:py-44 lg:py-60">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-28 items-center">
             <Reveal>
               <div>
@@ -384,7 +396,7 @@ export default function LandingPage() {
 
       {/* ── SERVICES ── */}
       <section className="pt-28 md:pt-44 lg:pt-60 pb-0">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 md:mb-32">
               <div>
@@ -406,7 +418,7 @@ export default function LandingPage() {
             ].map((svc, idx) => (
               <Reveal key={svc.n} delay={(idx % 3) * 60}>
                 <div
-                  className="border-t border-l border-[#E0E0E0] px-8 md:px-10 py-14 md:py-16 flex flex-col gap-5 hover:bg-[#F5F5F5] transition-colors h-full">
+                  className="border-t border-l border-[#E0E0E0] px-6 sm:px-8 md:px-10 py-14 md:py-16 flex flex-col gap-5 hover:bg-[#F5F5F5] transition-colors h-full">
                   <span
                     className="display-md leading-none"
                     style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.2rem)', color: svc.color }}
@@ -428,7 +440,7 @@ export default function LandingPage() {
       {/* ── TRUST STRIP ── */}
       <Reveal>
         <div className="border-t border-b border-[#E0E0E0] py-12">
-          <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 flex flex-wrap items-center justify-between gap-8">
+          <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 flex flex-wrap items-center justify-between gap-8">
             {[
               'ISALB Certified Appraisers',
               'AuctionGuard™ Escrow',
@@ -445,7 +457,7 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <Reveal>
         <section className="bg-[#826DEE]">
-          <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 py-28 md:py-44 lg:py-60 flex flex-col md:flex-row items-start md:items-end justify-between gap-14">
+          <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-28 md:py-44 lg:py-60 flex flex-col md:flex-row items-start md:items-end justify-between gap-14">
             <h2 className="display-lg text-white">Ready<br/>to Begin?</h2>
             <div className="flex flex-col gap-5 md:pb-1">
               <p className="body-light text-white/70 max-w-xs leading-relaxed">
@@ -459,7 +471,7 @@ export default function LandingPage() {
 
       {/* ── FOOTER ── */}
       <footer className="bg-[#0A0A0A] text-white">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 py-20 md:py-28 grid grid-cols-2 md:grid-cols-4 gap-12">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-20 md:py-28 grid grid-cols-2 md:grid-cols-4 gap-12">
           <div className="col-span-2 md:col-span-1">
             <span className="label text-white/40 block mb-5">Estate Liquidity</span>
             <p className="body-light text-white/40 text-sm leading-relaxed">
@@ -484,7 +496,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <div className="border-t border-white/10 max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="border-t border-white/10 max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <span className="label text-white/30">© 2025 Estate Liquidity Platform</span>
           <span className="label text-white/30">All Rights Reserved</span>
         </div>

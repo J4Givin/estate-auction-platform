@@ -222,7 +222,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
 
       {/* ── Top Rail ── */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E0E0E0]">
-        <div className="h-14 px-6 md:px-12 lg:px-16 flex items-center gap-6">
+        <div className="h-14 px-6 sm:px-8 md:px-12 lg:px-16 flex items-center gap-6">
 
           {/* Role accent dot + brand */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-3">
@@ -277,7 +277,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
 
         {/* Mobile nav dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[#E0E0E0] bg-white px-6 py-6 flex flex-col gap-1">
+          <div className="md:hidden border-t border-[#E0E0E0] bg-white px-6 sm:px-8 py-6 flex flex-col gap-1">
             {navItems.map(item => {
               const isActive = pathname === item.href
               return (
@@ -304,13 +304,13 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
 
       {/* ── Content ── */}
       <main className="flex-1 pt-14">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-16 xl:px-20 py-14 md:py-20 lg:py-24">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-14 md:py-20 lg:py-24">
           {children}
         </div>
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#E0E0E0] py-6 px-6 md:px-12 lg:px-16">
+      <footer className="border-t border-[#E0E0E0] py-6 px-6 sm:px-8 md:px-12 lg:px-16">
         <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <span className="label text-[#BDBDBD]">© 2025 Estate Liquidity Platform</span>
           <Link href="/" className="label text-[#826DEE] hover:underline">← Public Site</Link>

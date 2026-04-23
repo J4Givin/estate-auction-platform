@@ -6,7 +6,7 @@ export default function RegisterPage() {
 
       {/* Left — editorial dark panel */}
       <div className="w-full md:w-[45%] lg:w-1/2 bg-[#0A0A0A] flex flex-col justify-between
-                      p-8 md:p-14 lg:p-20 min-h-[220px] md:min-h-screen">
+                      p-6 sm:p-10 md:p-14 lg:p-20 min-h-[220px] md:min-h-screen">
         <Link href="/" className="flex items-center gap-2 self-start">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF99DC]" />
           <span className="label-dark">Estate Liquidity</span>
@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
       {/* Right — form panel */}
       <div className="flex-1 flex items-start md:items-center justify-center
-                      pt-12 pb-20 px-8 md:px-14 lg:px-20 bg-white">
+                      pt-12 pb-20 px-6 sm:px-10 md:px-14 lg:px-20 bg-white">
         <div className="w-full max-w-md">
           <span className="label block mb-10">Create Account</span>
           <h1 className="mb-12 text-[#0A0A0A]"
