@@ -13,9 +13,9 @@ export type Role = 'customer' | 'ops' | 'qa' | 'admin' | 'partner'
 const NAV_ITEMS: Record<string, { label: string; href: string }[]> = {
   customer: [
     { label: 'Overview',  href: '/portal' },
-    { label: 'My Jobs',   href: '/portal/jobs' },
     { label: 'Inventory', href: '/portal/inventory' },
     { label: 'Offers',    href: '/portal/offers' },
+    { label: 'Donations', href: '/portal/donations' },
     { label: 'Ledger',    href: '/portal/ledger' },
   ],
   ops: [
