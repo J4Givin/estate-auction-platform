@@ -2,9 +2,15 @@
 
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { COMPLIANCE_CHECKS, SAFETY_COLOR, SAFETY_GLYPH, ASSET_BALANCE } from '@/lib/sample-data'
+import { SAFETY_COLOR, SAFETY_GLYPH } from '@/lib/sample-data'
+import { useCompliance, useEstateCase } from '@/lib/data/hooks'
 
 export default function CompliancePage() {
+  const complianceQuery = useCompliance()
+  const estate = useEstateCase()
+  const COMPLIANCE_CHECKS = complianceQuery.data
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
   return (
     <AppShell
       role="customer"

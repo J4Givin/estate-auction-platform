@@ -7,19 +7,31 @@ import { ExpertCard } from '@/components/portal/ExpertCard'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import {
-  APPRAISAL_RUNS,
   CATEGORY_RUBRICS,
-  EXPERTS,
-  EXPERT_QUEUE,
-  TRUST_RECEIPTS,
-  ASSET_BALANCE,
 } from '@/lib/sample-data'
+import {
+  useAppraisalRuns,
+  useExperts,
+  useTrustReceipts,
+  useEstateCase,
+} from '@/lib/data/hooks'
 
 export default function AppraisalPage() {
-  const [activeRun, setActiveRun] = useState(APPRAISAL_RUNS[0]?.itemId)
+  const runsQuery = useAppraisalRuns()
+  const expertsQuery = useExperts()
+  const trust = useTrustReceipts()
+  const estate = useEstateCase()
+  const APPRAISAL_RUNS = runsQuery.data
+  const EXPERTS = expertsQuery.data.experts
+  const EXPERT_QUEUE = expertsQuery.data.queue
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
+  const [activeRun, setActiveRun] = useState<string | undefined>(APPRAISAL_RUNS[0]?.itemId)
   const run = APPRAISAL_RUNS.find(r => r.itemId === activeRun) ?? APPRAISAL_RUNS[0]
-  const reviewers = EXPERTS.filter(e => e.specialty.toLowerCase().includes(run.category.toLowerCase().split(' ')[0]) || e.specialty.includes('Coordinator'))
-  const appraisalReceipts = TRUST_RECEIPTS.filter(r => r.kind === 'appraisal' || r.kind === 'authentication')
+  const reviewers = run
+    ? EXPERTS.filter(e => e.specialty.toLowerCase().includes(run.category.toLowerCase().split(' ')[0]) || e.specialty.includes('Coordinator'))
+    : []
+  const appraisalReceipts = trust.data.filter(r => r.kind === 'appraisal' || r.kind === 'authentication')
 
   return (
     <AppShell
@@ -58,7 +70,7 @@ export default function AppraisalPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div className="lg:col-span-2">
-          <AppraisalPipeline run={run} />
+          {run && <AppraisalPipeline run={run} />}
         </div>
         <div className="flex flex-col gap-6">
           <SectionCard title="Specialist on call" className="!mb-0 !pt-0 border-0">

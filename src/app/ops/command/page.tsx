@@ -2,9 +2,10 @@
 
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { OpsTimeline } from '@/components/portal/OpsTimeline'
-import { OPS_EVENTS } from '@/lib/sample-data'
+import { useOpsCommand } from '@/lib/data/hooks'
 
 export default function OpsCommandCenter() {
+  const { data: OPS_EVENTS } = useOpsCommand()
   const exceptions = OPS_EVENTS.filter(e => e.status !== 'ok')
   const byKind = (k: string) => OPS_EVENTS.filter(e => e.kind === k)
 

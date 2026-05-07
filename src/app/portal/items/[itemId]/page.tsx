@@ -10,38 +10,65 @@ import { ChannelMatrix } from '@/components/portal/ChannelMatrix'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import {
-  INVENTORY,
-  ASSET_BALANCE,
-  APPRAISAL_RUNS,
-  CHANNEL_MATRIX,
-  TRUST_RECEIPTS,
   type Disposition,
   DISPOSITION_LABEL,
   DISPOSITION_COLOR,
   STATUS_LABEL,
   fmt,
 } from '@/lib/sample-data'
+import {
+  useItemDetail,
+  useEstateCase,
+  useAppraisalRun,
+  useChannelMatrix,
+  useTrustReceipts,
+} from '@/lib/data/hooks'
 
 export default function ItemDetail() {
   const params = useParams()
   const id = params.itemId as string
-  const initial = INVENTORY.find(i => i.id === id)
+  const itemQuery = useItemDetail(id)
+  const estate = useEstateCase()
+  const initial = itemQuery.data
   const [item, setItem] = useState(initial)
   const [open, setOpen] = useState(false)
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
+  // hydrate when async loader returns
+  if (item?.id !== initial?.id && initial) {
+    setItem(initial)
+  }
+
+  const appraisalRunQuery = useAppraisalRun(id)
+  const channelMatrixQuery = useChannelMatrix(id)
+  const itemReceiptsQuery = useTrustReceipts({ itemId: id })
 
   if (!item) return notFound()
 
   const dispoColor = DISPOSITION_COLOR[item.disposition]
   const confColor = item.confidence === 'high' ? '#0E9F6E' : item.confidence === 'medium' ? '#FFDB15' : '#F94500'
 
-  const onDecide = (id: string, disposition: Disposition) => {
+  const onDecide = (decisionId: string, disposition: Disposition) => {
     setItem(prev => prev ? { ...prev, disposition } : prev)
     setOpen(false)
+    void fetch(`/api/portal/items/${decisionId}/disposition`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ disposition, actor: 'Sarah Mitchell' }),
+    }).catch(() => {})
   }
 
-  const appraisalRun = APPRAISAL_RUNS.find(r => r.itemId === item.id)
-  const channelMatrix = CHANNEL_MATRIX.find(c => c.itemId === item.id)
-  const itemReceipts = TRUST_RECEIPTS.filter(r => r.itemId === item.id)
+  const onStopSell = () => {
+    void fetch(`/api/portal/items/${item.id}/stop-sell`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemId: item.id, reason: 'Customer hold', actor: 'Sarah Mitchell' }),
+    }).catch(() => {})
+  }
+
+  const appraisalRun = appraisalRunQuery.data
+  const channelMatrix = channelMatrixQuery.data
+  const itemReceipts = itemReceiptsQuery.data
 
   return (
     <AppShell
@@ -70,7 +97,7 @@ export default function ItemDetail() {
         }
         actions={
           <div className="flex flex-col sm:flex-row gap-3">
-            <button className="btn btn-outline" data-testid="item-stop-sell">Stop-Sell / Hold</button>
+            <button className="btn btn-outline" onClick={onStopSell} data-testid="item-stop-sell">Stop-Sell / Hold</button>
             <button className="btn btn-ink" onClick={() => setOpen(true)} data-testid="item-decide">
               Change Decision →
             </button>

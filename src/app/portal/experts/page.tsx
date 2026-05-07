@@ -4,11 +4,17 @@ import { useState } from 'react'
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { ExpertCard } from '@/components/portal/ExpertCard'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { EXPERTS, EXPERT_QUEUE, ASSET_BALANCE } from '@/lib/sample-data'
+import { useExperts, useEstateCase } from '@/lib/data/hooks'
 
 export default function ExpertsPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'available' | 'in_review' | 'unavailable'>('all')
+
+  const expertsQuery = useExperts()
+  const estate = useEstateCase()
+  const EXPERTS = expertsQuery.data.experts
+  const EXPERT_QUEUE = expertsQuery.data.queue
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
 
   const filtered = EXPERTS.filter(e => {
     if (filter !== 'all' && e.status !== filter) return false

@@ -9,25 +9,32 @@ import { ComplianceStrip } from '@/components/portal/ComplianceStrip'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { OfferStack } from '@/components/portal/OfferStack'
 import {
-  PORTFOLIO_SUMMARY as P,
-  ASSET_BALANCE,
-  RISK_FLAGS,
-  INVENTORY,
-  LEDGER,
-  TRUST_RECEIPTS,
   fmt,
   DISPOSITION_COLOR,
   DISPOSITION_LABEL,
 } from '@/lib/sample-data'
+import {
+  usePortalOverview,
+  useInventory,
+  useLedger,
+  useTrustReceipts,
+} from '@/lib/data/hooks'
 
 export default function PortalCommandCenter() {
-  const recentLedger = LEDGER.slice(0, 5)
+  const overview = usePortalOverview()
+  const { data: inventory } = useInventory()
+  const { data: ledger } = useLedger()
+  const { data: trustReceipts } = useTrustReceipts()
+  const P = overview.data.case
+  const ASSET_BALANCE = overview.data.balance
+  const RISK_FLAGS = overview.data.riskFlags
+  const recentLedger = ledger.slice(0, 5)
   const dispositionBreakdown: Array<{ key: keyof typeof DISPOSITION_LABEL; count: number }> = [
-    { key: 'sell_managed', count: INVENTORY.filter(i => i.disposition === 'sell_managed').length },
-    { key: 'store', count: INVENTORY.filter(i => i.disposition === 'store').length },
-    { key: 'donate', count: INVENTORY.filter(i => i.disposition === 'donate').length },
-    { key: 'keep', count: INVENTORY.filter(i => i.disposition === 'keep').length },
-    { key: 'undecided', count: INVENTORY.filter(i => i.disposition === 'undecided').length },
+    { key: 'sell_managed', count: inventory.filter(i => i.disposition === 'sell_managed').length },
+    { key: 'store', count: inventory.filter(i => i.disposition === 'store').length },
+    { key: 'donate', count: inventory.filter(i => i.disposition === 'donate').length },
+    { key: 'keep', count: inventory.filter(i => i.disposition === 'keep').length },
+    { key: 'undecided', count: inventory.filter(i => i.disposition === 'undecided').length },
   ]
 
   return (
@@ -230,7 +237,7 @@ export default function PortalCommandCenter() {
         action={<Link href="/portal/receipts" className="btn btn-outline" data-testid="trust-receipts-view-all">View All →</Link>}
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {TRUST_RECEIPTS.slice(0, 4).map(r => (
+          {trustReceipts.slice(0, 4).map(r => (
             <TrustReceipt key={r.id} receipt={r} compact />
           ))}
         </div>

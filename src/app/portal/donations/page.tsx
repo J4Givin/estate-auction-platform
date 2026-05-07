@@ -4,10 +4,21 @@ import { useState } from 'react'
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { CHARITIES, INVENTORY, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
+import { fmt } from '@/lib/sample-data'
+import { useDonations, useEstateCase, useTrustReceipts, useInventory } from '@/lib/data/hooks'
 
 export default function DonationsPage() {
-  const [charities, setCharities] = useState(CHARITIES)
+  const donationsQuery = useDonations()
+  const inventoryQuery = useInventory()
+  const estate = useEstateCase()
+  const trust = useTrustReceipts()
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+  const [charities, setCharities] = useState(donationsQuery.data.charities)
+  // sync when async load returns
+  if (charities !== donationsQuery.data.charities && charities.length === 0) {
+    setCharities(donationsQuery.data.charities)
+  }
+  const INVENTORY = inventoryQuery.data
   const donatingItems = INVENTORY.filter(i => i.disposition === 'donate')
   const suggested = INVENTORY.filter(i => i.donationSuggested && i.disposition !== 'donate')
 
@@ -17,9 +28,14 @@ export default function DonationsPage() {
 
   const toggle = (id: string) => {
     setCharities(prev => prev.map(c => c.id === id ? { ...c, selected: !c.selected } : c))
+    void fetch('/api/portal/donations/routing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ caseId: estate.data.jobId, charityId: id, actor: 'Sarah Mitchell' }),
+    }).catch(() => {})
   }
 
-  const donationReceipt = TRUST_RECEIPTS.find(r => r.kind === 'donation')
+  const donationReceipt = trust.data.find(r => r.kind === 'donation')
 
   return (
     <AppShell

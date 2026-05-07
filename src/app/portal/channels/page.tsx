@@ -3,7 +3,7 @@
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { ChannelMatrix } from '@/components/portal/ChannelMatrix'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { CHANNEL_MATRIX, CHANNEL_HEALTH, ASSET_BALANCE } from '@/lib/sample-data'
+import { useChannels, useEstateCase } from '@/lib/data/hooks'
 
 const STATUS_COLOR: Record<string, string> = {
   green: '#0E9F6E',
@@ -12,6 +12,12 @@ const STATUS_COLOR: Record<string, string> = {
 }
 
 export default function ChannelsPage() {
+  const channelsQuery = useChannels()
+  const estate = useEstateCase()
+  const CHANNEL_MATRIX = channelsQuery.data.matrix
+  const CHANNEL_HEALTH = channelsQuery.data.health
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
   return (
     <AppShell
       role="customer"

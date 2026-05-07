@@ -5,11 +5,39 @@ import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { OfferStack } from '@/components/portal/OfferStack'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { CASH_OFFERS, PORTFOLIO_SUMMARY as P, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
+import { fmt } from '@/lib/sample-data'
+import { useOffers, useEstateCase, useTrustReceipts } from '@/lib/data/hooks'
 
 export default function OffersPage() {
   const [accepted, setAccepted] = useState<string | null>(null)
-  const offerReceipts = TRUST_RECEIPTS.filter(r => r.kind === 'payout' || r.kind === 'authentication').slice(0, 2)
+  const offersQuery = useOffers()
+  const estate = useEstateCase()
+  const trust = useTrustReceipts()
+  const CASH_OFFERS = offersQuery.data
+  const P = estate.data
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+  const offerReceipts = trust.data.filter(r => r.kind === 'payout' || r.kind === 'authentication').slice(0, 2)
+
+  const onAccept = async (offerId: string) => {
+    setAccepted(offerId)
+    try {
+      await fetch('/api/portal/offers/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offerId, actor: 'Sarah Mitchell' }),
+      })
+    } catch {}
+  }
+
+  const onCounter = async (offerId: string, amount: number) => {
+    try {
+      await fetch('/api/portal/offers/counter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offerId, counterAmount: amount, actor: 'Sarah Mitchell' }),
+      })
+    } catch {}
+  }
 
   return (
     <AppShell
@@ -91,7 +119,7 @@ export default function OffersPage() {
                     <button
                       className="btn btn-yellow"
                       style={{ justifyContent: 'center' }}
-                      onClick={() => setAccepted(o.id)}
+                      onClick={() => onAccept(o.id)}
                       data-testid={`offer-accept-${o.id}`}
                     >
                       Accept Cash Offer →
@@ -99,6 +127,7 @@ export default function OffersPage() {
                     <button
                       className="btn btn-outline"
                       style={{ justifyContent: 'center' }}
+                      onClick={() => onCounter(o.id, Math.round(o.amount * 1.05))}
                       data-testid={`offer-counter-${o.id}`}
                     >
                       Counter or Adjust Scope

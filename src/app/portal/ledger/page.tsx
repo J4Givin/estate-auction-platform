@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { AppShell, PageHeader } from '@/components/layout/AppShell'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { LEDGER, PORTFOLIO_SUMMARY as P, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
+import { fmt } from '@/lib/sample-data'
+import { useLedger, useEstateCase, useTrustReceipts } from '@/lib/data/hooks'
 
 const TYPE_COLOR: Record<string, string> = {
   sale: '#0E9F6E',
@@ -29,13 +30,30 @@ const TYPE_LABEL: Record<string, string> = {
 export default function LedgerPage() {
   const [filter, setFilter] = useState<'all' | 'sale' | 'fee' | 'payout' | 'donation'>('all')
 
+  const ledgerQuery = useLedger()
+  const estate = useEstateCase()
+  const trust = useTrustReceipts()
+  const LEDGER = ledgerQuery.data
+  const P = estate.data
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
   const filtered = LEDGER.filter(l => filter === 'all' || l.type === filter)
 
   const grossSales = LEDGER.filter(l => l.type === 'sale').reduce((s, l) => s + l.gross, 0)
   const totalFees = LEDGER.filter(l => l.type === 'sale' || l.type === 'storage').reduce((s, l) => s + l.fee, 0)
   const totalPayouts = Math.abs(LEDGER.filter(l => l.type === 'payout').reduce((s, l) => s + l.net, 0))
 
-  const payoutReceipt = TRUST_RECEIPTS.find(r => r.kind === 'payout')
+  const payoutReceipt = trust.data.find(r => r.kind === 'payout')
+
+  const onRequestPayout = async () => {
+    try {
+      await fetch('/api/portal/payouts/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caseId: P.jobId, amount: P.availableForPayout, actor: 'Sarah Mitchell' }),
+      })
+    } catch {}
+  }
 
   return (
     <AppShell
@@ -51,7 +69,7 @@ export default function LedgerPage() {
         actions={
           <div className="flex flex-col sm:flex-row gap-3">
             <button className="btn btn-outline" data-testid="ledger-statement-pdf">Download Statement PDF</button>
-            <button className="btn btn-ink" data-testid="ledger-request-payout">
+            <button className="btn btn-ink" onClick={onRequestPayout} data-testid="ledger-request-payout">
               Request Payout · {fmt(P.availableForPayout)}
             </button>
           </div>

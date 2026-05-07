@@ -6,8 +6,6 @@ import { AppShell, PageHeader } from '@/components/layout/AppShell'
 import { DecisionSheet } from '@/components/portal/DecisionSheet'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import {
-  INVENTORY,
-  ASSET_BALANCE,
   type InventoryItem,
   type Disposition,
   DISPOSITION_LABEL,
@@ -15,6 +13,7 @@ import {
   STATUS_LABEL,
   fmt,
 } from '@/lib/sample-data'
+import { useInventory, useEstateCase } from '@/lib/data/hooks'
 
 export default function InventoryPageWrapper() {
   return (
@@ -39,7 +38,26 @@ function InventoryPage() {
   const focusId = params.get('focus')
   const initialDispo = params.get('disposition')
 
-  const [items, setItems] = useState<InventoryItem[]>(INVENTORY)
+  const inventoryQuery = useInventory()
+  const estateQuery = useEstateCase()
+  const ASSET_BALANCE = {
+    cashAvailable: estateQuery.data.availableForPayout,
+    cashPending: 0,
+    listedValue: 0,
+    storageValue: 0,
+    donatedValue: estateQuery.data.donationsToDate,
+    reserves: estateQuery.data.reservedForFees,
+    estimatedNetLow: estateQuery.data.estimatedNetLow,
+    estimatedNetHigh: estateQuery.data.estimatedNetHigh,
+  }
+  const [localItems, setLocalItems] = useState<InventoryItem[] | null>(null)
+  const items = localItems ?? inventoryQuery.data
+  const setItems = (next: InventoryItem[] | ((prev: InventoryItem[]) => InventoryItem[])) => {
+    setLocalItems(prev =>
+      typeof next === 'function' ? next(prev ?? inventoryQuery.data) : next,
+    )
+  }
+
   const [filter, setFilter] = useState<typeof FILTERS[number]['key']>(
     (initialDispo as typeof FILTERS[number]['key']) ?? 'all'
   )
@@ -47,7 +65,7 @@ function InventoryPage() {
   const [confidence, setConfidence] = useState<string>('all')
   const [search, setSearch] = useState('')
   const [activeItem, setActiveItem] = useState<InventoryItem | null>(
-    focusId ? INVENTORY.find(i => i.id === focusId) ?? null : null
+    focusId ? inventoryQuery.data.find(i => i.id === focusId) ?? null : null
   )
 
 
@@ -65,6 +83,11 @@ function InventoryPage() {
   const handleDecide = (id: string, disposition: Disposition) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, disposition } : i))
     setActiveItem(null)
+    void fetch(`/api/portal/items/${id}/disposition`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ disposition, actor: 'Sarah Mitchell' }),
+    }).catch(() => {})
   }
 
   const totals = {

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
-import { ROOM_CAPTURE, CAPTURE_CHECKLIST, ASSET_BALANCE } from '@/lib/sample-data'
+import { useCaptureState, useEstateCase } from '@/lib/data/hooks'
 
 const STATE_LABEL: Record<string, string> = {
   incomplete: 'Needs more photos',
@@ -19,12 +19,29 @@ const STATE_COLOR: Record<string, string> = {
 }
 
 export default function CapturePage() {
-  const [activeRoom, setActiveRoom] = useState(ROOM_CAPTURE[0]?.id)
+  const captureQuery = useCaptureState()
+  const estate = useEstateCase()
+  const ROOM_CAPTURE = captureQuery.data.rooms
+  const CAPTURE_CHECKLIST = captureQuery.data.checklist
+  const ASSET_BALANCE = { cashAvailable: estate.data.availableForPayout }
+
+  const [activeRoom, setActiveRoom] = useState<string | undefined>(ROOM_CAPTURE[0]?.id)
   const room = ROOM_CAPTURE.find(r => r.id === activeRoom) ?? ROOM_CAPTURE[0]
 
   const totalCaptured = ROOM_CAPTURE.reduce((s, r) => s + r.itemsCaptured, 0)
   const totalExpected = ROOM_CAPTURE.reduce((s, r) => s + r.itemsExpected, 0)
   const overall = totalExpected ? totalCaptured / totalExpected : 0
+
+  const onChecklistToggle = async (checklistItemId: string, done: boolean) => {
+    if (!room) return
+    try {
+      await fetch('/api/portal/capture/checklist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomId: room.id, checklistItemId, done, actor: 'Sarah Mitchell' }),
+      })
+    } catch {}
+  }
 
   return (
     <AppShell
@@ -149,9 +166,15 @@ export default function CapturePage() {
           <ol className="">
             {CAPTURE_CHECKLIST.map((c, i) => (
               <li key={c.id} className="px-4 sm:px-6 py-3 border-b border-[#F0F0F0] last:border-b-0 flex items-start gap-3" data-testid={`checklist-${c.id}`}>
-                <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-white" style={{ background: '#0A0A0A', fontSize: 11 }}>
+                <button
+                  onClick={() => onChecklistToggle(c.id, true)}
+                  className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-white"
+                  style={{ background: '#0A0A0A', fontSize: 11 }}
+                  aria-label={`mark ${c.label} done`}
+                  data-testid={`checklist-toggle-${c.id}`}
+                >
                   {String(i + 1).padStart(2, '0')}
-                </span>
+                </button>
                 <div className="min-w-0">
                   <span className="block text-[#0A0A0A] font-medium" style={{ fontSize: 14 }}>{c.label}</span>
                   <span className="body-light block" style={{ fontSize: 12 }}>{c.tip}</span>

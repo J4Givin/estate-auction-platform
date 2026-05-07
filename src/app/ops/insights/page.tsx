@@ -1,9 +1,14 @@
 'use client'
 
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
-import { LEARNING_METRICS, PLATFORM_LEARNINGS, EXPERIMENTS } from '@/lib/sample-data'
+import { useInsights } from '@/lib/data/hooks'
 
 export default function OpsInsightsPage() {
+  const { data: insights } = useInsights()
+  const LEARNING_METRICS = insights.metrics
+  const PLATFORM_LEARNINGS = insights.learnings
+  const EXPERIMENTS = insights.experiments
+
   return (
     <AppShell role="ops" userName="Alex Rivera" orgName="Estate Liquidity Ops">
       <PageHeader
