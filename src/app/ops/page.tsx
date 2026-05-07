@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
-import { fmt } from '@/lib/sample-data'
+import { OpsTimeline } from '@/components/portal/OpsTimeline'
+import { LEARNING_METRICS, OPS_EVENTS } from '@/lib/sample-data'
 
 const KPI = [
   { label: 'Active Jobs', value: '12', delta: '+2 this week', color: '#826DEE' },
@@ -154,6 +155,39 @@ export default function OpsDashboard() {
           </div>
         </SectionCard>
       </div>
+
+      {/* Floor timeline preview — Operational Command Center */}
+      <SectionCard
+        title="Floor Timeline"
+        description="Pickup, custody, storage, listings, exceptions, returns, recon — one stream."
+        action={<Link href="/ops/command" className="btn btn-outline" data-testid="ops-open-command">Open Command Center →</Link>}
+      >
+        <OpsTimeline events={OPS_EVENTS.slice(0, 5)} title="Latest 5 events" />
+      </SectionCard>
+
+      {/* Data moat preview */}
+      <SectionCard
+        title="Learning Loop"
+        description="The platform's data moat — accuracy, realization, sell-through, channel lift, donation conversion, NPS."
+        action={<Link href="/ops/insights" className="btn btn-outline" data-testid="ops-open-insights">Open Insights →</Link>}
+      >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-b border-[#E0E0E0]" data-testid="ops-learning-preview">
+          {LEARNING_METRICS.slice(0, 4).map(m => (
+            <div key={m.id} className="border-t-2 pt-7 pb-7 pr-6" style={{ borderTopColor: m.color }}>
+              <span className="label block mb-2.5">{m.label}</span>
+              <span
+                className="block tabular"
+                style={{ fontFamily: 'var(--font-display-family)', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 2rem)', lineHeight: 1, color: m.color }}
+              >
+                {m.value}
+              </span>
+              <span className="label mt-2 block" style={{ color: m.trend.up ? '#0E9F6E' : '#F94500' }}>
+                {m.trend.up ? '↑' : '↓'} {Math.abs(m.trend.pct)}%
+              </span>
+            </div>
+          ))}
+        </div>
+      </SectionCard>
 
       {/* Trust strip */}
       <SectionCard title="Trust & Safety" description="P0 controls — visible, enforced, audited.">

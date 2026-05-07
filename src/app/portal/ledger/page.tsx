@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import { AppShell, PageHeader } from '@/components/layout/AppShell'
-import { LEDGER, PORTFOLIO_SUMMARY as P, fmt } from '@/lib/sample-data'
+import { TrustReceipt } from '@/components/portal/TrustReceipt'
+import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
+import { LEDGER, PORTFOLIO_SUMMARY as P, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
 
 const TYPE_COLOR: Record<string, string> = {
   sale: '#0E9F6E',
@@ -33,8 +35,15 @@ export default function LedgerPage() {
   const totalFees = LEDGER.filter(l => l.type === 'sale' || l.type === 'storage').reduce((s, l) => s + l.fee, 0)
   const totalPayouts = Math.abs(LEDGER.filter(l => l.type === 'payout').reduce((s, l) => s + l.net, 0))
 
+  const payoutReceipt = TRUST_RECEIPTS.find(r => r.kind === 'payout')
+
   return (
-    <AppShell role="customer" userName="Sarah Mitchell" orgName="Mitchell Estate">
+    <AppShell
+      role="customer"
+      userName="Sarah Mitchell"
+      orgName="Mitchell Estate"
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Request Payout" primaryHref="/portal/ledger#payout" />}
+    >
       <PageHeader
         eyebrow="Ledger"
         title="Money Trail."
@@ -139,6 +148,13 @@ export default function LedgerPage() {
           )
         })}
       </div>
+
+      {/* Latest payout receipt */}
+      {payoutReceipt && (
+        <div id="payout" className="mt-12">
+          <TrustReceipt receipt={payoutReceipt} />
+        </div>
+      )}
 
       {/* Reserves & disputes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-16">

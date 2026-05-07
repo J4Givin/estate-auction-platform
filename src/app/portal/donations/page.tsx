@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { AppShell, PageHeader } from '@/components/layout/AppShell'
-import { CHARITIES, INVENTORY, fmt } from '@/lib/sample-data'
+import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
+import { TrustReceipt } from '@/components/portal/TrustReceipt'
+import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
+import { CHARITIES, INVENTORY, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
 
 export default function DonationsPage() {
   const [charities, setCharities] = useState(CHARITIES)
@@ -17,8 +19,15 @@ export default function DonationsPage() {
     setCharities(prev => prev.map(c => c.id === id ? { ...c, selected: !c.selected } : c))
   }
 
+  const donationReceipt = TRUST_RECEIPTS.find(r => r.kind === 'donation')
+
   return (
-    <AppShell role="customer" userName="Sarah Mitchell" orgName="Mitchell Estate">
+    <AppShell
+      role="customer"
+      userName="Sarah Mitchell"
+      orgName="Mitchell Estate"
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Route to Donate" primaryHref="/portal/donations" />}
+    >
       <PageHeader
         eyebrow="Donations"
         title="Donation Impact."
@@ -152,6 +161,39 @@ export default function DonationsPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Latest donation receipt */}
+      {donationReceipt && (
+        <SectionCard title="Latest donation receipt" description="Tax-ready, immutable.">
+          <TrustReceipt receipt={donationReceipt} />
+        </SectionCard>
+      )}
+
+      {/* Legacy / Impact Report */}
+      <div className="border border-[#0A0A0A] bg-white" data-testid="impact-report">
+        <div className="px-5 sm:px-7 py-6 bg-[#0A0A0A] text-white">
+          <span className="label-dark block mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>● Legacy &amp; Impact Report</span>
+          <p className="text-white" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', lineHeight: 1.4 }}>
+            Your estate helped <strong>{charities.filter(c => c.selected).length} charities</strong>, routed{' '}
+            <strong>{donatingItems.length + suggested.length} items</strong>, and contributed{' '}
+            <strong>{fmt(totalRouted)}</strong> in tax-deductible value to your community.
+          </p>
+        </div>
+        <div className="px-5 sm:px-7 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <span className="label block mb-1.5" style={{ color: '#0E9F6E' }}>● Affordable housing built</span>
+            <span className="body-light text-[#0A0A0A]" style={{ fontSize: 13 }}>~3 weeks of materials at Habitat for Humanity Greater LA</span>
+          </div>
+          <div>
+            <span className="label block mb-1.5" style={{ color: '#826DEE' }}>● Hospice family support</span>
+            <span className="body-light text-[#0A0A0A]" style={{ fontSize: 13 }}>~12 hours of family-grief support at Hospice of San Joaquin</span>
+          </div>
+          <div>
+            <span className="label block mb-1.5" style={{ color: '#FFDB15' }}>● Items keep being useful</span>
+            <span className="body-light text-[#0A0A0A]" style={{ fontSize: 13 }}>Re-use diverts ~120 lbs from landfill — household goods placed with families.</span>
+          </div>
+        </div>
       </div>
     </AppShell>
   )

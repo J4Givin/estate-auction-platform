@@ -3,10 +3,18 @@
 import { useState } from 'react'
 import { useParams, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { AppShell, PageHeader } from '@/components/layout/AppShell'
+import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { DecisionSheet } from '@/components/portal/DecisionSheet'
+import { AppraisalPipeline } from '@/components/portal/AppraisalPipeline'
+import { ChannelMatrix } from '@/components/portal/ChannelMatrix'
+import { TrustReceipt } from '@/components/portal/TrustReceipt'
+import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import {
   INVENTORY,
+  ASSET_BALANCE,
+  APPRAISAL_RUNS,
+  CHANNEL_MATRIX,
+  TRUST_RECEIPTS,
   type Disposition,
   DISPOSITION_LABEL,
   DISPOSITION_COLOR,
@@ -31,8 +39,17 @@ export default function ItemDetail() {
     setOpen(false)
   }
 
+  const appraisalRun = APPRAISAL_RUNS.find(r => r.itemId === item.id)
+  const channelMatrix = CHANNEL_MATRIX.find(c => c.itemId === item.id)
+  const itemReceipts = TRUST_RECEIPTS.filter(r => r.itemId === item.id)
+
   return (
-    <AppShell role="customer" userName="Sarah Mitchell" orgName="Mitchell Estate">
+    <AppShell
+      role="customer"
+      userName="Sarah Mitchell"
+      orgName="Mitchell Estate"
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Decide" primaryHref={`#decide-${item.id}`} />}
+    >
       <div className="mb-6 flex items-center gap-3 text-[#6B6B6B]">
         <Link href="/portal/inventory" className="label hover:text-[#0A0A0A]">← Inventory</Link>
         <span className="label">/</span>
@@ -191,6 +208,29 @@ export default function ItemDetail() {
             <button className="btn btn-outline" data-testid="item-storage-release">Release to Family</button>
           </div>
         </div>
+      )}
+
+      {/* AI Pipeline */}
+      {appraisalRun && (
+        <SectionCard title="AI Multi-Agent Appraisal" description="Eight specialized agents — full transparency.">
+          <AppraisalPipeline run={appraisalRun} />
+        </SectionCard>
+      )}
+
+      {/* Channel matrix */}
+      {channelMatrix && (
+        <SectionCard title="Channel Strategy" description="Where this item sells best, with fit, net, fees, and policy risk.">
+          <ChannelMatrix matrix={channelMatrix} />
+        </SectionCard>
+      )}
+
+      {/* Trust receipts for this item */}
+      {itemReceipts.length > 0 && (
+        <SectionCard title="Trust Receipts" description="Every action that has touched this item.">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {itemReceipts.map(r => <TrustReceipt key={r.id} receipt={r} />)}
+          </div>
+        </SectionCard>
       )}
 
       <DecisionSheet item={open ? item : null} onClose={() => setOpen(false)} onDecide={onDecide} />

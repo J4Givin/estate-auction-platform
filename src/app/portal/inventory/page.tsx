@@ -4,8 +4,10 @@ import { useMemo, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { AppShell, PageHeader } from '@/components/layout/AppShell'
 import { DecisionSheet } from '@/components/portal/DecisionSheet'
+import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import {
   INVENTORY,
+  ASSET_BALANCE,
   type InventoryItem,
   type Disposition,
   DISPOSITION_LABEL,
@@ -72,7 +74,12 @@ function InventoryPage() {
   }
 
   return (
-    <AppShell role="customer" userName="Sarah Mitchell" orgName="Mitchell Estate">
+    <AppShell
+      role="customer"
+      userName="Sarah Mitchell"
+      orgName="Mitchell Estate"
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Bulk Decide" primaryHref="/portal/inventory" />}
+    >
       <PageHeader
         eyebrow="Inventory"
         title="Estate Items."

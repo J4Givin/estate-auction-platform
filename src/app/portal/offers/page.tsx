@@ -1,14 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { AppShell, PageHeader } from '@/components/layout/AppShell'
-import { CASH_OFFERS, PORTFOLIO_SUMMARY as P, fmt } from '@/lib/sample-data'
+import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
+import { OfferStack } from '@/components/portal/OfferStack'
+import { TrustReceipt } from '@/components/portal/TrustReceipt'
+import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
+import { CASH_OFFERS, PORTFOLIO_SUMMARY as P, ASSET_BALANCE, TRUST_RECEIPTS, fmt } from '@/lib/sample-data'
 
 export default function OffersPage() {
   const [accepted, setAccepted] = useState<string | null>(null)
+  const offerReceipts = TRUST_RECEIPTS.filter(r => r.kind === 'payout' || r.kind === 'authentication').slice(0, 2)
 
   return (
-    <AppShell role="customer" userName="Sarah Mitchell" orgName="Mitchell Estate">
+    <AppShell
+      role="customer"
+      userName="Sarah Mitchell"
+      orgName="Mitchell Estate"
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Take Cash" primaryHref="#stack" />}
+    >
       <PageHeader
         eyebrow="Cash Offers"
         title="Sell to Estate Liquidity."
@@ -19,6 +28,23 @@ export default function OffersPage() {
           </a>
         }
       />
+
+      {/* Instant liquidity engine */}
+      <div id="stack" className="mb-12">
+        <OfferStack />
+      </div>
+
+      {/* Receipts for past offer-related actions */}
+      {offerReceipts.length > 0 && (
+        <SectionCard
+          title="Recent Trust Receipts"
+          description="Past payouts and authentications that affect today's offers."
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {offerReceipts.map(r => <TrustReceipt key={r.id} receipt={r} compact />)}
+          </div>
+        </SectionCard>
+      )}
 
       {/* Offer cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 mb-16 border-t border-[#E0E0E0]" data-testid="offers-grid">

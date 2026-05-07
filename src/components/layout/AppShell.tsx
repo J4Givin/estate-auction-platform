@@ -12,16 +12,22 @@ export type Role = 'customer' | 'ops' | 'qa' | 'admin' | 'partner'
 // Role → nav items
 const NAV_ITEMS: Record<string, { label: string; href: string }[]> = {
   customer: [
-    { label: 'Overview',  href: '/portal' },
-    { label: 'Inventory', href: '/portal/inventory' },
-    { label: 'Offers',    href: '/portal/offers' },
-    { label: 'Donations', href: '/portal/donations' },
-    { label: 'Ledger',    href: '/portal/ledger' },
+    { label: 'Overview',   href: '/portal' },
+    { label: 'Inventory',  href: '/portal/inventory' },
+    { label: 'Offers',     href: '/portal/offers' },
+    { label: 'Appraisal',  href: '/portal/appraisal' },
+    { label: 'Capture',    href: '/portal/capture' },
+    { label: 'Channels',   href: '/portal/channels' },
+    { label: 'Donations',  href: '/portal/donations' },
+    { label: 'Ledger',     href: '/portal/ledger' },
+    { label: 'Concierge',  href: '/portal/concierge' },
   ],
   ops: [
     { label: 'Dashboard', href: '/ops' },
+    { label: 'Command',   href: '/ops/command' },
     { label: 'Jobs',      href: '/ops/jobs' },
     { label: 'Catalog',   href: '/ops/catalog' },
+    { label: 'Insights',  href: '/ops/insights' },
     { label: 'Listings',  href: '/ops/listings' },
   ],
   qa: [
@@ -208,9 +214,10 @@ interface AppShellProps {
   userName?: string
   orgName?: string
   pageTitle?: string
+  bottomBar?: React.ReactNode
 }
 
-export function AppShell({ children, role = 'customer', userName = 'User', orgName, pageTitle }: AppShellProps) {
+export function AppShell({ children, role = 'customer', userName = 'User', orgName, pageTitle, bottomBar }: AppShellProps) {
   const pathname = usePathname()
   const navItems = NAV_ITEMS[role] ?? NAV_ITEMS.customer
   const accent = ROLE_ACCENT[role] ?? '#826DEE'
@@ -234,7 +241,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
           <div className="w-px h-4 bg-[#E0E0E0] hidden md:block" />
 
           {/* Nav links — desktop */}
-          <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="Portal navigation">
+          <nav className="hidden md:flex items-center gap-x-5 gap-y-1 flex-1 scroll-x overflow-x-auto" aria-label="Portal navigation">
             {navItems.map(item => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
               return (
@@ -242,10 +249,11 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'label transition-colors duration-150 tap-target',
+                    'label whitespace-nowrap transition-colors duration-150 tap-target',
                     isActive ? 'text-[#0A0A0A]' : 'text-[#6B6B6B] hover:text-[#0A0A0A]'
                   )}
                   style={isActive ? { color: accent } : {}}
+                  data-testid={`nav-${item.label.toLowerCase()}`}
                 >
                   {item.label}
                 </Link>
@@ -303,14 +311,17 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
       </header>
 
       {/* ── Content ── */}
-      <main className="flex-1 pt-14">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-14 md:py-20 lg:py-24">
+      <main className="flex-1 pt-14" style={{ paddingBottom: bottomBar ? 'calc(env(safe-area-inset-bottom) + 80px)' : undefined }}>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-20 lg:py-24">
           {children}
         </div>
       </main>
 
+      {/* ── Mobile bottom bar slot ── */}
+      {bottomBar}
+
       {/* ── Footer ── */}
-      <footer className="border-t border-[#E0E0E0] py-6 px-6 sm:px-8 md:px-12 lg:px-16">
+      <footer className="border-t border-[#E0E0E0] py-6 px-6 sm:px-8 md:px-12 lg:px-16" style={{ paddingBottom: bottomBar ? 'calc(env(safe-area-inset-bottom) + 80px)' : undefined }}>
         <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <span className="label text-[#BDBDBD]">© 2025 Estate Liquidity Platform</span>
           <Link href="/" className="label text-[#826DEE] hover:underline">← Public Site</Link>
