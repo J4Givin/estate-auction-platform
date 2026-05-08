@@ -1,6 +1,7 @@
 import { updateDonationRouting } from '@/lib/data/actions'
 import { canWriteCase } from '@/lib/data/auth'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
+import { enforceRateLimit } from '../../_rate-limit'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{ caseId?: string; charityId?: string; actor?: string }>(req)
@@ -13,6 +14,9 @@ export async function POST(req: Request) {
     reason: 'You cannot change donation routing for this case',
   })
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('donation', req, ctx)
+  if (limited) return limited
 
   const res = await updateDonationRouting(
     {

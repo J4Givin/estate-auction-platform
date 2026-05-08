@@ -1,6 +1,7 @@
 import { createTrustReceipt } from '@/lib/data/trust'
 import { canReadItem, canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../_helpers'
+import { enforceRateLimit } from '../_rate-limit'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{
@@ -31,6 +32,9 @@ export async function POST(req: Request) {
     { reason: 'You cannot author a trust receipt for this scope' },
   )
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('trust-receipt', req, ctx)
+  if (limited) return limited
 
   const res = await createTrustReceipt(
     {

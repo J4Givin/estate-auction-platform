@@ -1,6 +1,7 @@
 import { requestStatement } from '@/lib/data/actions'
 import { canReadCase } from '@/lib/data/auth'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
+import { enforceRateLimit } from '../../_rate-limit'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{ caseId?: string; period?: string; actor?: string }>(req)
@@ -16,6 +17,9 @@ export async function POST(req: Request) {
     { reason: 'You cannot request a statement for this case' },
   )
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('statement', req, ctx)
+  if (limited) return limited
 
   const res = await requestStatement(
     { caseId: body.caseId, period: body.period, actor: ctx.authenticated ? ctx.actorLabel : body.actor },

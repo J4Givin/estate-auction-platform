@@ -1,6 +1,7 @@
 import { changeDisposition } from '@/lib/data/actions'
 import { canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../../_helpers'
+import { enforceRateLimit } from '../../../_rate-limit'
 
 export async function POST(req: Request, ctx: { params: Promise<{ itemId: string }> }) {
   const { itemId } = await ctx.params
@@ -15,6 +16,9 @@ export async function POST(req: Request, ctx: { params: Promise<{ itemId: string
     { reason: 'You cannot change disposition on this item' },
   )
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('item-write', req, actor)
+  if (limited) return limited
 
   const res = await changeDisposition(
     {

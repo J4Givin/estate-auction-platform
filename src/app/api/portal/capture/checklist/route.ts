@@ -1,5 +1,6 @@
 import { updateCaptureChecklist } from '@/lib/data/actions'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
+import { enforceRateLimit } from '../../_rate-limit'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{ roomId?: string; checklistItemId?: string; done?: boolean; actor?: string }>(req)
@@ -12,6 +13,9 @@ export async function POST(req: Request) {
   const ctx = await resolveActor()
   const decision = authorize(ctx, () => true, { reason: 'Sign in required' })
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('capture', req, ctx)
+  if (limited) return limited
 
   const res = await updateCaptureChecklist(
     {

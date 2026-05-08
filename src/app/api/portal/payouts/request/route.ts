@@ -1,6 +1,7 @@
 import { requestPayout } from '@/lib/data/actions'
 import { canWriteCase } from '@/lib/data/auth'
 import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
+import { enforceRateLimit } from '../../_rate-limit'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{ caseId?: string; amount?: number; destination?: string; actor?: string }>(req)
@@ -13,6 +14,9 @@ export async function POST(req: Request) {
     reason: 'You cannot request a payout for this case',
   })
   if (!decision.ok) return rejectAuthz(decision)
+
+  const limited = enforceRateLimit('payout', req, ctx)
+  if (limited) return limited
 
   const res = await requestPayout(
     {

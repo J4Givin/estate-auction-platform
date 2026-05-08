@@ -278,6 +278,32 @@ export async function resolveItemCaseId(itemId: string): Promise<string | null> 
   }
 }
 
+/**
+ * Resolve the case id that owns a cash offer. Returns null when Supabase
+ * isn't configured or the offer is unknown — callers should treat that as
+ * "no case membership required" only in demo mode.
+ *
+ * Mirrors `resolveItemCaseId` so route handlers can authorize counter/accept
+ * actions against actor membership before issuing the write, instead of
+ * relying solely on RLS as a backstop.
+ */
+export async function resolveOfferCaseId(offerId: string): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null
+  try {
+    const { getServerSupabase } = await import('./supabase-server')
+    const sb = await getServerSupabase()
+    if (!sb) return null
+    const { data } = await sb
+      .from('cash_offers')
+      .select('case_id')
+      .eq('offer_id', offerId)
+      .maybeSingle()
+    return (data?.case_id as string | undefined) ?? null
+  } catch {
+    return null
+  }
+}
+
 export type AuthzDecision =
   | { ok: true; ctx: ActorContext }
   | { ok: false; status: 401 | 403; reason: string; ctx: ActorContext }

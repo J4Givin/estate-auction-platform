@@ -252,3 +252,122 @@ curl -s -X POST https://<host>/api/portal/payouts/request \
       user; confirm 401/403.
 - [ ] Run the seven manual security test checks in §6 against staging.
 - [ ] Confirm the demo build still works locally with no env vars set.
+
+---
+
+## 9. Counter-offer authorization (offer → case resolution)
+
+`POST /api/portal/offers/counter` (and `…/offers/accept`) historically took
+the caller's `offerId` and only required *some* authenticated user. RLS
+caught the rest: a customer in case A literally could not write a
+`offer_decisions` row tagged with case B because the `WITH CHECK`
+predicate would reject it.
+
+That worked, but the failure surfaced as a Supabase RLS error rather than
+a clean `403`. To produce the right HTTP code without leaking RLS error
+strings, the route now resolves the offer's parent case **before** the
+write:
+
+1. `resolveOfferCaseId(offerId)` — server-side lookup against
+   `cash_offers.case_id`, mirrors the existing `resolveItemCaseId(itemId)`.
+2. `authorize(actor, c => canWriteCase(c, caseId))` — produces a clean
+   `401`/`403` with no DB error in the body.
+3. The action then runs and the DB-side RLS policy is the second line of
+   defense.
+
+In demo mode all of this short-circuits to "allow" so seeded flows still
+work without env vars.
+
+The same pattern hardens `/api/portal/offers/accept`: when the caller does
+not supply a `caseId`, we resolve it from the offer row rather than
+trusting the absence as "no scope".
+
+## 10. Rate limiting for portal write routes
+
+All `/api/portal/*` write routes now flow through a centralized rate
+limiter at `src/app/api/portal/_rate-limit.ts`. The shape:
+
+- **Sliding-window counter** keyed by `<category>:<actorKey>`.
+- **`actorKey`** prefers the authenticated `userId`; falls back to the
+  inbound `x-forwarded-for` / `x-real-ip` header in live mode and to a
+  deterministic `demo:<actorLabel>` token in demo mode.
+- **Per-category limits.** Money-movement and trust receipts are the
+  tightest; the capture checklist is loosest because it fires on every
+  field tap during a walkthrough.
+
+| Category        | Default limit | Window | Routes                                                             |
+|-----------------|---------------|--------|--------------------------------------------------------------------|
+| `offer`         | 20            | 60 s   | `offers/accept`, `offers/counter`                                  |
+| `item-write`    | 60            | 60 s   | `items/[itemId]/floor`, `…/disposition`, `…/stop-sell`             |
+| `expert-review` | 30            | 60 s   | `items/[itemId]/expert-review`                                     |
+| `payout`        | 5             | 60 s   | `payouts/request`                                                  |
+| `donation`      | 10            | 60 s   | `donations/routing`                                                |
+| `capture`       | 240           | 60 s   | `capture/checklist`                                                |
+| `statement`     | 10            | 60 s   | `statements/request`                                               |
+| `trust-receipt` | 30            | 60 s   | `trust-receipts`                                                   |
+
+When a limit is hit the route returns:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 42
+Content-Type: application/json
+
+{
+  "ok": false,
+  "error": "Too many requests. Please slow down and try again shortly.",
+  "category": "payout",
+  "retryAfterSeconds": 42,
+  "limit": 5
+}
+```
+
+Each limit hit also writes one `[rate-limit] denied …` line to server
+logs — a minimal, dependency-free observability hook. Production
+deployments should pipe this to a real logger / SIEM.
+
+### ⚠️ Production caveat — single instance only
+
+The bucket map lives in process memory (`globalThis.__portalRateLimitBuckets`).
+On any multi-instance deployment (Vercel Functions, multiple Node
+containers, Lambda concurrency) every instance keeps its own copy and the
+effective per-user limit is `instances × limit`. Before relying on this
+in production, replace the in-memory bucket store with one of:
+
+- **Upstash Redis** (`@upstash/ratelimit`) — drop-in token bucket / sliding
+  window with a hosted Redis. Simplest path on Vercel.
+- **Self-hosted Redis** behind the API runtime — same library as above
+  but pointing at your own Redis.
+- **Supabase RPC** that does an atomic `INSERT … ON CONFLICT DO UPDATE`
+  on a `rate_limit_buckets` table keyed by `(category, actor_key, window_start)`.
+  Stays inside the existing trust boundary at the cost of a DB round-trip
+  per write.
+
+The shape of `enforceRateLimit(category, req, ctx)` is designed so the
+swap is a one-file change: every route handler keeps the same call site.
+
+### Manual verification checklist (rate limiting + counter-offer auth)
+
+Run against `next dev`:
+
+1. **Counter-offer requires case write access (live mode).** Sign in as
+   user A who owns case `JOB-1`. POST
+   `/api/portal/offers/counter` with an `offerId` whose `case_id` is
+   `JOB-2`. Expect `403` with reason
+   `"You do not have write access to the case for this offer"`.
+2. **Counter-offer succeeds for the case owner.** Repeat as the owner of
+   case `JOB-2`. Expect `200` with `ok: true`.
+3. **Demo mode counter-offer.** Unset `NEXT_PUBLIC_SUPABASE_URL`,
+   restart, POST a counter-offer. Expect `200` and a deterministic
+   response.
+4. **Payout request 429.** As a signed-in case owner, fire `POST
+   /api/portal/payouts/request` six times within a minute. Expect the
+   sixth to return `429` with `Retry-After`.
+5. **Capture checklist tolerates burst.** As ops, fire 100 checklist
+   updates back-to-back. Expect all `200` (limit is 240/min).
+6. **Trust receipt log line on deny.** Fire >30 trust receipts in a
+   minute and confirm a `[rate-limit] denied category=trust-receipt`
+   line appears in server logs.
+
+When all six pass the gap is closed for single-instance dev; production
+still needs the durable backing store described above.
