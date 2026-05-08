@@ -55,20 +55,20 @@ const entityTypeBadge: Record<EntityType, { bg: string; text: string }> = {
 };
 
 const mockAuditEntries: AuditEntry[] = [
-  { id: "AE-001", timestamp: "2026-04-17 10:42 AM", actor: "Catherine Reynolds", action: "approve", entityType: "item", entityId: "ITM-4201", description: "Approved price band for Chippendale Tall-Boy Chest" },
-  { id: "AE-002", timestamp: "2026-04-17 10:30 AM", actor: "Sarah Mitchell", action: "flag", entityType: "item", entityId: "ITM-4098", description: "Flagged as prohibited: Ivory-Handled Letter Opener Set" },
-  { id: "AE-003", timestamp: "2026-04-17 09:55 AM", actor: "David Chen", action: "update", entityType: "channel", entityId: "ch-ebay", description: "Updated eBay rate limits", oldValue: "150/day", newValue: "200/day" },
-  { id: "AE-004", timestamp: "2026-04-17 09:42 AM", actor: "Catherine Reynolds", action: "login", entityType: "user", entityId: "USR-001", description: "Admin login from 192.168.1.42" },
-  { id: "AE-005", timestamp: "2026-04-16 04:30 PM", actor: "Catherine Reynolds", action: "role_change", entityType: "user", entityId: "USR-007", oldValue: "ops", newValue: "inactive", description: "Changed role for Laura Prescott" },
+  { id: "AE-001", timestamp: "2026-04-17 10:42 AM", actor: "Sample Reviewer", action: "approve", entityType: "item", entityId: "ITM-4201", description: "Approved price band for Chippendale Tall-Boy Chest" },
+  { id: "AE-002", timestamp: "2026-04-17 10:30 AM", actor: "Sample User", action: "flag", entityType: "item", entityId: "ITM-4098", description: "Flagged as prohibited: Ivory-Handled Letter Opener Set" },
+  { id: "AE-003", timestamp: "2026-04-17 09:55 AM", actor: "Sample Admin", action: "update", entityType: "channel", entityId: "ch-ebay", description: "Updated eBay rate limits", oldValue: "150/day", newValue: "200/day" },
+  { id: "AE-004", timestamp: "2026-04-17 09:42 AM", actor: "Sample Reviewer", action: "login", entityType: "user", entityId: "USR-001", description: "Admin login from 192.168.1.42" },
+  { id: "AE-005", timestamp: "2026-04-16 04:30 PM", actor: "Sample Reviewer", action: "role_change", entityType: "user", entityId: "USR-007", oldValue: "ops", newValue: "inactive", description: "Changed role for Laura Prescott" },
   { id: "AE-006", timestamp: "2026-04-16 03:15 PM", actor: "James Kimball", action: "reject", entityType: "item", entityId: "ITM-4090", description: "Rejected pricing for Reproduction Tiffany Lamp" },
-  { id: "AE-007", timestamp: "2026-04-16 02:00 PM", actor: "Sarah Mitchell", action: "approve", entityType: "item", entityId: "ITM-4185", description: "Authenticated Patek Philippe — marked as genuine" },
-  { id: "AE-008", timestamp: "2026-04-16 11:20 AM", actor: "Catherine Reynolds", action: "update", entityType: "policy", entityId: "POL-003", description: "Updated prohibited items list", oldValue: "v3.6", newValue: "v3.7" },
-  { id: "AE-009", timestamp: "2026-04-15 05:00 PM", actor: "David Chen", action: "create", entityType: "job", entityId: "JOB-1048", description: "Created new job: Harrington Estate clearance" },
-  { id: "AE-010", timestamp: "2026-04-15 03:30 PM", actor: "Catherine Reynolds", action: "override", entityType: "item", entityId: "ITM-4055", description: "Overrode prohibited flag — item cleared for sale" },
-  { id: "AE-011", timestamp: "2026-04-15 02:00 PM", actor: "Catherine Reynolds", action: "create", entityType: "partner", entityId: "PTR-007", description: "Added new partner: Thomas Whitfield" },
-  { id: "AE-012", timestamp: "2026-04-15 11:45 AM", actor: "Sarah Mitchell", action: "update", entityType: "item", entityId: "ITM-4170", oldValue: "pending_review", newValue: "approved", description: "QA approved George III Mahogany Breakfront" },
-  { id: "AE-013", timestamp: "2026-04-14 04:30 PM", actor: "David Chen", action: "delete", entityType: "item", entityId: "ITM-3990", description: "Removed duplicate listing for Wedgwood Jasperware Vase" },
-  { id: "AE-014", timestamp: "2026-04-14 02:15 PM", actor: "Catherine Reynolds", action: "update", entityType: "dispute", entityId: "DSP-003", oldValue: "investigating", newValue: "escalated", description: "Escalated Cartier Santos chargeback dispute" },
+  { id: "AE-007", timestamp: "2026-04-16 02:00 PM", actor: "Sample User", action: "approve", entityType: "item", entityId: "ITM-4185", description: "Authenticated Patek Philippe — marked as genuine" },
+  { id: "AE-008", timestamp: "2026-04-16 11:20 AM", actor: "Sample Reviewer", action: "update", entityType: "policy", entityId: "POL-003", description: "Updated prohibited items list", oldValue: "v3.6", newValue: "v3.7" },
+  { id: "AE-009", timestamp: "2026-04-15 05:00 PM", actor: "Sample Admin", action: "create", entityType: "job", entityId: "JOB-1048", description: "Created new job: Harrington Estate clearance" },
+  { id: "AE-010", timestamp: "2026-04-15 03:30 PM", actor: "Sample Reviewer", action: "override", entityType: "item", entityId: "ITM-4055", description: "Overrode prohibited flag — item cleared for sale" },
+  { id: "AE-011", timestamp: "2026-04-15 02:00 PM", actor: "Sample Reviewer", action: "create", entityType: "partner", entityId: "PTR-007", description: "Added new partner: Thomas Whitfield" },
+  { id: "AE-012", timestamp: "2026-04-15 11:45 AM", actor: "Sample User", action: "update", entityType: "item", entityId: "ITM-4170", oldValue: "pending_review", newValue: "approved", description: "QA approved George III Mahogany Breakfront" },
+  { id: "AE-013", timestamp: "2026-04-14 04:30 PM", actor: "Sample Admin", action: "delete", entityType: "item", entityId: "ITM-3990", description: "Removed duplicate listing for Wedgwood Jasperware Vase" },
+  { id: "AE-014", timestamp: "2026-04-14 02:15 PM", actor: "Sample Reviewer", action: "update", entityType: "dispute", entityId: "DSP-003", oldValue: "investigating", newValue: "escalated", description: "Escalated Cartier Santos chargeback dispute" },
   { id: "AE-015", timestamp: "2026-04-14 10:00 AM", actor: "James Kimball", action: "flag", entityType: "item", entityId: "ITM-4102", description: "Flagged as prohibited: Military Gas Mask Collection" },
 ];
 
@@ -103,7 +103,7 @@ export default function AuditLogPage() {
   }
 
   return (
-    <AppShell role="admin" userName="Catherine Reynolds" orgName="Administration">
+    <AppShell role="admin" userName="Sample Reviewer" orgName="Administration">
 <div className="flex flex-1">
 <main className="flex-1 p-6 md:p-8 space-y-8 overflow-auto">
           {/* Heading */}

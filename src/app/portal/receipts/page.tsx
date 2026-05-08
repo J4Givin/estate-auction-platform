@@ -23,8 +23,8 @@ export default function ReceiptsPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Open Dispute" primaryHref="/portal/concierge" />}
     >
       <PageHeader

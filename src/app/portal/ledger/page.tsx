@@ -51,7 +51,7 @@ export default function LedgerPage() {
     try {
       await portalWrite(
         '/api/portal/payouts/request',
-        { caseId: P.jobId, amount: P.availableForPayout, actor: 'Sarah Mitchell' },
+        { caseId: P.jobId, amount: P.availableForPayout, actor: 'Sample User' },
         { idempotencyKey: newIdempotencyKey() },
       )
     } catch {}
@@ -60,8 +60,8 @@ export default function LedgerPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Request Payout" primaryHref="/portal/ledger#payout" />}
     >
       <PageHeader

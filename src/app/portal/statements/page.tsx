@@ -8,8 +8,8 @@ export default function StatementsPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Request Statement" primaryHref="/portal/statements" />}
     >
       <PageHeader

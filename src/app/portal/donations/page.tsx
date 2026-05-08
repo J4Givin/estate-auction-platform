@@ -31,7 +31,7 @@ export default function DonationsPage() {
     setCharities(prev => prev.map(c => c.id === id ? { ...c, selected: !c.selected } : c))
     void portalWrite(
       '/api/portal/donations/routing',
-      { caseId: estate.data.jobId, charityId: id, actor: 'Sarah Mitchell' },
+      { caseId: estate.data.jobId, charityId: id, actor: 'Sample User' },
       { idempotencyKey: newIdempotencyKey() },
     ).catch(() => {})
   }
@@ -41,8 +41,8 @@ export default function DonationsPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Route to Donate" primaryHref="/portal/donations" />}
     >
       <PageHeader

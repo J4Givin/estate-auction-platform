@@ -271,7 +271,7 @@ export const INVENTORY: InventoryItem[] = [
     confidence: 'high',
     aiRationale: 'Identified as sentimental personal photos. Locked from sale.',
     humanReviewed: true,
-    reviewer: { name: 'Sarah Chen', role: 'Estate Coordinator', date: '2026-04-21', rationale: 'Customer-locked. Returned to family.' },
+    reviewer: { name: 'Estate Coordinator (Sample)', role: 'Estate Coordinator', date: '2026-04-21', rationale: 'Customer-locked. Returned to family.' },
     comps: [],
     flags: ['CUSTOMER_LOCKED', 'PII_REDACTED'],
   },
@@ -317,7 +317,7 @@ export const INVENTORY: InventoryItem[] = [
 ]
 
 export const PORTFOLIO_SUMMARY = {
-  estateName: 'Mitchell Estate',
+  estateName: 'Sample Estate',
   jobId: 'JOB-2026-0418',
   itemsTotal: 52,
   itemsCataloged: 47,
@@ -777,7 +777,7 @@ export const EXPERTS: Expert[] = [
   { id: 'EXP-04', name: 'Inez Kotov', specialty: 'Horology · Vintage Watches', credential: 'WOSTEP Certified', rating: 4.9, reviewsCount: 318, accuracy: 0.97, responseTime: '< 2h', status: 'available', bio: 'Mechanical movement verification + period correctness.', region: 'Mountain', hourlyRate: 200 },
   { id: 'EXP-05', name: 'Yara Idrissi', specialty: 'Rugs & Textiles', credential: 'ORRA Member', rating: 4.6, reviewsCount: 174, accuracy: 0.91, responseTime: '< 8h', status: 'available', bio: 'Persian, Turkish, and Caucasian rug attribution + dating.', region: 'East Coast', hourlyRate: 160 },
   { id: 'EXP-06', name: 'Devon Bao', specialty: 'Jewelry · GIA', credential: 'GIA GG', rating: 4.8, reviewsCount: 402, accuracy: 0.94, responseTime: '< 5h', status: 'unavailable', bio: 'Stone identification, treatment disclosure, and natural-vs-lab analysis.', region: 'Pacific', hourlyRate: 220 },
-  { id: 'EXP-07', name: 'Sarah Chen', specialty: 'Estate Coordinator · Concierge', credential: 'Estate Coordinator', rating: 4.9, reviewsCount: 612, accuracy: 0.99, responseTime: '< 1h', status: 'available', bio: 'White-glove executor and family liaison; manages stop-sell, locks, and family-only items.', region: 'Pacific', hourlyRate: 95 },
+  { id: 'EXP-07', name: 'Estate Coordinator (Sample)', specialty: 'Estate Coordinator · Concierge', credential: 'Estate Coordinator', rating: 4.9, reviewsCount: 612, accuracy: 0.99, responseTime: '< 1h', status: 'available', bio: 'White-glove executor and family liaison; manages stop-sell, locks, and family-only items.', region: 'Pacific', hourlyRate: 95 },
 ]
 
 export type ExpertQueueState = 'needed' | 'assigned' | 'in_review' | 'verified' | 'escalated'
@@ -1038,7 +1038,7 @@ export const TRUST_RECEIPTS: TrustReceiptData[] = [
     what: 'Routed to Habitat for Humanity Greater LA. Tax receipt scheduled.',
     why: 'Low-velocity, low-margin items get more good as donations than open-market resale.',
     evidence: ['Habitat EIN 95-1234567', 'Customer-confirmed charity 2026-04-25', 'IRS 8283 thresholds checked'],
-    approver: 'Sarah Chen',
+    approver: 'Estate Coordinator (Sample)',
     approverRole: 'Estate Coordinator',
     timestamp: '2026-04-25T15:00:00Z',
     immutableSnapshotId: 'snap_7f30c1d',
@@ -1051,7 +1051,7 @@ export const TRUST_RECEIPTS: TrustReceiptData[] = [
     what: 'Item locked. Removed from any future listing or donation routing.',
     why: 'Customer flagged as sentimental personal property.',
     evidence: ['Customer ack 2026-04-21', 'PII redaction confirmed', 'No listing channel touched'],
-    approver: 'Sarah Mitchell (Customer)',
+    approver: 'Sample Customer',
     approverRole: 'Estate Owner',
     timestamp: '2026-04-21T12:11:00Z',
     immutableSnapshotId: 'snap_8a44b22',
@@ -1176,7 +1176,7 @@ export interface OpsEvent {
 }
 
 export const OPS_EVENTS: OpsEvent[] = [
-  { id: 'OE-101', kind: 'pickup_scheduled', jobId: 'JOB-2026-0418', title: 'Pickup scheduled — Mitchell Estate', detail: 'Crew of 2 dispatched 2026-05-04 09:00. Climate truck reserved.', ts: '2026-05-02 11:00', status: 'ok', owner: 'Alex Rivera', evidence: ['Route confirmed', 'COI on file'] },
+  { id: 'OE-101', kind: 'pickup_scheduled', jobId: 'JOB-2026-0418', title: 'Pickup scheduled — Sample Estate', detail: 'Crew of 2 dispatched 2026-05-04 09:00. Climate truck reserved.', ts: '2026-05-02 11:00', status: 'ok', owner: 'Sample Operator', evidence: ['Route confirmed', 'COI on file'] },
   { id: 'OE-102', kind: 'authentication_started', itemId: 'ITM-1041', jobId: 'JOB-2026-0418', title: 'Authentication started — Tiffany Lamp', detail: 'Helena Choe (ASA) on-site appointment booked 2026-05-05.', ts: '2026-05-02 09:15', status: 'attention', owner: 'Helena Choe', evidence: ['Snapshot snap_4c91d22', 'Specialist contract on file'] },
   { id: 'OE-103', kind: 'custody_transfer', itemId: 'ITM-1042', jobId: 'JOB-2026-0418', title: 'Chain of custody — Silver Candelabra', detail: 'Tagged ITM-1042-A/B. Sealed in tamper-evident bags.', ts: '2026-04-29 14:11', status: 'ok', evidence: ['Tag photo', 'Crew manifest'] },
   { id: 'OE-104', kind: 'storage_logged', itemId: 'ITM-1047', jobId: 'JOB-2026-0418', title: 'Storage logged — Scholar’s Desk', detail: 'Bay LA-04 / 12. Climate range 18–22°C.', ts: '2026-04-22 15:31', status: 'ok' },
@@ -1271,7 +1271,7 @@ export interface ConciergeMember {
 }
 
 export const CONCIERGE_TEAM: ConciergeMember[] = [
-  { name: 'Sarah Chen', role: 'Estate Coordinator', avatarColor: '#826DEE', state: 'with_you', nextAvailable: 'now', phone: '+1-310-555-0192', bio: 'Your primary executor liaison. Handles family-only items and stop-sell.' },
+  { name: 'Estate Coordinator (Sample)', role: 'Estate Coordinator', avatarColor: '#826DEE', state: 'with_you', nextAvailable: 'now', phone: '+1-310-555-0192', bio: 'Your primary executor liaison. Handles family-only items and stop-sell.' },
   { name: 'David Okonkwo', role: 'Liquidity Advisor', avatarColor: '#FFDB15', state: 'available', nextAvailable: 'today 2pm PT', bio: 'Helps you decide between cash now and managed sale per lot.' },
   { name: 'Maya Patel', role: 'Donation & Tax', avatarColor: '#0E9F6E', state: 'scheduled', nextAvailable: 'tomorrow 10am PT', bio: 'Tax-receipt strategist; 8283 thresholds and charity routing.' },
 ]
@@ -1280,7 +1280,7 @@ export const CONCIERGE_TIMELINE = [
   { id: 'CT-1', date: '2026-05-02', label: 'Sarah called you re: pickup window', kind: 'call', color: '#826DEE' },
   { id: 'CT-2', date: '2026-04-30', label: 'David texted you re: Tiffany authentication', kind: 'text', color: '#FFDB15' },
   { id: 'CT-3', date: '2026-04-25', label: 'Maya emailed you tax-receipt summary', kind: 'email', color: '#0E9F6E' },
-  { id: 'CT-4', date: '2026-04-18', label: 'Welcome call — Sarah Chen', kind: 'call', color: '#826DEE' },
+  { id: 'CT-4', date: '2026-04-18', label: 'Welcome call — Estate Coordinator (Sample)', kind: 'call', color: '#826DEE' },
 ]
 
 /* ═══════════════════════════════════════════════════════════════

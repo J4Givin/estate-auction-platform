@@ -24,7 +24,7 @@ export default function OffersPage() {
     try {
       await portalWrite(
         '/api/portal/offers/accept',
-        { offerId, actor: 'Sarah Mitchell' },
+        { offerId, actor: 'Sample User' },
         { idempotencyKey: newIdempotencyKey() },
       )
     } catch {}
@@ -34,7 +34,7 @@ export default function OffersPage() {
     try {
       await portalWrite(
         '/api/portal/offers/counter',
-        { offerId, counterAmount: amount, actor: 'Sarah Mitchell' },
+        { offerId, counterAmount: amount, actor: 'Sample User' },
         { idempotencyKey: newIdempotencyKey() },
       )
     } catch {}
@@ -43,8 +43,8 @@ export default function OffersPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Take Cash" primaryHref="#stack" />}
     >
       <PageHeader

@@ -31,16 +31,16 @@ const mockQueueItems: QueueItem[] = [
   { id: "ITM-003", title: "Persian Kashan Silk Rug 12x16", category: "Rugs", value: 2800000, confidence: 78, slaRemaining: 30, assignee: "James K.", status: "qa_required" },
   { id: "ITM-004", title: "Pair of Meissen Porcelain Figurines", category: "Ceramics", value: 1850000, confidence: 95, slaRemaining: 45, assignee: "James K.", status: "pending_review" },
   { id: "ITM-005", title: "Art Deco Diamond Brooch (3.2ct)", category: "Jewelry", value: 1500000, confidence: 63, slaRemaining: 90, assignee: null, status: "qa_required" },
-  { id: "ITM-006", title: "Chippendale Mahogany Highboy", category: "Furniture", value: 1200000, confidence: 88, slaRemaining: 120, assignee: "Sarah M.", status: "pending_review" },
+  { id: "ITM-006", title: "Chippendale Mahogany Highboy", category: "Furniture", value: 1200000, confidence: 88, slaRemaining: 120, assignee: "Sample User", status: "pending_review" },
   { id: "ITM-007", title: "Sterling Silver Tea Service (6pc)", category: "Silver", value: 950000, confidence: 91, slaRemaining: -120, assignee: null, status: "pending_review" },
   { id: "ITM-008", title: "Carved Jade Dragon Figurine", category: "Asian Art", value: 750000, confidence: 55, slaRemaining: 150, assignee: null, status: "qa_required" },
-  { id: "ITM-009", title: "Signed Chihuly Glass Bowl", category: "Art Glass", value: 650000, confidence: 96, slaRemaining: 180, assignee: "Sarah M.", status: "pending_review" },
+  { id: "ITM-009", title: "Signed Chihuly Glass Bowl", category: "Art Glass", value: 650000, confidence: 96, slaRemaining: 180, assignee: "Sample User", status: "pending_review" },
   { id: "ITM-010", title: "Antique Grandfather Clock (circa 1880)", category: "Clocks", value: 480000, confidence: 82, slaRemaining: 45, assignee: null, status: "pending_review" },
   { id: "ITM-011", title: "Mid-Century Eames Lounge Chair", category: "Furniture", value: 420000, confidence: 97, slaRemaining: 200, assignee: "James K.", status: "pending_review" },
   { id: "ITM-012", title: "Vintage Hermes Birkin Bag", category: "Accessories", value: 380000, confidence: 89, slaRemaining: 60, assignee: null, status: "qa_required" },
   { id: "ITM-013", title: "Oil Painting — Hudson River School", category: "Fine Art", value: 320000, confidence: 72, slaRemaining: 100, assignee: null, status: "pending_review" },
   { id: "ITM-014", title: "Antique Samurai Katana (Edo Period)", category: "Weapons", value: 280000, confidence: 61, slaRemaining: 25, assignee: null, status: "qa_required" },
-  { id: "ITM-015", title: "Royal Copenhagen Flora Danica Plate", category: "Ceramics", value: 150000, confidence: 94, slaRemaining: 240, assignee: "Sarah M.", status: "pending_review" },
+  { id: "ITM-015", title: "Royal Copenhagen Flora Danica Plate", category: "Ceramics", value: 150000, confidence: 94, slaRemaining: 240, assignee: "Sample User", status: "pending_review" },
 ];
 
 function getSlaColor(minutes: number): string {
@@ -92,7 +92,7 @@ export default function QueuePage() {
   };
 
   return (
-    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+    <AppShell role="ops" userName="Sample Operator" orgName="Operations">
 <div className="flex flex-1">
 <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           <h1 className="text-3xl font-semibold text-charcoal font-[family-name:var(--font-display)] mb-6">

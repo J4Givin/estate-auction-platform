@@ -33,7 +33,7 @@ const mockItem = {
   previousNotes: [
     {
       date: "2026-04-14",
-      author: "Sarah M.",
+      author: "Sample User",
       note: "Initial review suggests genuine. Serial number visible on case back. Requesting full authentication workup due to high value.",
     },
   ],

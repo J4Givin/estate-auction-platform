@@ -47,8 +47,8 @@ const mockJob = {
   activityLog: [
     { action: "Job moved to Processing", user: "System", time: "2026-04-16T14:30:00Z" },
     { action: "QA completed for 12 items", user: "James K.", time: "2026-04-16T11:15:00Z" },
-    { action: "Capture session completed", user: "Sarah M.", time: "2026-04-11T17:45:00Z" },
-    { action: "Job scheduled", user: "Sarah M.", time: "2026-04-08T09:00:00Z" },
+    { action: "Capture session completed", user: "Sample User", time: "2026-04-11T17:45:00Z" },
+    { action: "Job scheduled", user: "Sample User", time: "2026-04-08T09:00:00Z" },
     { action: "Job created from lead", user: "System", time: "2026-04-07T16:20:00Z" },
   ],
 };
@@ -57,7 +57,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ jobId: str
   const { jobId } = use(params);
 
   return (
-    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+    <AppShell role="ops" userName="Sample Operator" orgName="Operations">
 <div className="flex flex-1">
 <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           {/* Breadcrumb */}

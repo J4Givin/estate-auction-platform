@@ -14,8 +14,8 @@ export default function CompliancePage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Generate Pack" primaryHref="/portal/compliance#pack" />}
     >
       <PageHeader
@@ -54,8 +54,8 @@ export default function CompliancePage() {
       <SectionCard title="Authority & Authorization" description="Who's allowed to make decisions on this estate.">
         <div className="border border-[#E0E0E0] bg-white">
           {[
-            { who: 'Sarah Mitchell', role: 'Executor', authority: 'Letters Testamentary 2026-04-18', status: 'green' as const },
-            { who: 'David Mitchell', role: 'Co-executor', authority: 'Co-signed authorization 2026-04-18', status: 'green' as const },
+            { who: 'Sample User', role: 'Executor', authority: 'Letters Testamentary 2026-04-18', status: 'green' as const },
+            { who: 'Sample Co-executor', role: 'Co-executor', authority: 'Co-signed authorization 2026-04-18', status: 'green' as const },
             { who: 'Estate Liquidity Platform', role: 'Service provider', authority: 'Customer authorization e-sign', status: 'green' as const },
           ].map(p => (
             <div key={p.who} className="border-b border-[#F0F0F0] last:border-b-0 px-4 sm:px-6 py-4 flex items-center gap-3" data-testid={`authority-${p.who.split(' ')[0].toLowerCase()}`}>

@@ -1,0 +1,80 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { PublicShell } from '@/components/public/PublicShell'
+import { PageHero, Section, CTABanner } from '@/components/public/PageHero'
+
+export const metadata: Metadata = {
+  title: 'Contact Estate Liquidity',
+  description:
+    'Talk to our team about a property, timeline, or item category. Free walkthroughs in Los Angeles and surrounding markets.',
+  alternates: { canonical: '/contact' },
+}
+
+export default function ContactPage() {
+  return (
+    <PublicShell>
+      <PageHero
+        eyebrow="Contact"
+        title={<>Talk to a person<br/>who gets it.</>}
+        intro={<>Tell us what you are working through. We will review the property, timeline, and item categories, then follow up with the best path forward — no obligation, no immediate account creation.</>}
+      />
+
+      <Section>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+          <div className="md:col-span-5">
+            <span className="label block mb-5">Reach us</span>
+            <h2 className="text-[24px] md:text-[28px] leading-tight"
+                style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+              We respond within one business day.
+            </h2>
+
+            <div className="mt-8 border-t border-[#E0E0E0]">
+              {[
+                ['Service area', 'Los Angeles and surrounding markets.'],
+                ['Email', 'hello@example.com'],
+                ['Phone', 'Available after first contact.'],
+                ['Hours', 'Mon–Fri, 9am–6pm Pacific. Saturdays by appointment.'],
+              ].map(([t, b]) => (
+                <div key={t} className="border-b border-[#E0E0E0] py-5">
+                  <p className="label text-[#6B6B6B] mb-1.5">{t}</p>
+                  <p className="text-[16px]" style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>{b}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="label text-[#6B6B6B] mt-8 leading-relaxed max-w-md">
+              For urgent move-out deadlines or sensitive estate situations, mention the timeline in your request and we will prioritize follow-up.
+            </p>
+          </div>
+
+          <div className="md:col-span-7">
+            <div className="border border-[#E0E0E0] p-8 md:p-12 bg-white">
+              <span className="label block mb-5">Preferred path</span>
+              <h3 className="text-[24px] md:text-[28px] mb-4 leading-tight"
+                  style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+                Request a Free Estate Walkthrough
+              </h3>
+              <p className="body-light mb-6 leading-relaxed">
+                Our walkthrough request form captures the details we need — property, timeline, item categories, role — so the first call is useful from the first minute.
+              </p>
+              <Link href="/request-walkthrough" className="btn btn-ink">Open the request form →</Link>
+
+              <div className="mt-10 border-t border-[#E0E0E0] pt-8">
+                <span className="label block mb-3">Are you a partner?</span>
+                <p className="body-light mb-5 leading-relaxed">
+                  Realtors, attorneys, fiduciaries, and senior move managers can submit a referral or learn about the partner program.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/partners" className="btn btn-outline">Refer an estate</Link>
+                  <Link href="/partners#program" className="btn btn-outline">Become a partner</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <CTABanner heading="Prefer to start with a request?" body="The walkthrough form is the fastest way to begin. We will follow up with next steps." />
+    </PublicShell>
+  )
+}

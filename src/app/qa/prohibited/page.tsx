@@ -37,7 +37,7 @@ const flaggedItems: FlaggedItem[] = [
     title: "Ivory-Handled Letter Opener Set (4 pc)",
     category: "Desk Accessories",
     reasonFlagged: "Contains ivory — prohibited under federal and state wildlife laws",
-    flaggedBy: "Sarah M.",
+    flaggedBy: "Sample User",
     dateFlagged: "2026-04-15",
     description: "Set of four letter openers with carved ivory handles and sterling silver blades. London hallmarks date to c.1920. Ivory content confirmed via visual inspection — distinctive Schreger lines visible.",
     photos: ["hero", "detail", "maker_mark"],

@@ -46,8 +46,8 @@ const roleBadgeStyles: Record<UserRole, { bg: string; text: string }> = {
 
 const mockUsers: AppUser[] = [
   { id: "USR-001", name: "Catherine Reynolds", email: "c.reynolds@estateliquidity.com", role: "admin", status: "active", lastActive: "2026-04-17 09:42 AM" },
-  { id: "USR-002", name: "David Chen", email: "d.chen@estateliquidity.com", role: "ops", status: "active", lastActive: "2026-04-17 10:15 AM" },
-  { id: "USR-003", name: "Sarah Mitchell", email: "s.mitchell@estateliquidity.com", role: "qa", status: "active", lastActive: "2026-04-17 08:30 AM" },
+  { id: "USR-002", name: "Sample Admin", email: "d.chen@estateliquidity.com", role: "ops", status: "active", lastActive: "2026-04-17 10:15 AM" },
+  { id: "USR-003", name: "Sample User", email: "s.mitchell@estateliquidity.com", role: "qa", status: "active", lastActive: "2026-04-17 08:30 AM" },
   { id: "USR-004", name: "James Kimball", email: "j.kimball@estateliquidity.com", role: "qa", status: "active", lastActive: "2026-04-16 05:45 PM" },
   { id: "USR-005", name: "Margaret Thornton", email: "m.thornton@example.com", role: "customer", status: "active", lastActive: "2026-04-15 02:20 PM" },
   { id: "USR-006", name: "Robert Hargreaves", email: "r.hargreaves@realtypartners.com", role: "partner", status: "active", lastActive: "2026-04-14 11:00 AM" },
@@ -59,7 +59,7 @@ const recentAuditActions: AuditAction[] = [
   { id: "AUD-001", actor: "Catherine Reynolds", action: "Changed role", target: "Laura Prescott (ops -> inactive)", timestamp: "2026-04-16 04:30 PM" },
   { id: "AUD-002", actor: "Catherine Reynolds", action: "Suspended user", target: "Thomas Whitfield", timestamp: "2026-04-15 11:20 AM" },
   { id: "AUD-003", actor: "Catherine Reynolds", action: "Invited user", target: "James Kimball (qa)", timestamp: "2026-04-12 09:15 AM" },
-  { id: "AUD-004", actor: "David Chen", action: "Updated permissions", target: "Sarah Mitchell — added prohibited-item-override", timestamp: "2026-04-10 02:40 PM" },
+  { id: "AUD-004", actor: "Sample Admin", action: "Updated permissions", target: "Sample User — added prohibited-item-override", timestamp: "2026-04-10 02:40 PM" },
   { id: "AUD-005", actor: "Catherine Reynolds", action: "Reset password", target: "Robert Hargreaves", timestamp: "2026-04-08 10:00 AM" },
 ];
 

@@ -31,8 +31,8 @@ const returnStatusStyles: Record<ReturnStatus, { bg: string; text: string }> = {
 const mockReturns: ReturnItem[] = [
   { id: "RET-001", orderId: "ORD-2990", itemTitle: "Antique Brass Telescope", buyer: "Michael Torres", reason: "Item not as described — lens has scratch not mentioned in listing", status: "requested", requestedDate: "2026-04-16" },
   { id: "RET-002", orderId: "ORD-2985", itemTitle: "Waterford Crystal Decanter Set", buyer: "Jennifer Adams", reason: "Received wrong item — got single decanter instead of set", status: "in_transit", requestedDate: "2026-04-14" },
-  { id: "RET-003", orderId: "ORD-2978", itemTitle: "Vintage Cartier Watch", buyer: "Steven Park", reason: "Authentication concerns — wants independent verification", status: "received", requestedDate: "2026-04-12" },
-  { id: "RET-004", orderId: "ORD-2965", itemTitle: "Art Deco Bronze Sculpture", buyer: "Laura Mitchell", reason: "Damaged in transit — base cracked", status: "refunded", requestedDate: "2026-04-08" },
+  { id: "RET-003", orderId: "ORD-2978", itemTitle: "Vintage Cartier Watch", buyer: "Sample Buyer 3", reason: "Authentication concerns — wants independent verification", status: "received", requestedDate: "2026-04-12" },
+  { id: "RET-004", orderId: "ORD-2965", itemTitle: "Art Deco Bronze Sculpture", buyer: "Sample Buyer 2", reason: "Damaged in transit — base cracked", status: "refunded", requestedDate: "2026-04-08" },
   { id: "RET-005", orderId: "ORD-2960", itemTitle: "Limoges Porcelain Dinner Set", buyer: "David Nguyen", reason: "Changed mind — no longer needed", status: "denied", requestedDate: "2026-04-06" },
   { id: "RET-006", orderId: "ORD-2952", itemTitle: "Pair of Georgian Silver Candlesticks", buyer: "Rachel Goldman", reason: "Size smaller than expected from photos", status: "requested", requestedDate: "2026-04-17" },
   { id: "RET-007", orderId: "ORD-2948", itemTitle: "Chinese Export Porcelain Vase", buyer: "Anthony Wells", reason: "Color significantly different from listing photos", status: "in_transit", requestedDate: "2026-04-15" },
@@ -47,7 +47,7 @@ function formatStatus(status: ReturnStatus): string {
 
 export default function ReturnsPage() {
   return (
-    <AppShell role="ops" userName="Alex Rivera" orgName="Operations">
+    <AppShell role="ops" userName="Sample Operator" orgName="Operations">
 <div className="flex flex-1">
 <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           <h1 className="text-3xl font-semibold text-charcoal font-[family-name:var(--font-display)] mb-6">

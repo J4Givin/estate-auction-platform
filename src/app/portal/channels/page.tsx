@@ -21,8 +21,8 @@ export default function ChannelsPage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Approve Listings" primaryHref="/portal/inventory?status=human_review" />}
     >
       <PageHeader

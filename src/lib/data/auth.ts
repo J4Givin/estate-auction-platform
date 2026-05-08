@@ -218,7 +218,7 @@ export async function getActorContext(): Promise<ActorContext> {
 
 /**
  * Resolve actor for a route, given an explicit fallback actor label
- * (e.g. when the request body says `actor: "Sarah Mitchell"` and the
+ * (e.g. when the request body says `actor: "Sample User"` and the
  * caller is in demo mode without a session).
  */
 export async function getActorContextWithFallback(fallbackLabel?: string | null): Promise<ActorContext> {

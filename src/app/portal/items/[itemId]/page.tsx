@@ -54,7 +54,7 @@ export default function ItemDetail() {
     setOpen(false)
     void portalWrite(
       `/api/portal/items/${decisionId}/disposition`,
-      { disposition, actor: 'Sarah Mitchell' },
+      { disposition, actor: 'Sample User' },
       { idempotencyKey: newIdempotencyKey() },
     ).catch(() => {})
   }
@@ -62,7 +62,7 @@ export default function ItemDetail() {
   const onStopSell = () => {
     void portalWrite(
       `/api/portal/items/${item.id}/stop-sell`,
-      { itemId: item.id, reason: 'Customer hold', actor: 'Sarah Mitchell' },
+      { itemId: item.id, reason: 'Customer hold', actor: 'Sample User' },
       { idempotencyKey: newIdempotencyKey() },
     ).catch(() => {})
   }
@@ -74,8 +74,8 @@ export default function ItemDetail() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Decide" primaryHref={`#decide-${item.id}`} />}
     >
       <div className="mb-6 flex items-center gap-3 text-[#6B6B6B]">

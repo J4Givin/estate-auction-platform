@@ -25,7 +25,7 @@ const QUEUES = [
 
 export default function OpsDashboard() {
   return (
-    <AppShell role="ops" userName="Alex Rivera" orgName="Estate Liquidity Ops">
+    <AppShell role="ops" userName="Sample Operator" orgName="Estate Liquidity Ops">
       <PageHeader
         eyebrow="Operations"
         title="Command Center."
@@ -116,7 +116,7 @@ export default function OpsDashboard() {
         <SectionCard title="Recent Jobs" description="Latest estate engagements.">
           <div className="flex flex-col" data-testid="ops-recent-jobs">
             {[
-              { client: 'Mitchell Estate', status: 'Active Selling', items: 52, net: '$14.8k', color: '#0E9F6E' },
+              { client: 'Sample Estate', status: 'Active Selling', items: 52, net: '$14.8k', color: '#0E9F6E' },
               { client: 'Rivera Family Trust', status: 'Cataloging', items: 31, net: '$2.1k', color: '#FFDB15' },
               { client: 'Chen Probate', status: 'Human Review', items: 18, net: '$0', color: '#F94500' },
               { client: 'Martinez Downsizing', status: 'Scheduled', items: 0, net: '—', color: '#6B6B6B' },

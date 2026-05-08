@@ -40,7 +40,7 @@ export default function PortalCommandCenter() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
+      userName="Sample User"
       orgName={P.estateName}
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} />}
     >

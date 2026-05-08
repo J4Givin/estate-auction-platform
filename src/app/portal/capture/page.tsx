@@ -38,7 +38,7 @@ export default function CapturePage() {
     try {
       await portalWrite(
         '/api/portal/capture/checklist',
-        { roomId: room.id, checklistItemId, done, actor: 'Sarah Mitchell' },
+        { roomId: room.id, checklistItemId, done, actor: 'Sample User' },
         { idempotencyKey: newIdempotencyKey() },
       )
     } catch {}
@@ -47,8 +47,8 @@ export default function CapturePage() {
   return (
     <AppShell
       role="customer"
-      userName="Sarah Mitchell"
-      orgName="Mitchell Estate"
+      userName="Sample User"
+      orgName="Sample Estate"
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Capture Now" primaryHref="/portal/capture" />}
     >
       <PageHeader
