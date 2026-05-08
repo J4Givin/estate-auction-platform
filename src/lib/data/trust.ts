@@ -53,12 +53,14 @@ export async function createTrustReceipt(
   try {
     // Lazy-import so the Supabase server client doesn't get pulled into
     // client bundles. Trust receipts are always written server-side.
-    const { createServiceClient } = await import('@/lib/supabase/server')
-    const sb = createServiceClient()
+    const { getServerSupabase } = await import('./supabase-server')
+    const sb = await getServerSupabase()
+    if (!sb) return { ok: false, mode: 'demo', error: 'supabase not configured' }
     const { error } = await sb.from('trust_receipts').insert({
       receipt_id: receipt.id,
       kind: receipt.kind,
-      item_id: receipt.itemId,
+      item_id: receipt.itemId ?? null,
+      case_id: input.caseId ?? null,
       title: receipt.title,
       what: receipt.what,
       why: receipt.why,

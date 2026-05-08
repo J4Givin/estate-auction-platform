@@ -27,8 +27,8 @@ import type {
 
 async function lazyServiceClient() {
   if (!isSupabaseConfigured()) return null
-  const { createServiceClient } = await import('@/lib/supabase/server')
-  return createServiceClient()
+  const { getServerSupabase } = await import('./supabase-server')
+  return await getServerSupabase()
 }
 
 export async function createAppraisalRun(input: AppraisalRunInput): Promise<WriteResult<{ runId: string }>> {

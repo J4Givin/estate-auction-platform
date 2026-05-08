@@ -18,6 +18,7 @@ import type {
   ChangeDispositionInput,
   CounterOfferInput,
   RequestPayoutInput,
+  RequestStatementInput,
   SetFloorPriceInput,
   StopSellInput,
   UpdateCaptureChecklistInput,
@@ -97,14 +98,59 @@ export const UpdateCaptureChecklistSchema = z.object({
   actor: z.string().min(1),
 })
 
+export const RequestStatementSchema = z.object({
+  caseId: z.string().min(1),
+  period: z.string().min(1),
+  actor: z.string().min(1),
+})
+
 /* ─── Helpers ─── */
 
 async function trySupabaseInsert(table: string, payload: Record<string, unknown>): Promise<string | null> {
   if (!isSupabaseConfigured()) return null
   try {
-    const { createServiceClient } = await import('@/lib/supabase/server')
-    const sb = createServiceClient()
+    const { getServerSupabase } = await import('./supabase-server')
+    const sb = await getServerSupabase()
+    if (!sb) return null
     const { error } = await sb.from(table).insert(payload)
+    if (error) return error.message
+    return null
+  } catch (err) {
+    return (err as Error).message
+  }
+}
+
+async function trySupabaseUpsert(
+  table: string,
+  payload: Record<string, unknown>,
+  onConflict: string,
+): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null
+  try {
+    const { getServerSupabase } = await import('./supabase-server')
+    const sb = await getServerSupabase()
+    if (!sb) return null
+    const { error } = await sb.from(table).upsert(payload, { onConflict })
+    if (error) return error.message
+    return null
+  } catch (err) {
+    return (err as Error).message
+  }
+}
+
+async function trySupabaseUpdate(
+  table: string,
+  patch: Record<string, unknown>,
+  match: Record<string, unknown>,
+): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null
+  try {
+    const { getServerSupabase } = await import('./supabase-server')
+    const sb = await getServerSupabase()
+    if (!sb) return null
+    let q = sb.from(table).update(patch)
+    for (const [k, v] of Object.entries(match)) q = q.eq(k, v as never)
+    const { error } = await q
     if (error) return error.message
     return null
   } catch (err) {
@@ -125,6 +171,8 @@ export async function acceptCashOffer(input: AcceptOfferInput): Promise<WriteRes
     actor: parsed.data.actor,
     decided_at: new Date().toISOString(),
   })
+  // Reflect status on the cash_offers row so UI lists update immediately.
+  await trySupabaseUpdate('cash_offers', { status: 'accepted', updated_at: new Date().toISOString() }, { offer_id: parsed.data.offerId })
 
   const receipt = await createTrustReceipt({
     kind: 'payout',
@@ -157,6 +205,7 @@ export async function counterOffer(input: CounterOfferInput): Promise<WriteResul
     actor: parsed.data.actor,
     decided_at: new Date().toISOString(),
   })
+  await trySupabaseUpdate('cash_offers', { status: 'countered', updated_at: new Date().toISOString() }, { offer_id: parsed.data.offerId })
 
   const receipt = await createTrustReceipt({
     kind: 'appraisal',
@@ -188,6 +237,11 @@ export async function setFloorPrice(input: SetFloorPriceInput): Promise<WriteRes
     actor: parsed.data.actor,
     decided_at: new Date().toISOString(),
   })
+  await trySupabaseUpdate(
+    'inventory_items',
+    { floor_price_cents: parsed.data.floorPrice * 100, updated_at: new Date().toISOString() },
+    { item_id: parsed.data.itemId },
+  )
 
   const receipt = await createTrustReceipt({
     kind: 'price_drop',
@@ -220,6 +274,11 @@ export async function changeDisposition(input: ChangeDispositionInput): Promise<
     actor: parsed.data.actor,
     decided_at: new Date().toISOString(),
   })
+  await trySupabaseUpdate(
+    'inventory_items',
+    { disposition: parsed.data.disposition, updated_at: new Date().toISOString() },
+    { item_id: parsed.data.itemId },
+  )
 
   const receipt = await createTrustReceipt({
     kind: parsed.data.disposition === 'donate' ? 'donation' : 'listing',
@@ -252,6 +311,11 @@ export async function stopSell(input: StopSellInput): Promise<WriteResult<{ item
     actor: parsed.data.actor,
     decided_at: new Date().toISOString(),
   })
+  await trySupabaseUpdate(
+    'inventory_items',
+    { status: 'on_hold', updated_at: new Date().toISOString() },
+    { item_id: parsed.data.itemId },
+  )
 
   const receipt = await createTrustReceipt({
     kind: 'stop_sell',
@@ -311,12 +375,17 @@ export async function updateDonationRouting(input: UpdateDonationRoutingInput): 
   const parsed = UpdateDonationRoutingSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
-  const sbErr = await trySupabaseInsert('donation_preferences', {
-    case_id: parsed.data.caseId,
-    charity_id: parsed.data.charityId,
-    actor: parsed.data.actor,
-    selected_at: new Date().toISOString(),
-  })
+  const sbErr = await trySupabaseUpsert(
+    'donation_preferences',
+    {
+      case_id: parsed.data.caseId,
+      charity_id: parsed.data.charityId,
+      selected: true,
+      actor: parsed.data.actor,
+      selected_at: new Date().toISOString(),
+    },
+    'case_id,charity_id',
+  )
 
   const receipt = await createTrustReceipt({
     kind: 'donation',
@@ -374,18 +443,57 @@ export async function updateCaptureChecklist(input: UpdateCaptureChecklistInput)
   const parsed = UpdateCaptureChecklistSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
-  const sbErr = await trySupabaseInsert('capture_checklist_state', {
-    room_id: parsed.data.roomId,
-    checklist_item_id: parsed.data.checklistItemId,
-    done: parsed.data.done,
-    actor: parsed.data.actor,
-    updated_at: new Date().toISOString(),
-  })
+  const sbErr = await trySupabaseUpsert(
+    'capture_checklist_state',
+    {
+      room_id: parsed.data.roomId,
+      checklist_item_id: parsed.data.checklistItemId,
+      done: parsed.data.done,
+      actor: parsed.data.actor,
+      updated_at: new Date().toISOString(),
+    },
+    'room_id,checklist_item_id',
+  )
 
   return {
     ok: !sbErr,
     mode: getDataMode(),
     data: parsed.data,
     error: sbErr ?? undefined,
+  }
+}
+
+export async function requestStatement(input: RequestStatementInput): Promise<WriteResult<{ caseId: string; period: string; statementId: string }>> {
+  const parsed = RequestStatementSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
+
+  const statementId = `STMT-${parsed.data.period.replace(/\s+/g, '-')}-${Date.now().toString(36).slice(-4).toUpperCase()}`
+
+  const sbErr = await trySupabaseInsert('statements', {
+    statement_id: statementId,
+    case_id: parsed.data.caseId,
+    period: parsed.data.period,
+    generated_at: new Date().toISOString(),
+    net_cents: 0,
+    status: 'generating',
+  })
+
+  const receipt = await createTrustReceipt({
+    kind: 'payout',
+    caseId: parsed.data.caseId,
+    title: `Statement requested — ${parsed.data.period}`,
+    what: `Statement generation requested for ${parsed.data.period}.`,
+    why: 'Customer-initiated statement generation.',
+    evidence: [`Period: ${parsed.data.period}`, `Statement: ${statementId}`],
+    approver: parsed.data.actor,
+    approverRole: 'Estate Owner',
+  })
+
+  return {
+    ok: !sbErr,
+    mode: getDataMode(),
+    data: { caseId: parsed.data.caseId, period: parsed.data.period, statementId },
+    error: sbErr ?? undefined,
+    trustReceiptId: receipt.trustReceiptId,
   }
 }

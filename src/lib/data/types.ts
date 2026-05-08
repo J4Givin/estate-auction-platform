@@ -149,6 +149,12 @@ export interface CounterOfferInput {
   actor: string
 }
 
+export interface RequestStatementInput {
+  caseId: string
+  period: string
+  actor: string
+}
+
 /* ─── Generic write result envelope ─── */
 
 export interface WriteResult<T = Record<string, unknown>> {

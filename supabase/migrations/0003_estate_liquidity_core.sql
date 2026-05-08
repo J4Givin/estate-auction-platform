@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS estate_cases (
 );
 CREATE INDEX IF NOT EXISTS idx_estate_cases_status ON estate_cases(status);
 CREATE INDEX IF NOT EXISTS idx_estate_cases_created_at ON estate_cases(created_at DESC);
+ALTER TABLE estate_cases ADD COLUMN IF NOT EXISTS charity_name text;
 
 -- ============================================================
 -- inventory_items
@@ -192,6 +193,8 @@ CREATE TABLE IF NOT EXISTS appraisal_stages (
 );
 CREATE INDEX IF NOT EXISTS idx_appraisal_stages_run ON appraisal_stages(run_id);
 CREATE INDEX IF NOT EXISTS idx_appraisal_stages_state ON appraisal_stages(state);
+ALTER TABLE appraisal_stages ADD COLUMN IF NOT EXISTS title text;
+ALTER TABLE appraisal_stages ADD COLUMN IF NOT EXISTS one_line text;
 
 CREATE TABLE IF NOT EXISTS appraisal_evidence (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -326,6 +329,12 @@ CREATE TABLE IF NOT EXISTS donation_preferences (
   selected_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_donation_preferences_case ON donation_preferences(case_id);
+CREATE UNIQUE INDEX IF NOT EXISTS uniq_donation_preferences_case_charity
+  ON donation_preferences(case_id, charity_id);
+-- Optional metadata for richer charity rendering
+ALTER TABLE donation_preferences ADD COLUMN IF NOT EXISTS mission text;
+ALTER TABLE donation_preferences ADD COLUMN IF NOT EXISTS tax_receipts integer NOT NULL DEFAULT 0;
+ALTER TABLE donation_preferences ADD COLUMN IF NOT EXISTS total_routed_cents bigint NOT NULL DEFAULT 0;
 
 -- ============================================================
 -- expert_profiles / expert_queue_items
@@ -484,6 +493,23 @@ CREATE TABLE IF NOT EXISTS learning_experiments (
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
   started_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- ============================================================
+-- statements (case-scoped financial statements)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS statements (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  statement_id text UNIQUE NOT NULL,
+  case_id text REFERENCES estate_cases(case_id) ON DELETE CASCADE,
+  period text NOT NULL,
+  generated_at timestamptz NOT NULL DEFAULT now(),
+  net_cents bigint NOT NULL DEFAULT 0,
+  status text NOT NULL DEFAULT 'ready',
+  download_url text,
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+CREATE INDEX IF NOT EXISTS idx_statements_case ON statements(case_id);
+CREATE INDEX IF NOT EXISTS idx_statements_generated ON statements(generated_at DESC);
 
 -- ============================================================
 -- listing_drafts (AI generated)
