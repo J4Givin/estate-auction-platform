@@ -1,8 +1,19 @@
 import { updateCaptureChecklist } from '@/lib/data/actions'
-import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
-import { enforceRateLimit } from '../../_rate-limit'
+import {
+  authorize,
+  enforceCsrf,
+  enforceRateLimit,
+  jsonErr,
+  jsonOk,
+  readJsonBody,
+  rejectAuthz,
+  resolveActor,
+} from '../../_helpers'
 
 export async function POST(req: Request) {
+  const csrfBlocked = enforceCsrf(req)
+  if (csrfBlocked) return csrfBlocked
+
   const body = await readJsonBody<{ roomId?: string; checklistItemId?: string; done?: boolean; actor?: string }>(req)
   if (!body?.roomId || !body.checklistItemId || typeof body.done !== 'boolean' || !body.actor) {
     return jsonErr('roomId, checklistItemId, done, and actor are required')
@@ -12,7 +23,7 @@ export async function POST(req: Request) {
   // RLS enforces case scope at the DB layer. We require an authenticated user in live mode.
   const ctx = await resolveActor()
   const decision = authorize(ctx, () => true, { reason: 'Sign in required' })
-  if (!decision.ok) return rejectAuthz(decision)
+  if (!decision.ok) return rejectAuthz(decision, req)
 
   const limited = enforceRateLimit('capture', req, ctx)
   if (limited) return limited

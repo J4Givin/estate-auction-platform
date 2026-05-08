@@ -1,9 +1,20 @@
 import { assignExpertReview } from '@/lib/data/actions'
 import { canExpertWriteItem, canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
-import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../../_helpers'
-import { enforceRateLimit } from '../../../_rate-limit'
+import {
+  authorize,
+  enforceCsrf,
+  enforceRateLimit,
+  jsonErr,
+  jsonOk,
+  readJsonBody,
+  rejectAuthz,
+  resolveActor,
+} from '../../../_helpers'
 
 export async function POST(req: Request, ctx: { params: Promise<{ itemId: string }> }) {
+  const csrfBlocked = enforceCsrf(req)
+  if (csrfBlocked) return csrfBlocked
+
   const { itemId } = await ctx.params
   const body = await readJsonBody<{ expertId?: string; notes?: string; actor?: string }>(req)
   if (!body?.actor) return jsonErr('actor is required')
@@ -18,9 +29,9 @@ export async function POST(req: Request, ctx: { params: Promise<{ itemId: string
       canExpertWriteItem(c, itemId),
     { reason: 'You cannot route this item to expert review' },
   )
-  if (!decision.ok) return rejectAuthz(decision)
+  if (!decision.ok) return rejectAuthz(decision, req, { caseId, itemId })
 
-  const limited = enforceRateLimit('expert-review', req, actor)
+  const limited = enforceRateLimit('expert-review', req, actor, { caseId, itemId })
   if (limited) return limited
 
   const res = await assignExpertReview(

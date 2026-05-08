@@ -1,9 +1,21 @@
 import { acceptCashOffer } from '@/lib/data/actions'
 import { canWriteCase, resolveOfferCaseId } from '@/lib/data/auth'
-import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
-import { enforceRateLimit } from '../../_rate-limit'
+import {
+  authorize,
+  enforceCsrf,
+  enforceRateLimit,
+  jsonErr,
+  jsonOk,
+  readJsonBody,
+  rejectAuthz,
+  resolveActor,
+} from '../../_helpers'
 
 export async function POST(req: Request) {
+  // CSRF/origin check first — cheap, no DB hit, runs before any state.
+  const csrfBlocked = enforceCsrf(req)
+  if (csrfBlocked) return csrfBlocked
+
   const body = await readJsonBody<{ offerId?: string; caseId?: string; actor?: string }>(req)
   if (!body?.offerId || !body.actor) return jsonErr('offerId and actor are required')
 
@@ -22,9 +34,11 @@ export async function POST(req: Request) {
         : 'Sign in required to accept an offer',
     },
   )
-  if (!decision.ok) return rejectAuthz(decision)
+  if (!decision.ok) {
+    return rejectAuthz(decision, req, { caseId: resolvedCaseId, offerId: body.offerId })
+  }
 
-  const limited = enforceRateLimit('offer', req, ctx)
+  const limited = enforceRateLimit('offer', req, ctx, { caseId: resolvedCaseId, offerId: body.offerId })
   if (limited) return limited
 
   const res = await acceptCashOffer(

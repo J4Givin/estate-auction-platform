@@ -1,9 +1,20 @@
 import { counterOffer } from '@/lib/data/actions'
 import { canWriteCase, resolveOfferCaseId } from '@/lib/data/auth'
-import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
-import { enforceRateLimit } from '../../_rate-limit'
+import {
+  authorize,
+  enforceCsrf,
+  enforceRateLimit,
+  jsonErr,
+  jsonOk,
+  readJsonBody,
+  rejectAuthz,
+  resolveActor,
+} from '../../_helpers'
 
 export async function POST(req: Request) {
+  const csrfBlocked = enforceCsrf(req)
+  if (csrfBlocked) return csrfBlocked
+
   const body = await readJsonBody<{ offerId?: string; counterAmount?: number; message?: string; actor?: string; caseId?: string }>(req)
   if (!body?.offerId || typeof body.counterAmount !== 'number' || !body.actor) {
     return jsonErr('offerId, counterAmount, and actor are required')
@@ -25,9 +36,11 @@ export async function POST(req: Request) {
         : 'Sign in required to counter an offer',
     },
   )
-  if (!decision.ok) return rejectAuthz(decision)
+  if (!decision.ok) {
+    return rejectAuthz(decision, req, { caseId: offerCaseId, offerId: body.offerId })
+  }
 
-  const limited = enforceRateLimit('offer', req, ctx)
+  const limited = enforceRateLimit('offer', req, ctx, { caseId: offerCaseId, offerId: body.offerId })
   if (limited) return limited
 
   const res = await counterOffer(

@@ -1,9 +1,20 @@
 import { createTrustReceipt } from '@/lib/data/trust'
 import { canReadItem, canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
-import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../_helpers'
-import { enforceRateLimit } from '../_rate-limit'
+import {
+  authorize,
+  enforceCsrf,
+  enforceRateLimit,
+  jsonErr,
+  jsonOk,
+  readJsonBody,
+  rejectAuthz,
+  resolveActor,
+} from '../_helpers'
 
 export async function POST(req: Request) {
+  const csrfBlocked = enforceCsrf(req)
+  if (csrfBlocked) return csrfBlocked
+
   const body = await readJsonBody<{
     kind?: string
     itemId?: string
@@ -31,9 +42,14 @@ export async function POST(req: Request) {
       (body.itemId ? canReadItem(c, body.itemId, itemCaseId) && c.platformRole === 'expert' : false),
     { reason: 'You cannot author a trust receipt for this scope' },
   )
-  if (!decision.ok) return rejectAuthz(decision)
+  if (!decision.ok) {
+    return rejectAuthz(decision, req, { caseId: targetCaseId, itemId: body.itemId })
+  }
 
-  const limited = enforceRateLimit('trust-receipt', req, ctx)
+  const limited = enforceRateLimit('trust-receipt', req, ctx, {
+    caseId: targetCaseId,
+    itemId: body.itemId,
+  })
   if (limited) return limited
 
   const res = await createTrustReceipt(

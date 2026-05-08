@@ -180,6 +180,22 @@ export function enforceRateLimit(
   return rateLimited(result)
 }
 
+/**
+ * Same as `enforceRateLimit` but returns both the response and the
+ * structured denial when the limit is hit. Used by helpers that want to
+ * persist a denied-action audit event before returning the 429 response.
+ */
+export function enforceRateLimitVerbose(
+  category: RateLimitCategory,
+  req: Request,
+  ctx: ActorContext,
+): { response: NextResponse; denied: RateLimitDenied } | null {
+  const key = actorRateKey(req, ctx)
+  const result = checkRateLimit(category, key)
+  if (result.ok) return null
+  return { response: rateLimited(result), denied: result }
+}
+
 /** Reset the in-memory state. Test-only helper. */
 export function __resetRateLimitsForTests() {
   buckets.clear()

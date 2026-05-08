@@ -371,3 +371,215 @@ Run against `next dev`:
 
 When all six pass the gap is closed for single-instance dev; production
 still needs the durable backing store described above.
+
+---
+
+## 6. CSRF / origin protection (migration 0005)
+
+Portal API routes rely on Supabase cookie auth, which means a malicious
+site could attempt cross-site requests that ride a victim's session
+cookie. To close that gap, every state-changing `/api/portal/*` route
+now runs a CSRF/origin check **before** any business logic, via the
+centralized helper `src/app/api/portal/_security.ts`.
+
+### What it checks
+
+Only enforced on `POST | PATCH | PUT | DELETE`. `GET / HEAD / OPTIONS`
+are passed through.
+
+1. **Fetch Metadata wins when present.** If the browser sends
+   `Sec-Fetch-Site: cross-site`, the request is blocked with `403`.
+   `same-origin`, `same-site`, and `none` (direct navigation, curl) are
+   allowed.
+2. **Origin must match (or be trusted).** When `Origin` is present, it
+   must equal the request's canonical origin
+   (`X-Forwarded-Proto://X-Forwarded-Host`, falling back to `Host`) or
+   appear in `PORTAL_TRUSTED_ORIGINS`.
+3. **Missing Origin + missing Fetch Metadata = allowed.** This is the
+   server-to-server / curl posture. Real browsers send `Origin` on
+   state-changing methods, so this is intentionally a forgiving default
+   for tooling, not a bypass for browsers.
+
+### `PORTAL_TRUSTED_ORIGINS`
+
+Comma-separated list of additional origins that are allowed to issue
+state-changing requests with their own `Origin` header (for example, an
+internal admin panel hosted on a different domain, or a Vercel preview
+URL that needs to call production):
+
+```bash
+PORTAL_TRUSTED_ORIGINS="https://admin.example.com,https://preview.example.com"
+```
+
+Set this in your Vercel project as an environment variable for the
+`Production` and `Preview` environments. Leave it empty for local dev —
+same-origin checks are sufficient when you call `localhost:3000` from
+itself.
+
+### Denial response
+
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+  "ok": false,
+  "error": "Cross-site or untrusted-origin request blocked",
+  "reason": "cross-site-fetch-metadata"
+}
+```
+
+`reason` is one of:
+
+- `cross-site-fetch-metadata` — `Sec-Fetch-Site: cross-site`
+- `origin-mismatch` — `Origin` header does not match request origin and
+  is not in `PORTAL_TRUSTED_ORIGINS`
+- `origin-not-trusted` — reserved for future use
+
+## 7. Denied-action audit log (migration 0005)
+
+Successful writes already have rich provenance via `item_decisions`,
+`offer_decisions`, `ledger_entries`, and `trust_receipts`. The new
+`audit_events` table captures the **denials** that those tables can't
+see: 401 / 403 / 429 / CSRF blocks. This is the SIEM-style trail an
+operator or auditor needs to see who tried what and was bounced.
+
+### Table
+
+`supabase/migrations/0005_denied_action_audit.sql` introduces:
+
+| Column            | Notes                                                     |
+|-------------------|-----------------------------------------------------------|
+| `audit_event_id`  | uuid PK                                                   |
+| `created_at`      | timestamptz                                               |
+| `event_type`      | enum: `auth_required | forbidden | rate_limited | csrf_blocked` |
+| `severity`        | enum: `info | warn | critical`                            |
+| `route`           | request path (e.g. `/api/portal/payouts/request`)         |
+| `method`          | HTTP method                                               |
+| `status_code`     | 401 / 403 / 429                                           |
+| `actor_user_id`   | Supabase user id when authenticated                       |
+| `actor_label`     | email / display name fallback                             |
+| `case_id`         | scoped resource when known                                |
+| `item_id`         | scoped resource when known                                |
+| `offer_id`        | scoped resource when known                                |
+| `ip_hash`         | salted SHA-256 prefix (16 hex chars), never raw IP        |
+| `user_agent_hash` | salted SHA-256 prefix (16 hex chars), never raw UA        |
+| `reason`          | short operator-facing string                              |
+| `metadata`        | jsonb (rate-limit category, csrf detail, etc.)            |
+
+The table is **append-only** (UPDATE/DELETE blocked by trigger), with
+RLS that allows `admin` / `ops` to SELECT and blocks all user INSERTs.
+Writes go through the service-role server helper because denied
+requests may not have a valid user JWT.
+
+### Helper
+
+`src/app/api/portal/_audit.ts` exposes:
+
+- `logDeniedAction(req, input)` — low-level, never throws
+- `auditAuthzDenied(req, { status, actor, reason, ... })`
+- `auditRateLimited(req, { actor, denied, ... })`
+- `auditCsrfDenied(req, { denied, actor })`
+
+These are wired into `_helpers.ts` so the route-side call sites
+(`rejectAuthz(...)`, `enforceRateLimit(...)`, `enforceCsrf(...)`)
+automatically persist an audit event on denial. **Audit failures never
+break the user-facing route response** — every write is wrapped in
+try/catch and falls back to a structured `console.warn` line.
+
+### `PORTAL_AUDIT_SALT`
+
+Server-only env var. Used as a salt for IP / user-agent SHA-256 hashes:
+
+```bash
+PORTAL_AUDIT_SALT="long-random-string-rotated-with-secret-rotation"
+```
+
+Without a salt, hashes are still stable across requests but trivially
+reversible. Set this in production. Rotating the salt invalidates
+previous correlation but does not affect any table state.
+
+### What is intentionally NOT logged
+
+- Cookies (Supabase session, anything else)
+- `Authorization` headers / bearer tokens
+- Service-role keys
+- Raw request bodies (would leak PII for offers, donations, payouts)
+- Raw IP addresses or full user-agents — only salted hash prefixes
+- Email addresses are stored in `actor_label` only because the actor
+  has already been authenticated by Supabase; partner / cross-org
+  identifiers are never inferred or attached
+
+If a future security review needs body-level forensic logging, do it
+at the load balancer / WAF tier with proper retention — not in
+application code.
+
+## 8. Manual verification checklist (CSRF + audit)
+
+Run against `next dev`:
+
+1. **Same-origin POST succeeds.** Submit any portal write from
+   `http://localhost:3000` itself; expect `200`.
+2. **Cross-site Fetch Metadata blocks.** Curl with
+   `-H 'Sec-Fetch-Site: cross-site'` to any portal write route;
+   expect `403` with `reason: cross-site-fetch-metadata`. In live
+   mode, verify a row appears in `audit_events` with
+   `event_type='csrf_blocked'`.
+3. **Origin mismatch blocks.** Curl with
+   `-H 'Origin: https://attacker.example'` to a portal write route;
+   expect `403` with `reason: origin-mismatch`. Audit row recorded.
+4. **Trusted origin allowed.** Set
+   `PORTAL_TRUSTED_ORIGINS="https://attacker.example"`, restart, replay
+   request 3; expect `200`. (Then revert.)
+5. **Curl with no `Origin` header succeeds.** Confirm tooling traffic
+   still works for ops/seed scripts.
+6. **Repeated payout returns 429 + audit row.** Fire six payout
+   requests within a minute; the sixth returns `429` and an
+   `audit_events` row with `event_type='rate_limited'` and
+   `metadata.category='payout'` is written.
+7. **Unauthorized user → 403 + audit row.** Sign in as a user with no
+   case access; POST a payout. Expect `403` and an `audit_events` row
+   with `event_type='forbidden'` and `actor_user_id` populated.
+8. **Anonymous user → 401 + audit row.** Without a session, POST a
+   payout in live mode. Expect `401` and an `audit_events` row with
+   `event_type='auth_required'` and `actor_user_id IS NULL`.
+9. **Demo mode does not crash.** Unset `NEXT_PUBLIC_SUPABASE_URL`,
+   restart, drive any portal write. Expect `200` and a
+   structured `[audit] …` console line if any deny path triggers
+   (e.g. CSRF). No DB write is attempted.
+
+### Sample curl commands
+
+```bash
+# Cross-site Sec-Fetch-Site (should 403)
+curl -i -X POST http://localhost:3000/api/portal/payouts/request \
+  -H 'Content-Type: application/json' \
+  -H 'Sec-Fetch-Site: cross-site' \
+  -d '{"caseId":"JOB-2026-0418","amount":1000,"actor":"demo"}'
+
+# Origin mismatch (should 403)
+curl -i -X POST http://localhost:3000/api/portal/payouts/request \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://attacker.example' \
+  -d '{"caseId":"JOB-2026-0418","amount":1000,"actor":"demo"}'
+
+# Same-origin (should 200 in demo mode)
+curl -i -X POST http://localhost:3000/api/portal/payouts/request \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: http://localhost:3000' \
+  -d '{"caseId":"JOB-2026-0418","amount":1000,"actor":"demo"}'
+```
+
+## 9. Production deployment notes
+
+In addition to migrating `0005_denied_action_audit.sql`:
+
+- Set `PORTAL_AUDIT_SALT` (server-only).
+- Set `PORTAL_TRUSTED_ORIGINS` to the canonical production origin(s)
+  if you serve admin / preview from a different host.
+- Pipe `[audit]` console lines into your log aggregator / SIEM. The
+  format is `[audit] <event_type> status=… route=… method=… actor=… reason=…`.
+- Replace the in-memory rate-limit bucket store (see Section 5).
+- Periodically vacuum `audit_events` retention to your compliance
+  window — the table is append-only by trigger, but operator ops
+  (TRUNCATE via service role) are still possible if needed.
