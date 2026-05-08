@@ -89,14 +89,17 @@ export function enforceCsrf(req: Request, actor?: ActorContext | null): NextResp
 /**
  * Run rate-limit enforcement and audit on denial. Drop-in replacement for
  * direct `enforceRateLimit` calls when you want audit coverage.
+ *
+ * Async because the durable provider (Upstash) does a network round-trip;
+ * the memory provider resolves synchronously so dev/demo stays snappy.
  */
-export function enforceRateLimit(
+export async function enforceRateLimit(
   category: RateLimitCategory,
   req: Request,
   ctx: ActorContext,
   scope?: AuditScope,
-): NextResponse | null {
-  const result = enforceRateLimitVerbose(category, req, ctx)
+): Promise<NextResponse | null> {
+  const result = await enforceRateLimitVerbose(category, req, ctx)
   if (!result) return null
   auditRateLimited(req, {
     actor: ctx,

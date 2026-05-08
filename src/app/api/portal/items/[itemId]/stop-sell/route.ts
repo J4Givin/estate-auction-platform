@@ -28,7 +28,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ itemId: string
   )
   if (!decision.ok) return rejectAuthz(decision, req, { caseId, itemId })
 
-  const limited = enforceRateLimit('item-write', req, actor, { caseId, itemId })
+  const limited = await enforceRateLimit('item-write', req, actor, { caseId, itemId })
   if (limited) return limited
 
   const res = await stopSell(

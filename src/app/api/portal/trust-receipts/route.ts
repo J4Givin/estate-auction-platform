@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     return rejectAuthz(decision, req, { caseId: targetCaseId, itemId: body.itemId })
   }
 
-  const limited = enforceRateLimit('trust-receipt', req, ctx, {
+  const limited = await enforceRateLimit('trust-receipt', req, ctx, {
     caseId: targetCaseId,
     itemId: body.itemId,
   })

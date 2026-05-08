@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   })
   if (!decision.ok) return rejectAuthz(decision, req, { caseId: body.caseId })
 
-  const limited = enforceRateLimit('payout', req, ctx, { caseId: body.caseId })
+  const limited = await enforceRateLimit('payout', req, ctx, { caseId: body.caseId })
   if (limited) return limited
 
   const res = await requestPayout(

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const decision = authorize(ctx, () => true, { reason: 'Sign in required' })
   if (!decision.ok) return rejectAuthz(decision, req)
 
-  const limited = enforceRateLimit('capture', req, ctx)
+  const limited = await enforceRateLimit('capture', req, ctx)
   if (limited) return limited
 
   const res = await updateCaptureChecklist(

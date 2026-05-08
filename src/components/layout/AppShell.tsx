@@ -29,6 +29,7 @@ const NAV_ITEMS: Record<string, { label: string; href: string }[]> = {
     { label: 'Catalog',   href: '/ops/catalog' },
     { label: 'Insights',  href: '/ops/insights' },
     { label: 'Listings',  href: '/ops/listings' },
+    { label: 'Audit',     href: '/ops/audit' },
   ],
   qa: [
     { label: 'Queue',     href: '/qa' },

@@ -326,25 +326,44 @@ Each limit hit also writes one `[rate-limit] denied …` line to server
 logs — a minimal, dependency-free observability hook. Production
 deployments should pipe this to a real logger / SIEM.
 
-### ⚠️ Production caveat — single instance only
+### Provider abstraction (memory + Upstash)
 
-The bucket map lives in process memory (`globalThis.__portalRateLimitBuckets`).
-On any multi-instance deployment (Vercel Functions, multiple Node
-containers, Lambda concurrency) every instance keeps its own copy and the
-effective per-user limit is `instances × limit`. Before relying on this
-in production, replace the in-memory bucket store with one of:
+`_rate-limit.ts` selects a provider automatically at module load:
 
-- **Upstash Redis** (`@upstash/ratelimit`) — drop-in token bucket / sliding
-  window with a hosted Redis. Simplest path on Vercel.
-- **Self-hosted Redis** behind the API runtime — same library as above
-  but pointing at your own Redis.
-- **Supabase RPC** that does an atomic `INSERT … ON CONFLICT DO UPDATE`
-  on a `rate_limit_buckets` table keyed by `(category, actor_key, window_start)`.
-  Stays inside the existing trust boundary at the cost of a DB round-trip
-  per write.
+| Env state                                          | Provider | Behavior |
+|----------------------------------------------------|----------|----------|
+| neither `UPSTASH_REDIS_REST_URL` nor `..._TOKEN` | `memory`  | In-process sliding window (single-instance). |
+| both `UPSTASH_REDIS_REST_URL` + `..._TOKEN` set  | `upstash` | Atomic INCR + EXPIRE via the Upstash REST API. Shared across instances. |
 
-The shape of `enforceRateLimit(category, req, ctx)` is designed so the
-swap is a one-file change: every route handler keeps the same call site.
+`selectProviderName(env)` is exported and pure for testability. The
+active provider is exposed at runtime via `getActiveRateLimitProvider()`,
+and the 429 server log line includes `provider=memory|upstash` so you can
+confirm the production deployment is actually using Upstash.
+
+**Failure mode (Upstash):** If the REST call throws or returns non-OK,
+the provider DEGRADES OPEN — the request is allowed and a single
+`[rate-limit] upstash transport failed — degrading open until recovery`
+warning is emitted (rate-limited so a long outage doesn't flood logs).
+This is intentional: a transient Redis blip should not page every
+customer.
+
+**Privacy:** the only payload sent to Upstash is the bucket key
+(`el:rl:<category>:<actorKey>:<window>`) and a small integer increment.
+No bodies, no headers, no IPs, no cookies.
+
+**Credentials:** both env vars are server-only (no `NEXT_PUBLIC_` prefix)
+so Next.js will not inline them into client bundles. Verify with
+`grep -r UPSTASH_REDIS_REST_TOKEN .next/static` after a build — expect
+zero hits.
+
+**Bundle posture:** the provider uses native `fetch`. No new dependency
+is introduced. The build does NOT require Upstash env vars; demo mode
+keeps working unchanged.
+
+If you need an alternative durable backend, the abstraction is small —
+a future Supabase-RPC provider that does an atomic
+`INSERT … ON CONFLICT DO UPDATE` on a `rate_limit_buckets` table is a
+reasonable next step, and is documented inline in `_rate-limit.ts`.
 
 ### Manual verification checklist (rate limiting + counter-offer auth)
 
@@ -579,7 +598,62 @@ In addition to migrating `0005_denied_action_audit.sql`:
   if you serve admin / preview from a different host.
 - Pipe `[audit]` console lines into your log aggregator / SIEM. The
   format is `[audit] <event_type> status=… route=… method=… actor=… reason=…`.
-- Replace the in-memory rate-limit bucket store (see Section 5).
+- Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to switch
+  rate limiting from the in-memory provider to durable Upstash Redis
+  (see Section 5). Verify the 429 log line says `provider=upstash`.
 - Periodically vacuum `audit_events` retention to your compliance
   window — the table is append-only by trigger, but operator ops
   (TRUNCATE via service role) are still possible if needed.
+
+---
+
+## 10. Phased production launch checklist
+
+Run top to bottom; each step is independently verifiable.
+
+1. **Apply migrations and seed.**
+   ```sh
+   psql "$DATABASE_URL" -f supabase/migrations/0003_estate_liquidity_core.sql
+   psql "$DATABASE_URL" -f supabase/migrations/0004_auth_rls_hardening.sql
+   psql "$DATABASE_URL" -f supabase/migrations/0005_denied_action_audit.sql
+   # then optional seed
+   ```
+2. **Configure Supabase env vars** in the deployment platform:
+   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+   `SUPABASE_SERVICE_ROLE_KEY` (server-only).
+3. **Configure `PORTAL_TRUSTED_ORIGINS`** if admin or preview is served
+   from a different host than the canonical app origin. Comma-separated,
+   e.g. `https://admin.example.com,https://staging.example.com`.
+4. **Configure `PORTAL_AUDIT_SALT`** with a strong random value
+   (`openssl rand -hex 32`). Without this, IP/UA hashes in
+   `audit_events` are stable but trivially reversible.
+5. **Configure Upstash** for durable rate limiting:
+   `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Verify a 429
+   log line shows `provider=upstash` after deploy.
+6. **Create real auth users and memberships.** For each customer
+   account, insert one row into `case_memberships` with `role='owner'`
+   for their case. Add ops staff with `role='ops'` on the cases they
+   should service.
+7. **Run RLS / security manual checks** from `docs/auth-rls.md` §6
+   and `docs/manual-qa-checklist.md` §2–§3.
+8. **Verify audit console.** Visit `/ops/audit` as an admin/ops user;
+   the badge should read "Live audit_events". Trigger a deliberate
+   denial and confirm a row appears within seconds.
+9. **Verify the browser bundle does not contain server secrets.**
+   ```sh
+   npm run build
+   for kw in SUPABASE_SERVICE_ROLE_KEY UPSTASH_REDIS_REST_TOKEN \
+              STRIPE_SECRET_KEY PORTAL_AUDIT_SALT; do
+     grep -r "$kw" .next/static && echo "LEAK: $kw" || echo "ok: $kw"
+   done
+   ```
+10. **Enable monitoring / log forwarding.** Pipe the structured
+    `[audit] …`, `[rate-limit] denied …`, and
+    `[rate-limit] upstash transport failed …` console lines into your
+    SIEM. Alert on a sustained spike in `csrf_blocked` or a sudden
+    cluster of `forbidden` events for the same actor.
+
+If any step above is uncertain, do NOT promote to production. Demo
+mode (Supabase + Upstash both unset) is a perfectly fine intermediate
+state for previews — the platform is designed to render usefully
+either way.
