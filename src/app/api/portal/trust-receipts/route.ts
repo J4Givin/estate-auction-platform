@@ -2,6 +2,7 @@ import { createTrustReceipt } from '@/lib/data/trust'
 import { canReadItem, canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -52,19 +53,30 @@ export async function POST(req: Request) {
   })
   if (limited) return limited
 
-  const res = await createTrustReceipt(
-    {
-      kind: body.kind as never,
-      itemId: body.itemId,
-      caseId: body.caseId,
-      title: body.title,
-      what: body.what,
-      why: body.why,
-      evidence: body.evidence,
-      approver: ctx.authenticated ? ctx.actorLabel : body.approver,
-      approverRole: body.approverRole,
-    },
-    { actorUserId: ctx.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('trust-receipt:create', req, body, ctx, {
+    caseId: targetCaseId,
+    itemId: body.itemId,
+  })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await createTrustReceipt(
+      {
+        kind: body.kind as never,
+        itemId: body.itemId,
+        caseId: body.caseId,
+        title: body.title,
+        what: body.what,
+        why: body.why,
+        evidence: body.evidence,
+        approver: ctx.authenticated ? ctx.actorLabel : body.approver,
+        approverRole: body.approverRole,
+      },
+      { actorUserId: ctx.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

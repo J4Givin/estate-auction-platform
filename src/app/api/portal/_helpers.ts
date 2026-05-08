@@ -10,6 +10,13 @@ import {
 import { auditAuthzDenied, auditCsrfDenied, auditRateLimited } from './_audit'
 import { enforceCsrf as rawEnforceCsrf } from './_security'
 import { enforceRateLimitVerbose, type RateLimitCategory } from './_rate-limit'
+import {
+  finalizeIdempotency,
+  reserveIdempotency,
+  type IdempotencyHandle,
+  type IdempotencyMeta,
+  type IdempotencyScope,
+} from './_idempotency'
 
 export function jsonOk<T>(data: T, status = 200) {
   return NextResponse.json(data, { status })
@@ -112,3 +119,39 @@ export async function enforceRateLimit(
 }
 
 export { authorize }
+
+/**
+ * Reserve an idempotency slot for this request. Returns a `done` callback
+ * the route should invoke with the final response, plus an `early`
+ * NextResponse iff the request must be replayed or rejected immediately.
+ *
+ *   const idem = await beginIdempotency('offer:accept', req, body, ctx, scope)
+ *   if (idem.early) return idem.early
+ *   ...
+ *   return idem.done(jsonOk(res), res)
+ *
+ * The cached body is the second argument to `done`. We pass the route's
+ * domain object (not the NextResponse) so future replays return an
+ * identical envelope without us re-serializing.
+ */
+export async function beginIdempotency(
+  scope: IdempotencyScope,
+  req: Request,
+  body: unknown,
+  actor: ActorContext,
+  meta?: IdempotencyMeta,
+): Promise<{ early: NextResponse | null; done: (response: NextResponse, cached?: unknown) => Promise<NextResponse>; handle: IdempotencyHandle | null }> {
+  const outcome = await reserveIdempotency({ scope, req, body, actor, meta })
+  if ('kind' in outcome && outcome.kind === 'replay') {
+    return { early: outcome.response, done: async (r) => r, handle: null }
+  }
+  if ('kind' in outcome && outcome.kind === 'conflict') {
+    return { early: outcome.response, done: async (r) => r, handle: null }
+  }
+  const handle = outcome as IdempotencyHandle
+  return {
+    early: null,
+    handle,
+    done: (response, cached) => finalizeIdempotency(handle, response, cached),
+  }
+}

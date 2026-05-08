@@ -23,6 +23,7 @@ import {
   useChannelMatrix,
   useTrustReceipts,
 } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 export default function ItemDetail() {
   const params = useParams()
@@ -51,19 +52,19 @@ export default function ItemDetail() {
   const onDecide = (decisionId: string, disposition: Disposition) => {
     setItem(prev => prev ? { ...prev, disposition } : prev)
     setOpen(false)
-    void fetch(`/api/portal/items/${decisionId}/disposition`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ disposition, actor: 'Sarah Mitchell' }),
-    }).catch(() => {})
+    void portalWrite(
+      `/api/portal/items/${decisionId}/disposition`,
+      { disposition, actor: 'Sarah Mitchell' },
+      { idempotencyKey: newIdempotencyKey() },
+    ).catch(() => {})
   }
 
   const onStopSell = () => {
-    void fetch(`/api/portal/items/${item.id}/stop-sell`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ itemId: item.id, reason: 'Customer hold', actor: 'Sarah Mitchell' }),
-    }).catch(() => {})
+    void portalWrite(
+      `/api/portal/items/${item.id}/stop-sell`,
+      { itemId: item.id, reason: 'Customer hold', actor: 'Sarah Mitchell' },
+      { idempotencyKey: newIdempotencyKey() },
+    ).catch(() => {})
   }
 
   const appraisalRun = appraisalRunQuery.data

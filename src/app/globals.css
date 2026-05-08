@@ -226,6 +226,22 @@ body {
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .scroll-x::-webkit-scrollbar { display: none; }
 
+/* ── Mobile-native form controls ──
+   On phone widths, lift inputs/selects/textareas/buttons to a 44px tap
+   target and use 16px font-size so iOS Safari does not auto-zoom on
+   focus. Desktop styling is untouched. */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  button {
+    min-height: 44px;
+  }
+}
+
 /* ── Animations ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }

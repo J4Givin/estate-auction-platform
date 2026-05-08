@@ -2,6 +2,7 @@ import { setFloorPrice } from '@/lib/data/actions'
 import { canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -33,13 +34,21 @@ export async function POST(req: Request, ctx: { params: Promise<{ itemId: string
   const limited = await enforceRateLimit('item-write', req, actor, { caseId, itemId })
   if (limited) return limited
 
-  const res = await setFloorPrice(
-    {
-      itemId,
-      floorPrice: body.floorPrice,
-      actor: actor.authenticated ? actor.actorLabel : body.actor,
-    },
-    { actorUserId: actor.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('item:floor', req, body, actor, { caseId, itemId })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await setFloorPrice(
+      {
+        itemId,
+        floorPrice: body.floorPrice,
+        actor: actor.authenticated ? actor.actorLabel : body.actor,
+      },
+      { actorUserId: actor.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

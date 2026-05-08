@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AppShell, PageHeader, SectionCard } from '@/components/layout/AppShell'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import { useCaptureState, useEstateCase } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 const STATE_LABEL: Record<string, string> = {
   incomplete: 'Needs more photos',
@@ -35,11 +36,11 @@ export default function CapturePage() {
   const onChecklistToggle = async (checklistItemId: string, done: boolean) => {
     if (!room) return
     try {
-      await fetch('/api/portal/capture/checklist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomId: room.id, checklistItemId, done, actor: 'Sarah Mitchell' }),
-      })
+      await portalWrite(
+        '/api/portal/capture/checklist',
+        { roomId: room.id, checklistItemId, done, actor: 'Sarah Mitchell' },
+        { idempotencyKey: newIdempotencyKey() },
+      )
     } catch {}
   }
 

@@ -80,15 +80,16 @@ export function SectionCard({ title, subtitle, description, action, actions, chi
   premium?: boolean
 }) {
   return (
-    <div className={cn('border-t border-[#E0E0E0] pt-10 mb-14', className)}>
-      <div className="flex items-start justify-between mb-8 gap-4">
+    <div className={cn('border-t border-[#E0E0E0] pt-8 sm:pt-10 mb-10 sm:mb-14', className)}>
+      <div className="flex items-start justify-between mb-6 sm:mb-8 gap-4 flex-wrap">
         <div>
           <h3
             className="text-[#0A0A0A]"
             style={{
               fontFamily: 'var(--font-display-family)',
               fontWeight: 900,
-              fontSize: 'clamp(1.4rem, 3vw, 2.8rem)',
+              // Tighten on mobile so section titles never collide with right-side actions.
+              fontSize: 'clamp(1.25rem, 4vw, 2.8rem)',
               lineHeight: 1,
               letterSpacing: '-0.01em',
               textTransform: 'uppercase',
@@ -181,7 +182,7 @@ export function PageHeader({
   eyebrow?: string
 }) {
   return (
-    <div className="border-b border-[#E0E0E0] pb-12 mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div className="border-b border-[#E0E0E0] pb-8 sm:pb-12 mb-10 sm:mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
       <div>
         {eyebrow && <span className="label block mb-3" style={{ color: '#826DEE' }}>{eyebrow}</span>}
         <div className="flex items-center gap-3 flex-wrap">
@@ -189,7 +190,8 @@ export function PageHeader({
             style={{
               fontFamily: 'var(--font-display-family)',
               fontWeight: 900,
-              fontSize: 'clamp(2.5rem, 6vw, 6rem)',
+              // Tighten mobile sizing so big headlines don't cause horizontal pressure on 375w screens.
+              fontSize: 'clamp(2rem, 7vw, 6rem)',
               lineHeight: 0.92,
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
@@ -312,8 +314,9 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
       </header>
 
       {/* ── Content ── */}
+      {/* Add 80px (bottom-bar height) + safe-area inset on mobile so sticky CTAs never obscure content. */}
       <main className="flex-1 pt-14" style={{ paddingBottom: bottomBar ? 'calc(env(safe-area-inset-bottom) + 80px)' : undefined }}>
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-20 lg:py-24">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10 sm:py-12 md:py-20 lg:py-24">
           {children}
         </div>
       </main>

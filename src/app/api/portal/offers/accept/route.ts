@@ -2,6 +2,7 @@ import { acceptCashOffer } from '@/lib/data/actions'
 import { canWriteCase, resolveOfferCaseId } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -41,13 +42,24 @@ export async function POST(req: Request) {
   const limited = await enforceRateLimit('offer', req, ctx, { caseId: resolvedCaseId, offerId: body.offerId })
   if (limited) return limited
 
-  const res = await acceptCashOffer(
-    {
-      offerId: body.offerId,
-      caseId: resolvedCaseId ?? undefined,
-      actor: ctx.authenticated ? ctx.actorLabel : body.actor,
-    },
-    { actorUserId: ctx.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('offer:accept', req, body, ctx, {
+    caseId: resolvedCaseId,
+    offerId: body.offerId,
+  })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await acceptCashOffer(
+      {
+        offerId: body.offerId,
+        caseId: resolvedCaseId ?? undefined,
+        actor: ctx.authenticated ? ctx.actorLabel : body.actor,
+      },
+      { actorUserId: ctx.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

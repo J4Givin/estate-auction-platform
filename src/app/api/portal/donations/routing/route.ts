@@ -2,6 +2,7 @@ import { updateDonationRouting } from '@/lib/data/actions'
 import { canWriteCase } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -29,13 +30,21 @@ export async function POST(req: Request) {
   const limited = await enforceRateLimit('donation', req, ctx, { caseId: body.caseId })
   if (limited) return limited
 
-  const res = await updateDonationRouting(
-    {
-      caseId: body.caseId,
-      charityId: body.charityId,
-      actor: ctx.authenticated ? ctx.actorLabel : body.actor,
-    },
-    { actorUserId: ctx.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('donation:routing', req, body, ctx, { caseId: body.caseId })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await updateDonationRouting(
+      {
+        caseId: body.caseId,
+        charityId: body.charityId,
+        actor: ctx.authenticated ? ctx.actorLabel : body.actor,
+      },
+      { actorUserId: ctx.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

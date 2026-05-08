@@ -7,6 +7,7 @@ import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import { fmt } from '@/lib/sample-data'
 import { useOffers, useEstateCase, useTrustReceipts } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 export default function OffersPage() {
   const [accepted, setAccepted] = useState<string | null>(null)
@@ -21,21 +22,21 @@ export default function OffersPage() {
   const onAccept = async (offerId: string) => {
     setAccepted(offerId)
     try {
-      await fetch('/api/portal/offers/accept', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerId, actor: 'Sarah Mitchell' }),
-      })
+      await portalWrite(
+        '/api/portal/offers/accept',
+        { offerId, actor: 'Sarah Mitchell' },
+        { idempotencyKey: newIdempotencyKey() },
+      )
     } catch {}
   }
 
   const onCounter = async (offerId: string, amount: number) => {
     try {
-      await fetch('/api/portal/offers/counter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerId, counterAmount: amount, actor: 'Sarah Mitchell' }),
-      })
+      await portalWrite(
+        '/api/portal/offers/counter',
+        { offerId, counterAmount: amount, actor: 'Sarah Mitchell' },
+        { idempotencyKey: newIdempotencyKey() },
+      )
     } catch {}
   }
 

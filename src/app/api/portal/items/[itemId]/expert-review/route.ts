@@ -2,6 +2,7 @@ import { assignExpertReview } from '@/lib/data/actions'
 import { canExpertWriteItem, canWriteCase, resolveItemCaseId } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -34,14 +35,22 @@ export async function POST(req: Request, ctx: { params: Promise<{ itemId: string
   const limited = await enforceRateLimit('expert-review', req, actor, { caseId, itemId })
   if (limited) return limited
 
-  const res = await assignExpertReview(
-    {
-      itemId,
-      expertId: body.expertId,
-      notes: body.notes,
-      actor: actor.authenticated ? actor.actorLabel : body.actor,
-    },
-    { actorUserId: actor.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('item:expert-review', req, body, actor, { caseId, itemId })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await assignExpertReview(
+      {
+        itemId,
+        expertId: body.expertId,
+        notes: body.notes,
+        actor: actor.authenticated ? actor.actorLabel : body.actor,
+      },
+      { actorUserId: actor.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

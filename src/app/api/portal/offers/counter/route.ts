@@ -2,6 +2,7 @@ import { counterOffer } from '@/lib/data/actions'
 import { canWriteCase, resolveOfferCaseId } from '@/lib/data/auth'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -22,10 +23,6 @@ export async function POST(req: Request) {
 
   const ctx = await resolveActor()
 
-  // Resolve the offer's parent case before authorizing. In live mode we
-  // require write access to that case; relying on RLS as a backstop is
-  // insufficient because we want clear 401/403 semantics without leaking
-  // RLS error strings.
   const offerCaseId = body.caseId ?? (await resolveOfferCaseId(body.offerId))
   const decision = authorize(
     ctx,
@@ -43,14 +40,25 @@ export async function POST(req: Request) {
   const limited = await enforceRateLimit('offer', req, ctx, { caseId: offerCaseId, offerId: body.offerId })
   if (limited) return limited
 
-  const res = await counterOffer(
-    {
-      offerId: body.offerId,
-      counterAmount: body.counterAmount,
-      message: body.message,
-      actor: ctx.authenticated ? ctx.actorLabel : body.actor,
-    },
-    { actorUserId: ctx.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('offer:counter', req, body, ctx, {
+    caseId: offerCaseId,
+    offerId: body.offerId,
+  })
+  if (idem.early) return idem.early
+
+  try {
+    const res = await counterOffer(
+      {
+        offerId: body.offerId,
+        counterAmount: body.counterAmount,
+        message: body.message,
+        actor: ctx.authenticated ? ctx.actorLabel : body.actor,
+      },
+      { actorUserId: ctx.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }

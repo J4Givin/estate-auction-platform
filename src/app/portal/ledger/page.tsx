@@ -6,6 +6,7 @@ import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import { fmt } from '@/lib/sample-data'
 import { useLedger, useEstateCase, useTrustReceipts } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 const TYPE_COLOR: Record<string, string> = {
   sale: '#0E9F6E',
@@ -47,11 +48,11 @@ export default function LedgerPage() {
 
   const onRequestPayout = async () => {
     try {
-      await fetch('/api/portal/payouts/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId: P.jobId, amount: P.availableForPayout, actor: 'Sarah Mitchell' }),
-      })
+      await portalWrite(
+        '/api/portal/payouts/request',
+        { caseId: P.jobId, amount: P.availableForPayout, actor: 'Sarah Mitchell' },
+        { idempotencyKey: newIdempotencyKey() },
+      )
     } catch {}
   }
 

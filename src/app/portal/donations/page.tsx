@@ -6,6 +6,7 @@ import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
 import { fmt } from '@/lib/sample-data'
 import { useDonations, useEstateCase, useTrustReceipts, useInventory } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 export default function DonationsPage() {
   const donationsQuery = useDonations()
@@ -28,11 +29,11 @@ export default function DonationsPage() {
 
   const toggle = (id: string) => {
     setCharities(prev => prev.map(c => c.id === id ? { ...c, selected: !c.selected } : c))
-    void fetch('/api/portal/donations/routing', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ caseId: estate.data.jobId, charityId: id, actor: 'Sarah Mitchell' }),
-    }).catch(() => {})
+    void portalWrite(
+      '/api/portal/donations/routing',
+      { caseId: estate.data.jobId, charityId: id, actor: 'Sarah Mitchell' },
+      { idempotencyKey: newIdempotencyKey() },
+    ).catch(() => {})
   }
 
   const donationReceipt = trust.data.find(r => r.kind === 'donation')

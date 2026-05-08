@@ -14,6 +14,7 @@ import {
   fmt,
 } from '@/lib/sample-data'
 import { useInventory, useEstateCase } from '@/lib/data/hooks'
+import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
 
 export default function InventoryPageWrapper() {
   return (
@@ -83,11 +84,11 @@ function InventoryPage() {
   const handleDecide = (id: string, disposition: Disposition) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, disposition } : i))
     setActiveItem(null)
-    void fetch(`/api/portal/items/${id}/disposition`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ disposition, actor: 'Sarah Mitchell' }),
-    }).catch(() => {})
+    void portalWrite(
+      `/api/portal/items/${id}/disposition`,
+      { disposition, actor: 'Sarah Mitchell' },
+      { idempotencyKey: newIdempotencyKey() },
+    ).catch(() => {})
   }
 
   const totals = {

@@ -1,6 +1,7 @@
 import { updateCaptureChecklist } from '@/lib/data/actions'
 import {
   authorize,
+  beginIdempotency,
   enforceCsrf,
   enforceRateLimit,
   jsonErr,
@@ -28,14 +29,22 @@ export async function POST(req: Request) {
   const limited = await enforceRateLimit('capture', req, ctx)
   if (limited) return limited
 
-  const res = await updateCaptureChecklist(
-    {
-      roomId: body.roomId,
-      checklistItemId: body.checklistItemId,
-      done: body.done,
-      actor: ctx.authenticated ? ctx.actorLabel : body.actor,
-    },
-    { actorUserId: ctx.userId },
-  )
-  return jsonOk(res)
+  const idem = await beginIdempotency('capture:checklist', req, body, ctx)
+  if (idem.early) return idem.early
+
+  try {
+    const res = await updateCaptureChecklist(
+      {
+        roomId: body.roomId,
+        checklistItemId: body.checklistItemId,
+        done: body.done,
+        actor: ctx.authenticated ? ctx.actorLabel : body.actor,
+      },
+      { actorUserId: ctx.userId },
+    )
+    return idem.done(jsonOk(res), res)
+  } catch (err) {
+    if (idem.handle?.active) await idem.handle.fail()
+    throw err
+  }
 }
