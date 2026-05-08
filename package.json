@@ -13,6 +13,7 @@
     "qa:visual": "playwright test --config=tests/visual/playwright.config.ts",
     "smoke:demo": "node scripts/smoke-demo.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
+    "verify:live-ready": "node scripts/verify-live-readiness.mjs",
     "idempotency:cleanup": "node scripts/idempotency-cleanup.mjs"
   },
   "dependencies": {

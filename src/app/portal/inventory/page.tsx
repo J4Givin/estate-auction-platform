@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { AppShell, PageHeader } from '@/components/layout/AppShell'
 import { DecisionSheet } from '@/components/portal/DecisionSheet'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
+import { MobileSegmentedControl, SwipeHint } from '@/components/portal/MobilePrimitives'
 import {
   type InventoryItem,
   type Disposition,
@@ -139,28 +140,16 @@ function InventoryPage() {
       </div>
 
       {/* Filters bar */}
-      <div className="border-t border-[#E0E0E0] py-6 mb-8 flex flex-col gap-4" data-testid="inventory-filters">
+      <div className="border-t border-[#E0E0E0] py-5 sm:py-6 mb-6 sm:mb-8 flex flex-col gap-4" data-testid="inventory-filters">
         {/* Disposition pills */}
-        <div className="scroll-x flex gap-2 -mx-2 px-2 pb-1">
-          {FILTERS.map(f => {
-            const active = filter === f.key
-            return (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className="label whitespace-nowrap px-4 py-2.5 border transition-colors"
-                style={
-                  active
-                    ? { background: '#0A0A0A', borderColor: '#0A0A0A', color: '#FFFFFF' }
-                    : { borderColor: '#E0E0E0', color: '#6B6B6B' }
-                }
-                data-testid={`filter-${f.key}`}
-              >
-                {f.label}
-              </button>
-            )
-          })}
-        </div>
+        <MobileSegmentedControl
+          options={FILTERS.map(f => ({ key: f.key, label: f.label }))}
+          value={filter}
+          onChange={setFilter}
+          ariaLabel="Disposition filter"
+          testId="filter"
+        />
+        {filter === 'all' && <SwipeHint className="-mt-2">Swipe filters →</SwipeHint>}
         {/* Secondary filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <input
@@ -169,12 +158,16 @@ function InventoryPage() {
             onChange={e => setSearch(e.target.value)}
             className="flex-1 border border-[#E0E0E0] focus:border-[#0A0A0A] px-4 py-3"
             data-testid="inventory-search"
+            inputMode="search"
+            autoComplete="off"
+            style={{ fontSize: 16 }}
           />
           <select
             value={room}
             onChange={e => setRoom(e.target.value)}
-            className="border border-[#E0E0E0] px-4 py-3 bg-white min-w-[160px]"
+            className="border border-[#E0E0E0] px-4 py-3 bg-white sm:min-w-[160px]"
             data-testid="inventory-room-filter"
+            style={{ fontSize: 16 }}
           >
             <option value="all">All Rooms</option>
             {rooms.map(r => <option key={r} value={r}>{r}</option>)}
@@ -182,8 +175,9 @@ function InventoryPage() {
           <select
             value={confidence}
             onChange={e => setConfidence(e.target.value)}
-            className="border border-[#E0E0E0] px-4 py-3 bg-white min-w-[160px]"
+            className="border border-[#E0E0E0] px-4 py-3 bg-white sm:min-w-[160px]"
             data-testid="inventory-confidence-filter"
+            style={{ fontSize: 16 }}
           >
             <option value="all">Any Confidence</option>
             <option value="high">High Confidence</option>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AppShell, PageHeader } from '@/components/layout/AppShell'
 import { TrustReceipt } from '@/components/portal/TrustReceipt'
 import { MobileBottomBar } from '@/components/portal/MobileBottomBar'
+import { MobileSegmentedControl } from '@/components/portal/MobilePrimitives'
 import { fmt } from '@/lib/sample-data'
 import { useLedger, useEstateCase, useTrustReceipts } from '@/lib/data/hooks'
 import { newIdempotencyKey, portalWrite } from '@/lib/portal-client'
@@ -86,25 +87,17 @@ export default function LedgerPage() {
       </div>
 
       {/* Filter chips */}
-      <div className="border-t border-[#E0E0E0] py-6 mb-6 scroll-x flex gap-2" data-testid="ledger-filters">
-        {(['all', 'sale', 'fee', 'payout', 'donation'] as const).map(k => {
-          const active = filter === k
-          return (
-            <button
-              key={k}
-              onClick={() => setFilter(k)}
-              className="label whitespace-nowrap px-4 py-2.5 border transition-colors min-w-[44px]"
-              style={
-                active
-                  ? { background: '#0A0A0A', borderColor: '#0A0A0A', color: '#FFFFFF' }
-                  : { borderColor: '#E0E0E0', color: '#6B6B6B' }
-              }
-              data-testid={`ledger-filter-${k}`}
-            >
-              {k === 'all' ? 'All' : TYPE_LABEL[k]}
-            </button>
-          )
-        })}
+      <div className="border-t border-[#E0E0E0] py-5 sm:py-6 mb-6">
+        <MobileSegmentedControl
+          options={(['all', 'sale', 'fee', 'payout', 'donation'] as const).map(k => ({
+            key: k,
+            label: k === 'all' ? 'All' : TYPE_LABEL[k],
+          }))}
+          value={filter}
+          onChange={setFilter}
+          ariaLabel="Ledger entry type"
+          testId="ledger-filter"
+        />
       </div>
 
       {/* Ledger entries */}
@@ -123,33 +116,58 @@ export default function LedgerPage() {
           return (
             <div
               key={l.id}
-              className="border-b border-[#E0E0E0] py-5 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-4 md:items-center hover:bg-[#F5F5F5] -mx-2 px-2 transition-colors"
+              className="border-b border-[#E0E0E0] py-4 md:py-5 md:grid md:grid-cols-12 md:gap-4 md:items-center hover:bg-[#F5F5F5] -mx-2 px-2 transition-colors"
               data-testid={`ledger-row-${l.id}`}
             >
-              <div className="md:col-span-2">
+              {/* Mobile compact card */}
+              <div className="md:hidden flex items-start gap-3">
+                <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: color }} />
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[#0A0A0A] truncate" style={{ fontSize: 14 }}>{l.description}</span>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className="label">{l.date}</span>
+                    <span className="label" style={{ color }}>● {TYPE_LABEL[l.type]}</span>
+                    {l.channel && <span className="label">{l.channel}</span>}
+                  </div>
+                </div>
+                <span
+                  className="tabular flex-shrink-0"
+                  style={{
+                    fontVariantNumeric: 'tabular-nums',
+                    fontFamily: 'var(--font-display-family)',
+                    fontWeight: 900,
+                    fontSize: 17,
+                    color: l.net >= 0 ? '#0A0A0A' : '#F94500',
+                  }}
+                >
+                  {l.net >= 0 ? '+' : '−'}{fmt(Math.abs(l.net))}
+                </span>
+              </div>
+              {/* Desktop columns */}
+              <div className="hidden md:block md:col-span-2">
                 <span className="label">{l.date}</span>
               </div>
-              <div className="md:col-span-5 flex items-start gap-3">
+              <div className="hidden md:flex md:col-span-5 items-start gap-3">
                 <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: color }} />
                 <div>
                   <span className="block text-[#0A0A0A]" style={{ fontSize: 14 }}>{l.description}</span>
                   {l.channel && <span className="label">{l.channel}</span>}
                 </div>
               </div>
-              <div className="md:col-span-1">
+              <div className="hidden md:block md:col-span-1">
                 <span className="label" style={{ color }}>{TYPE_LABEL[l.type]}</span>
               </div>
-              <div className="md:col-span-1 text-left md:text-right">
+              <div className="hidden md:block md:col-span-1 text-right">
                 <span className="tabular text-[#0A0A0A]" style={{ fontVariantNumeric: 'tabular-nums', fontSize: 14 }}>
                   {l.gross ? fmt(l.gross) : '—'}
                 </span>
               </div>
-              <div className="md:col-span-1 text-left md:text-right">
+              <div className="hidden md:block md:col-span-1 text-right">
                 <span className="tabular text-[#F94500]" style={{ fontVariantNumeric: 'tabular-nums', fontSize: 14 }}>
                   {l.fee ? `−${fmt(l.fee)}` : '—'}
                 </span>
               </div>
-              <div className="md:col-span-2 text-left md:text-right">
+              <div className="hidden md:block md:col-span-2 text-right">
                 <span
                   className="tabular"
                   style={{

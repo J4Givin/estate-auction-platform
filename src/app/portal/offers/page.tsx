@@ -162,10 +162,38 @@ export default function OffersPage() {
       </div>
 
       {/* Compare table */}
-      <div id="compare" className="border-t border-[#E0E0E0] pt-10">
+      <div id="compare" className="border-t border-[#E0E0E0] pt-8 sm:pt-10">
         <span className="label block mb-2">Compare</span>
         <h2 className="display-md mb-6" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.2rem)' }}>Cash Now vs. Managed Sale.</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-y border-[#E0E0E0]" data-testid="offers-compare">
+
+        {/* Mobile: stacked label → side-by-side cash / managed cards */}
+        <div className="md:hidden flex flex-col" data-testid="offers-compare-mobile">
+          {[
+            ['Net to You', fmt(P.cashOfferAvailable), `${fmt(P.estimatedNetLow)}–${fmt(P.estimatedNetHigh)}`],
+            ['Time to Cash', '1–2 business days', '14–90 days, rolling settlements'],
+            ['Channel Risk', 'None — we hold the inventory', 'Distributed across 6+ channels'],
+            ['Floor Control', 'You set scope inclusion', 'You set per-item / per-lot floor'],
+            ['Fulfillment', 'We pick up and remove', 'We list, ship, and settle on your behalf'],
+            ['Stop-Sell', 'N/A — finalized at acceptance', 'Available at any time, instantly'],
+          ].map(([row, cash, managed], i) => (
+            <div key={i} className="border-t border-[#E0E0E0] py-4">
+              <span className="label block mb-2">{row}</span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="px-3 py-2.5 bg-[#FFDB1510] border-l-2" style={{ borderLeftColor: '#FFDB15' }}>
+                  <span className="label block mb-1" style={{ fontSize: 9 }}>Cash now</span>
+                  <span className="block text-[#0A0A0A]" style={{ fontSize: 13, lineHeight: 1.4 }}>{cash}</span>
+                </div>
+                <div className="px-3 py-2.5 bg-[#826DEE10] border-l-2" style={{ borderLeftColor: '#826DEE' }}>
+                  <span className="label block mb-1" style={{ fontSize: 9 }}>Managed</span>
+                  <span className="block text-[#0A0A0A]" style={{ fontSize: 13, lineHeight: 1.4 }}>{managed}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: original 3-column grid */}
+        <div className="hidden md:grid md:grid-cols-3 gap-0 border-y border-[#E0E0E0]" data-testid="offers-compare">
           {[
             ['Net to You', fmt(P.cashOfferAvailable), `${fmt(P.estimatedNetLow)}–${fmt(P.estimatedNetHigh)}`],
             ['Time to Cash', '1–2 business days', '14–90 days, rolling settlements'],

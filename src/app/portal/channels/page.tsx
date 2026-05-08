@@ -48,18 +48,33 @@ export default function ChannelsPage() {
           {CHANNEL_HEALTH.map(c => (
             <div
               key={c.channel}
-              className="border-b border-[#F0F0F0] last:border-b-0 px-4 sm:px-6 py-3 grid grid-cols-2 md:grid-cols-12 gap-2 md:gap-3"
+              className="border-b border-[#F0F0F0] last:border-b-0 px-4 sm:px-6 py-4 md:py-3 md:grid md:grid-cols-12 md:gap-3 md:items-center"
               data-testid={`channel-health-${c.channel.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              <div className="md:col-span-3 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: STATUS_COLOR[c.status] }} />
+              {/* Mobile: card layout. Desktop: table row. */}
+              <div className="md:col-span-3 flex items-center gap-2 mb-2 md:mb-0">
+                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: STATUS_COLOR[c.status] }} />
                 <span className="text-[#0A0A0A] font-medium" style={{ fontSize: 14 }}>{c.channel}</span>
+                <span className="md:hidden ml-auto label" style={{ color: STATUS_COLOR[c.status] }}>{c.status}</span>
               </div>
-              <div className="md:col-span-1"><span className="label" style={{ color: STATUS_COLOR[c.status] }}>{c.status}</span></div>
-              <div className="md:col-span-2 md:text-right"><span className="tabular text-[#0A0A0A]" style={{ fontSize: 13 }}>{c.listings}</span></div>
-              <div className="md:col-span-2 md:text-right"><span className="tabular" style={{ fontSize: 13, color: c.errors > 0 ? '#F94500' : '#0A0A0A' }}>{c.errors}</span></div>
-              <div className="md:col-span-2 md:text-right"><span className="tabular text-[#0A0A0A]" style={{ fontSize: 13 }}>{Math.round(c.sellThrough * 100)}%</span></div>
-              <div className="md:col-span-2 md:text-right">
+              <div className="hidden md:block md:col-span-1">
+                <span className="label" style={{ color: STATUS_COLOR[c.status] }}>{c.status}</span>
+              </div>
+              <div className="md:col-span-2 md:text-right grid grid-cols-4 md:block gap-2">
+                <span className="md:hidden label">Listings</span>
+                <span className="tabular text-[#0A0A0A] md:contents" style={{ fontSize: 13 }}>{c.listings}</span>
+                <span className="md:hidden label">Errors</span>
+                <span className="tabular md:hidden" style={{ fontSize: 13, color: c.errors > 0 ? '#F94500' : '#0A0A0A' }}>{c.errors}</span>
+                <span className="md:hidden label">Sell-thru</span>
+                <span className="tabular text-[#0A0A0A] md:hidden" style={{ fontSize: 13 }}>{Math.round(c.sellThrough * 100)}%</span>
+                <span className="md:hidden label">Lift</span>
+                <span className="tabular md:hidden" style={{ fontSize: 13, color: c.lift > 0 ? '#0E9F6E' : c.lift < 0 ? '#F94500' : '#6B6B6B' }}>
+                  {c.lift > 0 ? '+' : ''}{Math.round(c.lift * 100)}%
+                </span>
+              </div>
+              <div className="hidden md:block md:col-span-2 md:text-right"><span className="tabular" style={{ fontSize: 13, color: c.errors > 0 ? '#F94500' : '#0A0A0A' }}>{c.errors}</span></div>
+              <div className="hidden md:block md:col-span-2 md:text-right"><span className="tabular text-[#0A0A0A]" style={{ fontSize: 13 }}>{Math.round(c.sellThrough * 100)}%</span></div>
+              <div className="hidden md:block md:col-span-2 md:text-right">
                 <span className="tabular" style={{ fontSize: 13, color: c.lift > 0 ? '#0E9F6E' : c.lift < 0 ? '#F94500' : '#6B6B6B' }}>
                   {c.lift > 0 ? '+' : ''}{Math.round(c.lift * 100)}%
                 </span>

@@ -18,7 +18,7 @@ export default function OpsCommandCenter() {
       />
 
       {/* Pillars */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-0 mb-10 border-b border-[#E0E0E0]" data-testid="ops-pillars">
+      <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-x-0 gap-y-3 mb-10 border-b border-[#E0E0E0] pb-1" data-testid="ops-pillars">
         {[
           { l: 'Pickup', c: byKind('pickup_scheduled').length, color: '#826DEE' },
           { l: 'Custody', c: byKind('custody_transfer').length, color: '#FFDB15' },
@@ -29,9 +29,9 @@ export default function OpsCommandCenter() {
           { l: 'Returns', c: byKind('return_requested').length, color: '#F94500' },
           { l: 'Recon', c: byKind('reconciliation').length, color: '#0E9F6E' },
         ].map(s => (
-          <div key={s.l} className="border-t-2 pt-5 pb-5 pr-3" style={{ borderTopColor: s.color }} data-testid={`pillar-${s.l.toLowerCase()}`}>
-            <span className="label block mb-2" style={{ color: s.color }}>● {s.l}</span>
-            <span className="block tabular" style={{ fontFamily: 'var(--font-display-family)', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', lineHeight: 1, color: s.color }}>
+          <div key={s.l} className="border-t-2 pt-4 sm:pt-5 pb-4 sm:pb-5 pr-2 sm:pr-3" style={{ borderTopColor: s.color }} data-testid={`pillar-${s.l.toLowerCase()}`}>
+            <span className="label block mb-1.5 sm:mb-2 truncate" style={{ color: s.color, fontSize: 9 }}>● {s.l}</span>
+            <span className="block tabular" style={{ fontFamily: 'var(--font-display-family)', fontWeight: 900, fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', lineHeight: 1, color: s.color }}>
               {s.c}
             </span>
           </div>
