@@ -82,6 +82,64 @@ build. When the screenshot harness is wired up (`npm run qa:screens` is
 the planned alias) a visual diff per viewport will replace the static
 checkmarks above.
 
+## Mobile bottom-tab navigation
+
+Customer portal mobile sessions now mount a four-tab bottom nav at the
+physical bottom of the viewport:
+
+| Tab | Route | Active rule |
+|---|---|---|
+| Overview  | `/portal`           | exact match |
+| Inventory | `/portal/inventory` | exact + nested |
+| Offers    | `/portal/offers`    | exact + nested |
+| Ledger    | `/portal/ledger`    | exact + nested |
+
+Implementation: `src/components/portal/MobileBottomTabs.tsx`. Mounted by
+`AppShell` only when `role === 'customer'` *and* the route starts with
+`/portal`, so marketing, ops, admin and partner consoles are unaffected.
+
+Quality bar:
+
+- 60 px tab height + safe-area-inset-bottom.
+- 44 px tap targets (the entire grid cell is the link).
+- Inline SVG icons (no extra runtime cost) plus a 9 px mono label.
+- Active tab uses customer accent `#826DEE` plus an inset top rail and
+  bold weight, with `aria-current="page"`.
+- Pure links — no JS state — so route prefetch works and SSR is correct.
+- Coexists with `MobileBottomBar` / `MobileActionBar`: AppShell sets
+  `--portal-bar-bottom` and `--portal-bar-pb` CSS vars on its root so
+  those bars stack directly above the tab strip and main content adds
+  matching bottom padding, never hiding CTAs.
+
+## Pull-to-refresh
+
+`PullToRefresh` wraps the customer portal content tree on the routes
+listed below. It is installed once in `AppShell`, so individual pages
+do not have to opt in.
+
+- `/portal`, `/portal/inventory`, `/portal/offers`, `/portal/ledger`
+- `/portal/donations`, `/portal/appraisal`, `/portal/experts`
+- `/portal/capture`, `/portal/channels`, `/portal/compliance`
+- `/portal/statements`, `/portal/receipts`
+
+Behaviour:
+
+- Engages only when the document is scrolled to the top (`window.scrollY === 0`).
+- Requires the gesture to be primarily vertical (`|dy| / |dx| ≥ 1.4`)
+  so it does not fight the horizontal segmented controls / channel
+  matrix / appraisal pipeline rails.
+- Applies a 0.55 resistance curve and clamps at 110 px — the page never
+  feels "rubber-band-stuck".
+- Trigger threshold: 72 px. Indicator copy steps through
+  *Pull to refresh → Release to refresh → Refreshing estate ledger…*.
+- Default action calls `router.refresh()` which re-runs server reads
+  (live Supabase mode) or re-pulls demo fixtures.
+- Honours `prefers-reduced-motion` — no transform animation, just the
+  status indicator.
+- Mobile-only: indicator is `md:hidden`, transform is harmless on
+  desktop where touch events do not fire.
+- `passive: true` listeners — never blocks normal scroll.
+
 ## Native-feel improvements landed this phase
 
 - Headline clamp tightened to `clamp(2rem, 7vw, 6rem)` so 375-wide

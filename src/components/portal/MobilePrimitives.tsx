@@ -134,8 +134,13 @@ export function MobileActionBar({
 }) {
   return (
     <div
-      className="md:hidden fixed left-0 right-0 bottom-0 z-40 bg-white border-t border-[#E0E0E0]"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)' }}
+      className="md:hidden fixed left-0 right-0 z-40 bg-white border-t border-[#E0E0E0]"
+      style={{
+        // Stack above the portal bottom-tab nav when present.
+        bottom: 'var(--portal-bar-bottom, 0px)',
+        paddingBottom:
+          'var(--portal-bar-pb, calc(env(safe-area-inset-bottom, 0px) + 8px))',
+      }}
       role="region"
       aria-label={ariaLabel}
       data-testid={testId}

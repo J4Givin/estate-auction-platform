@@ -24,6 +24,20 @@ environment to verify, and what's left." Each line is one decision.
         "All"/"Fee").
       - demo-mode middleware no longer crashes when Supabase env is
         missing (was returning 500 on every page).
+- [x] **Mobile bottom-tab navigation** for the customer portal
+      (`Overview / Inventory / Offers / Ledger`) — safe-area aware,
+      44 px+ tap targets, role-accent active state, mounted by `AppShell`
+      so marketing, ops, admin, and partner routes are untouched.
+      Sticky `MobileBottomBar` / `MobileActionBar` automatically stack
+      above the tab strip via `--portal-bar-bottom` / `--portal-bar-pb`
+      CSS variables.
+- [x] **Pull-to-refresh** on data-heavy customer routes (`/portal`,
+      inventory, offers, ledger, donations, appraisal, experts, capture,
+      channels, compliance, statements, receipts). Single
+      `PullToRefresh` wrapper installed in `AppShell`. Calls
+      `router.refresh()` to re-run server reads in both demo and live
+      mode. Honours `prefers-reduced-motion`, only engages at scroll
+      top, won't fight horizontal rails, no gesture library.
 
 ### Data layer
 - [x] Supabase schema migrations (`supabase/migrations/0003`–`0007`).

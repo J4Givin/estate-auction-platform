@@ -40,8 +40,16 @@ export function MobileBottomBar({
   const value = valueOverride ?? fmt(cashAvailable)
   return (
     <div
-      className="md:hidden fixed left-0 right-0 bottom-0 z-40 bg-white border-t border-[#E0E0E0]"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)' }}
+      className="md:hidden fixed left-0 right-0 z-40 bg-white border-t border-[#E0E0E0]"
+      style={{
+        // AppShell sets these vars:
+        //   --portal-bar-bottom: distance from viewport bottom (handles tab strip)
+        //   --portal-bar-pb: paddingBottom (handles safe-area when no tabs)
+        // Defaults preserve original behavior on routes that don't use AppShell tabs.
+        bottom: 'var(--portal-bar-bottom, 0px)',
+        paddingBottom:
+          'var(--portal-bar-pb, calc(env(safe-area-inset-bottom, 0px) + 8px))',
+      }}
       data-testid="mobile-bottom-bar"
       role="region"
       aria-label="Primary actions"

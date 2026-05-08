@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { MobileBottomTabs, BOTTOM_TABS_HEIGHT } from '@/components/portal/MobileBottomTabs'
+import { PullToRefresh } from '@/components/portal/PullToRefresh'
 
 /* ═══════════════════════════════════════
    TYPE DEFINITIONS
@@ -229,6 +231,36 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
   const roleLabel = ROLE_LABEL[role] ?? 'Portal'
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Bottom tabs are mobile-only and reserved for the customer portal.
+  // They sit at the physical bottom of the viewport; sticky action bars
+  // (financial bar etc.) stack directly above them.
+  const showBottomTabs =
+    role === 'customer' &&
+    typeof pathname === 'string' &&
+    pathname.startsWith('/portal')
+
+  // Pull-to-refresh applies to data-heavy customer portal routes.
+  // Detail / sheet-heavy routes (item detail, job nested routes) opt out
+  // because their gesture surface conflicts with sheets and rails.
+  const PTR_ALLOWED_ROUTES = new Set([
+    '/portal',
+    '/portal/inventory',
+    '/portal/offers',
+    '/portal/ledger',
+    '/portal/donations',
+    '/portal/appraisal',
+    '/portal/experts',
+    '/portal/capture',
+    '/portal/channels',
+    '/portal/compliance',
+    '/portal/statements',
+    '/portal/receipts',
+  ])
+  const enablePullToRefresh =
+    role === 'customer' &&
+    typeof pathname === 'string' &&
+    PTR_ALLOWED_ROUTES.has(pathname)
+
   // Active label for the compact mobile header — gives the page a
   // clear, native-app "you are here" cue without consuming much room.
   const activeItem =
@@ -236,8 +268,18 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
       .filter(i => pathname === i.href || pathname.startsWith(i.href + '/'))
       .sort((a, b) => b.href.length - a.href.length)[0] ?? navItems[0]
 
+  // CSS vars consumed by MobileBottomBar / MobileActionBar so they can
+  // sit above the bottom-tab strip when it's mounted, and absorb the
+  // safe-area inset themselves when it isn't.
+  const rootCssVars: React.CSSProperties = showBottomTabs
+    ? ({
+        ['--portal-bar-bottom' as string]: `calc(${BOTTOM_TABS_HEIGHT}px + env(safe-area-inset-bottom, 0px))`,
+        ['--portal-bar-pb' as string]: '8px',
+      } as React.CSSProperties)
+    : {}
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col" style={rootCssVars}>
 
       {/* ── Top Rail ── */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E0E0E0]" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
@@ -376,21 +418,42 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
       </header>
 
       {/* ── Content ── */}
-      {/* Add 80px (bottom-bar height) + safe-area inset on mobile so sticky CTAs never obscure content. */}
+      {/*
+        Mobile bottom padding accounts for, in this stacking order:
+          (a) sticky bottom-bar (~64px + 16px breathing room) — only when present
+          (b) bottom-tab nav (60px) — only on portal customer routes
+          (c) safe-area inset
+        Desktop has no sticky bars so bottomBar padding is ignored at md+.
+      */}
       <main
         className="flex-1"
         style={{
           paddingTop: 'calc(56px + env(safe-area-inset-top, 0px))',
-          paddingBottom: bottomBar ? 'calc(env(safe-area-inset-bottom, 0px) + 88px)' : undefined,
+          paddingBottom:
+            bottomBar || showBottomTabs
+              ? `calc(env(safe-area-inset-bottom, 0px) + ${
+                  (bottomBar ? 88 : 0) + (showBottomTabs ? BOTTOM_TABS_HEIGHT : 0)
+                }px)`
+              : undefined,
         }}
       >
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 sm:py-12 md:py-20 lg:py-24">
-          {children}
+          {enablePullToRefresh ? (
+            <PullToRefresh>{children}</PullToRefresh>
+          ) : (
+            children
+          )}
         </div>
       </main>
 
-      {/* ── Mobile bottom bar slot ── */}
+      {/* ── Mobile bottom bar slot ──
+          When portal bottom-tabs are present, push the action bar up so
+          it sits directly above the tab strip. The CSS variable is set
+          on <main> above and read by the bottom-bar primitives. */}
       {bottomBar}
+
+      {/* ── Mobile bottom-tab nav — customer portal only ── */}
+      {showBottomTabs && <MobileBottomTabs />}
 
       {/* ── Footer — hidden on mobile when a sticky bottom bar is mounted, since the bar is the action surface. */}
       <footer
