@@ -93,7 +93,7 @@ export default function LedgerPage() {
             <button
               key={k}
               onClick={() => setFilter(k)}
-              className="label whitespace-nowrap px-4 py-2.5 border transition-colors"
+              className="label whitespace-nowrap px-4 py-2.5 border transition-colors min-w-[44px]"
               style={
                 active
                   ? { background: '#0A0A0A', borderColor: '#0A0A0A', color: '#FFFFFF' }

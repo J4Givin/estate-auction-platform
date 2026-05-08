@@ -169,8 +169,8 @@ export default function CapturePage() {
               <li key={c.id} className="px-4 sm:px-6 py-3 border-b border-[#F0F0F0] last:border-b-0 flex items-start gap-3" data-testid={`checklist-${c.id}`}>
                 <button
                   onClick={() => onChecklistToggle(c.id, true)}
-                  className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-white"
-                  style={{ background: '#0A0A0A', fontSize: 11 }}
+                  className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center text-white"
+                  style={{ background: '#0A0A0A', fontSize: 12 }}
                   aria-label={`mark ${c.label} done`}
                   data-testid={`checklist-toggle-${c.id}`}
                 >
