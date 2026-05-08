@@ -1,11 +1,25 @@
 import { requestStatement } from '@/lib/data/actions'
-import { jsonErr, jsonOk, readJsonBody } from '../../_helpers'
+import { canReadCase } from '@/lib/data/auth'
+import { authorize, jsonErr, jsonOk, readJsonBody, rejectAuthz, resolveActor } from '../../_helpers'
 
 export async function POST(req: Request) {
   const body = await readJsonBody<{ caseId?: string; period?: string; actor?: string }>(req)
   if (!body?.caseId || !body.period || !body.actor) {
     return jsonErr('caseId, period, and actor are required')
   }
-  const res = await requestStatement({ caseId: body.caseId, period: body.period, actor: body.actor })
+
+  const ctx = await resolveActor()
+  // Reading a statement is allowed for any case member; partners cannot request.
+  const decision = authorize(
+    ctx,
+    (c) => canReadCase(c, body.caseId!) && c.platformRole !== 'partner',
+    { reason: 'You cannot request a statement for this case' },
+  )
+  if (!decision.ok) return rejectAuthz(decision)
+
+  const res = await requestStatement(
+    { caseId: body.caseId, period: body.period, actor: ctx.authenticated ? ctx.actorLabel : body.actor },
+    { actorUserId: ctx.userId },
+  )
   return jsonOk(res)
 }

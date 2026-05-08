@@ -11,6 +11,10 @@ import { TRUST_RECEIPTS, type TrustReceiptData, type ReceiptKind } from '@/lib/s
 import { isSupabaseConfigured, getDataMode } from './env'
 import type { CreateTrustReceiptInput, WriteResult } from './types'
 
+interface TrustReceiptIdentity {
+  actorUserId?: string | null
+}
+
 const SESSION_RECEIPTS: TrustReceiptData[] = []
 
 function nextReceiptId(kind: ReceiptKind, subject?: string): string {
@@ -29,6 +33,7 @@ export function listSessionReceipts(): TrustReceiptData[] {
 
 export async function createTrustReceipt(
   input: CreateTrustReceiptInput,
+  identity: TrustReceiptIdentity = {},
 ): Promise<WriteResult<TrustReceiptData>> {
   const receipt: TrustReceiptData = {
     id: nextReceiptId(input.kind, input.itemId ?? input.caseId),
@@ -69,6 +74,7 @@ export async function createTrustReceipt(
       approver_role: receipt.approverRole,
       immutable_snapshot_id: receipt.immutableSnapshotId,
       dispute_url: receipt.disputeUrl,
+      actor_user_id: identity.actorUserId ?? null,
       created_at: receipt.timestamp,
     })
     if (error) {

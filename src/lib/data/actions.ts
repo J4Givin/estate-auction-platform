@@ -26,6 +26,11 @@ import type {
   WriteResult,
 } from './types'
 
+/** Optional actor identity from auth context. Pass-through; never required. */
+export interface ActorIdentity {
+  actorUserId?: string | null
+}
+
 /* ─── Validation schemas ─── */
 
 const dispositionEnum = z.enum([
@@ -160,7 +165,10 @@ async function trySupabaseUpdate(
 
 /* ─── Actions ─── */
 
-export async function acceptCashOffer(input: AcceptOfferInput): Promise<WriteResult<{ offerId: string }>> {
+export async function acceptCashOffer(
+  input: AcceptOfferInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ offerId: string }>> {
   const parsed = AcceptOfferSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -169,6 +177,7 @@ export async function acceptCashOffer(input: AcceptOfferInput): Promise<WriteRes
     case_id: parsed.data.caseId ?? null,
     decision: 'accepted',
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     decided_at: new Date().toISOString(),
   })
   // Reflect status on the cash_offers row so UI lists update immediately.
@@ -182,7 +191,7 @@ export async function acceptCashOffer(input: AcceptOfferInput): Promise<WriteRes
     evidence: ['Offer snapshot frozen at accept time'],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -193,7 +202,10 @@ export async function acceptCashOffer(input: AcceptOfferInput): Promise<WriteRes
   }
 }
 
-export async function counterOffer(input: CounterOfferInput): Promise<WriteResult<{ offerId: string; counterAmount: number }>> {
+export async function counterOffer(
+  input: CounterOfferInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ offerId: string; counterAmount: number }>> {
   const parsed = CounterOfferSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -203,6 +215,7 @@ export async function counterOffer(input: CounterOfferInput): Promise<WriteResul
     counter_amount_cents: parsed.data.counterAmount * 100,
     message: parsed.data.message,
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     decided_at: new Date().toISOString(),
   })
   await trySupabaseUpdate('cash_offers', { status: 'countered', updated_at: new Date().toISOString() }, { offer_id: parsed.data.offerId })
@@ -215,7 +228,7 @@ export async function counterOffer(input: CounterOfferInput): Promise<WriteResul
     evidence: ['Offer snapshot frozen at counter'],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -226,7 +239,10 @@ export async function counterOffer(input: CounterOfferInput): Promise<WriteResul
   }
 }
 
-export async function setFloorPrice(input: SetFloorPriceInput): Promise<WriteResult<{ itemId: string; floorPrice: number }>> {
+export async function setFloorPrice(
+  input: SetFloorPriceInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ itemId: string; floorPrice: number }>> {
   const parsed = SetFloorPriceSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -235,6 +251,7 @@ export async function setFloorPrice(input: SetFloorPriceInput): Promise<WriteRes
     decision_type: 'floor_price',
     payload: { floor_price_cents: parsed.data.floorPrice * 100 },
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     decided_at: new Date().toISOString(),
   })
   await trySupabaseUpdate(
@@ -252,7 +269,7 @@ export async function setFloorPrice(input: SetFloorPriceInput): Promise<WriteRes
     evidence: [`Floor: $${parsed.data.floorPrice}`],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -263,7 +280,10 @@ export async function setFloorPrice(input: SetFloorPriceInput): Promise<WriteRes
   }
 }
 
-export async function changeDisposition(input: ChangeDispositionInput): Promise<WriteResult<{ itemId: string; disposition: string }>> {
+export async function changeDisposition(
+  input: ChangeDispositionInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ itemId: string; disposition: string }>> {
   const parsed = ChangeDispositionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -272,6 +292,7 @@ export async function changeDisposition(input: ChangeDispositionInput): Promise<
     decision_type: 'disposition',
     payload: { disposition: parsed.data.disposition, reason: parsed.data.reason },
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     decided_at: new Date().toISOString(),
   })
   await trySupabaseUpdate(
@@ -289,7 +310,7 @@ export async function changeDisposition(input: ChangeDispositionInput): Promise<
     evidence: [`Previous disposition replaced`, `New: ${parsed.data.disposition}`],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -300,7 +321,10 @@ export async function changeDisposition(input: ChangeDispositionInput): Promise<
   }
 }
 
-export async function stopSell(input: StopSellInput): Promise<WriteResult<{ itemId: string }>> {
+export async function stopSell(
+  input: StopSellInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ itemId: string }>> {
   const parsed = StopSellSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -309,6 +333,7 @@ export async function stopSell(input: StopSellInput): Promise<WriteResult<{ item
     decision_type: 'stop_sell',
     payload: { reason: parsed.data.reason, legal_hold: parsed.data.legalHold ?? false },
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     decided_at: new Date().toISOString(),
   })
   await trySupabaseUpdate(
@@ -326,7 +351,7 @@ export async function stopSell(input: StopSellInput): Promise<WriteResult<{ item
     evidence: ['Customer ack timestamp'],
     approver: parsed.data.actor,
     approverRole: parsed.data.legalHold ? 'Legal Hold' : 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -337,7 +362,10 @@ export async function stopSell(input: StopSellInput): Promise<WriteResult<{ item
   }
 }
 
-export async function requestPayout(input: RequestPayoutInput): Promise<WriteResult<{ caseId: string; amount: number }>> {
+export async function requestPayout(
+  input: RequestPayoutInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ caseId: string; amount: number }>> {
   const parsed = RequestPayoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -349,6 +377,7 @@ export async function requestPayout(input: RequestPayoutInput): Promise<WriteRes
     fee_cents: 0,
     net_cents: -parsed.data.amount * 100,
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     created_at: new Date().toISOString(),
   })
 
@@ -360,7 +389,7 @@ export async function requestPayout(input: RequestPayoutInput): Promise<WriteRes
     evidence: [`Destination: ${parsed.data.destination ?? 'bank on file'}`],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -371,7 +400,10 @@ export async function requestPayout(input: RequestPayoutInput): Promise<WriteRes
   }
 }
 
-export async function updateDonationRouting(input: UpdateDonationRoutingInput): Promise<WriteResult<{ caseId: string; charityId: string }>> {
+export async function updateDonationRouting(
+  input: UpdateDonationRoutingInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ caseId: string; charityId: string }>> {
   const parsed = UpdateDonationRoutingSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -382,6 +414,7 @@ export async function updateDonationRouting(input: UpdateDonationRoutingInput): 
       charity_id: parsed.data.charityId,
       selected: true,
       actor: parsed.data.actor,
+      actor_user_id: identity.actorUserId ?? null,
       selected_at: new Date().toISOString(),
     },
     'case_id,charity_id',
@@ -395,7 +428,7 @@ export async function updateDonationRouting(input: UpdateDonationRoutingInput): 
     evidence: [`Charity ID: ${parsed.data.charityId}`],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -406,7 +439,10 @@ export async function updateDonationRouting(input: UpdateDonationRoutingInput): 
   }
 }
 
-export async function assignExpertReview(input: AssignExpertInput): Promise<WriteResult<{ itemId: string; expertId?: string }>> {
+export async function assignExpertReview(
+  input: AssignExpertInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ itemId: string; expertId?: string }>> {
   const parsed = AssignExpertSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -416,6 +452,7 @@ export async function assignExpertReview(input: AssignExpertInput): Promise<Writ
     state: parsed.data.expertId ? 'assigned' : 'needed',
     notes: parsed.data.notes,
     actor: parsed.data.actor,
+    actor_user_id: identity.actorUserId ?? null,
     queued_at: new Date().toISOString(),
   })
 
@@ -428,7 +465,7 @@ export async function assignExpertReview(input: AssignExpertInput): Promise<Writ
     evidence: ['Queue entry created'],
     approver: parsed.data.actor,
     approverRole: 'Estate Coordinator',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,
@@ -439,7 +476,10 @@ export async function assignExpertReview(input: AssignExpertInput): Promise<Writ
   }
 }
 
-export async function updateCaptureChecklist(input: UpdateCaptureChecklistInput): Promise<WriteResult<{ roomId: string; checklistItemId: string; done: boolean }>> {
+export async function updateCaptureChecklist(
+  input: UpdateCaptureChecklistInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ roomId: string; checklistItemId: string; done: boolean }>> {
   const parsed = UpdateCaptureChecklistSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -450,6 +490,7 @@ export async function updateCaptureChecklist(input: UpdateCaptureChecklistInput)
       checklist_item_id: parsed.data.checklistItemId,
       done: parsed.data.done,
       actor: parsed.data.actor,
+      actor_user_id: identity.actorUserId ?? null,
       updated_at: new Date().toISOString(),
     },
     'room_id,checklist_item_id',
@@ -463,7 +504,10 @@ export async function updateCaptureChecklist(input: UpdateCaptureChecklistInput)
   }
 }
 
-export async function requestStatement(input: RequestStatementInput): Promise<WriteResult<{ caseId: string; period: string; statementId: string }>> {
+export async function requestStatement(
+  input: RequestStatementInput,
+  identity: ActorIdentity = {},
+): Promise<WriteResult<{ caseId: string; period: string; statementId: string }>> {
   const parsed = RequestStatementSchema.safeParse(input)
   if (!parsed.success) return { ok: false, mode: getDataMode(), error: parsed.error.message }
 
@@ -476,6 +520,7 @@ export async function requestStatement(input: RequestStatementInput): Promise<Wr
     generated_at: new Date().toISOString(),
     net_cents: 0,
     status: 'generating',
+    metadata: identity.actorUserId ? { actor_user_id: identity.actorUserId } : {},
   })
 
   const receipt = await createTrustReceipt({
@@ -487,7 +532,7 @@ export async function requestStatement(input: RequestStatementInput): Promise<Wr
     evidence: [`Period: ${parsed.data.period}`, `Statement: ${statementId}`],
     approver: parsed.data.actor,
     approverRole: 'Estate Owner',
-  })
+  }, identity)
 
   return {
     ok: !sbErr,

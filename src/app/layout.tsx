@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Barlow_Condensed, Space_Mono } from "next/font/google";
 import "./globals.css";
-import { getDataMode } from "@/lib/data/env";
-import { DataModeBadge } from "@/components/portal/DataModeBadge";
+import { ActorRoleBadge } from "@/components/portal/ActorRoleBadge";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -46,12 +45,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const mode = getDataMode();
   return (
     <html lang="en" className={`${dmSans.variable} ${barlowCondensed.variable} ${spaceMono.variable}`}>
       <body className="font-sans bg-white text-[#0A0A0A]">
         {children}
-        <DataModeBadge mode={mode} />
+        {/* Server-rendered, role-aware dev badge. Hidden in production. */}
+        <ActorRoleBadge />
       </body>
     </html>
   );
