@@ -241,12 +241,28 @@ body {
   }
 }
 
+/* ── Public fixed-header height token ──
+   Used by PublicShell <main> padding-top so hero content always begins
+   below the fixed header on every public page. Inline styles also
+   reference this var, but it is defined here so the value is shared. */
+:root {
+  --public-header-h: 64px;
+}
+
 /* ── Hero H1 scroll-margin & weight calm-down ──
    When public hero H1 is anchored to the top, ensure the fixed header
-   doesn't clip its ascender. */
+   doesn't clip its ascender. scroll-margin-top is for in-page anchor
+   navigation; the actual initial offset comes from <main> padding-top. */
 .hero-h1 {
-  scroll-margin-top: calc(72px + env(safe-area-inset-top, 0px));
+  scroll-margin-top: calc(var(--public-header-h, 64px) + 16px + env(safe-area-inset-top, 0px));
   padding-top: 2px; /* protect uppercase ascenders from any visual clip */
+}
+
+/* Belt-and-suspenders: any <main> rendered inside PublicShell must have
+   at least header-height of top padding even if a Tailwind arbitrary
+   value class fails to compile. */
+main.public-main-with-header {
+  padding-top: calc(var(--public-header-h, 64px) + env(safe-area-inset-top, 0px));
 }
 
 /* ── Scroll X ── */

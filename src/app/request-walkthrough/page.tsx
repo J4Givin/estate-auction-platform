@@ -14,7 +14,8 @@ export default function RequestWalkthroughPage() {
   return (
     <PublicShell>
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pt-8 sm:pt-12 md:pt-20 pb-12 md:pb-16">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pb-12 md:pb-16"
+             style={{ paddingTop: 'clamp(2rem, 5vw, 5.5rem)' }}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
             {/* Left rail */}
             <div className="lg:col-span-5">

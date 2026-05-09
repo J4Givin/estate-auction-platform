@@ -188,7 +188,8 @@ export default function HomePage() {
     <PublicShell>
       {/* ── HERO ── */}
       <section className="relative bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pt-10 sm:pt-14 md:pt-24 lg:pt-28 pb-16 md:pb-28">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pb-16 md:pb-28"
+             style={{ paddingTop: 'clamp(2.25rem, 6vw, 7rem)' }}>
           <div className="flex items-center gap-3 mb-7 sm:mb-10 md:mb-14">
             <span className="w-1.5 h-1.5 rounded-full bg-[#826DEE]" aria-hidden />
             <span className="label text-[#6B6B6B]">Los Angeles, California — Estate Advisory</span>
@@ -199,8 +200,8 @@ export default function HomePage() {
             style={{
               fontFamily: 'var(--font-display-family)',
               fontWeight: 800,
-              fontSize: 'clamp(2.1rem, 6vw, 5rem)',
-              lineHeight: 1.02,
+              fontSize: 'clamp(1.85rem, 5.4vw, 5rem)',
+              lineHeight: 1.04,
               letterSpacing: '-0.015em',
               textTransform: 'uppercase',
             }}
