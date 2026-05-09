@@ -107,6 +107,28 @@ body {
   text-transform: uppercase;
 }
 
+/* Calmer advisory section heading: same display family, but mixed-case
+   and lighter weight for warmth in supporting H2s (process, services,
+   pricing, faq). Hero H1 keeps the editorial all-caps identity. */
+.heading-advisory {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 4.6vw, 3.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  text-transform: none;
+  color: #0A0A0A;
+}
+.heading-advisory-dark {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 4.6vw, 3.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  text-transform: none;
+  color: #FFFFFF;
+}
+
 .display-md {
   font-family: var(--font-display-family);
   font-weight: 800;
@@ -221,6 +243,52 @@ body {
 
 /* ── Tap target ── */
 .tap-target { min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
+
+/* ── Card CTA link ──
+   Ensures inline "Learn more →" / "Open preview →" type links inside cards
+   are at least 44px tappable on mobile, even when the visible label is
+   small editorial text. */
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-family: var(--font-mono-family);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.card-link:hover { color: var(--color-violet); }
+
+/* ── Trust chip (mobile readable proof points) ── */
+.trust-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #FFFFFF;
+  border: 1px solid #EAEAEA;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #0A0A0A;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.trust-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-violet);
+  flex-shrink: 0;
+}
 
 /* ── Mobile-native CTA polish ──
    On phone widths, primary/secondary CTAs become full-width with comfy

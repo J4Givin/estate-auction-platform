@@ -195,56 +195,158 @@ export default function HomePage() {
             <span className="label text-[#6B6B6B]">Los Angeles, California — Estate Advisory</span>
           </div>
 
-          <h1
-            className="text-[#0A0A0A] max-w-[20ch] hero-h1"
-            style={{
-              fontFamily: 'var(--font-display-family)',
-              fontWeight: 800,
-              fontSize: 'clamp(1.85rem, 5.4vw, 5rem)',
-              lineHeight: 1.04,
-              letterSpacing: '-0.015em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Estate Inventory,<br />
-            Appraised, <span className="text-[#826DEE]">Authenticated</span>,<br />
-            And Sold With Care.
-          </h1>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            <div className="lg:col-span-7">
+              <h1
+                className="text-[#0A0A0A] max-w-[20ch] hero-h1"
+                style={{
+                  fontFamily: 'var(--font-display-family)',
+                  fontWeight: 800,
+                  fontSize: 'clamp(1.85rem, 5.4vw, 5rem)',
+                  lineHeight: 1.04,
+                  letterSpacing: '-0.015em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Estate Inventory,<br />
+                Appraised, <span className="text-[#826DEE]">Authenticated</span>,<br />
+                And Sold With Care.
+              </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-7 md:gap-12 mt-8 sm:mt-10 md:mt-14">
-            <p className="md:col-span-6 lg:col-span-5 text-[16px] sm:text-[17px] md:text-[19px] text-[#3a3a3a] leading-relaxed"
-               style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300 }}>
-              We inventory, appraise, authenticate, photograph, list, sell, and settle estate assets through the right channels — helping families, executors, trustees, and real estate professionals maximize value while reducing stress.
-            </p>
-            <div className="md:col-span-6 lg:col-span-7 flex flex-col gap-4 md:items-end md:justify-end">
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <Link href="/request-walkthrough" className="btn btn-ink btn-mobile-primary justify-center">
-                  Book a Free Estate Evaluation →
-                </Link>
-                <Link href="/how-it-works" className="btn btn-outline btn-mobile-secondary justify-center">
-                  See How It Works
-                </Link>
+              <p className="mt-7 sm:mt-9 md:mt-10 max-w-xl text-[16px] sm:text-[17px] md:text-[19px] text-[#3a3a3a] leading-relaxed"
+                 style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300 }}>
+                We inventory, appraise, authenticate, photograph, list, sell, and settle estate assets through the right channels — helping families, executors, trustees, and real estate professionals maximize value while reducing stress.
+              </p>
+
+              <div className="mt-7 sm:mt-9 flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                  <Link href="/request-walkthrough" className="btn btn-ink btn-mobile-primary justify-center">
+                    Book a Free Estate Evaluation →
+                  </Link>
+                  <Link href="/how-it-works" className="btn btn-outline btn-mobile-secondary justify-center">
+                    See How It Works
+                  </Link>
+                </div>
+                <span className="label text-[#6B6B6B]">No obligation. Itemized reporting from intake to payout.</span>
               </div>
-              <span className="label text-[#6B6B6B]">No obligation. Itemized reporting from intake to payout.</span>
             </div>
+
+            {/* Estate inventory preview panel — desktop/tablet only.
+                Marked clearly as a sample preview. No watermarked imagery;
+                CSS-rendered structured card communicates inventory + appraisal. */}
+            <aside
+              className="hidden lg:block lg:col-span-5 mt-2"
+              aria-label="Sample estate inventory preview"
+            >
+              <div className="border border-[#E0E0E0] bg-white relative">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-[#E0E0E0] bg-[#FAFAFA]">
+                  <span className="label text-[#6B6B6B]">Estate Inventory · Sample</span>
+                  <span className="label bg-[#FFDB15] text-[#0A0A0A] px-2 py-1 font-bold" style={{ fontSize: 9 }}>
+                    Sample Preview
+                  </span>
+                </div>
+
+                <ul className="divide-y divide-[#EFEFEF]">
+                  {[
+                    {
+                      cat: 'Jewelry',
+                      item: 'Vintage gold watch · ref. review',
+                      est: '$1,200 – $1,800',
+                      status: 'Authenticating',
+                      dot: '#FFDB15',
+                    },
+                    {
+                      cat: 'Art',
+                      item: 'Signed fine-art print',
+                      est: '$800 – $1,200',
+                      status: 'Specialist auction',
+                      dot: '#826DEE',
+                    },
+                    {
+                      cat: 'Antiques',
+                      item: 'Mid-century dining set',
+                      est: '$600 – $900',
+                      status: 'Approved · listing',
+                      dot: '#F94500',
+                    },
+                    {
+                      cat: 'Silver',
+                      item: 'Sterling service · 47 pcs',
+                      est: '$900 – $1,400',
+                      status: 'Multi-channel',
+                      dot: '#FF99DC',
+                    },
+                  ].map(row => (
+                    <li key={row.item} className="px-5 py-4 flex items-start gap-4">
+                      <span
+                        className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
+                        style={{ background: row.dot }}
+                        aria-hidden
+                      />
+                      <div className="flex-1 min-w-0">
+                        <span className="label text-[#6B6B6B] block mb-1">{row.cat}</span>
+                        <p className="text-[14.5px] text-[#0A0A0A] leading-snug truncate"
+                           style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+                          {row.item}
+                        </p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <span className="block text-[13.5px] text-[#0A0A0A] price"
+                              style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+                          {row.est}
+                        </span>
+                        <span className="label text-[#6B6B6B] block mt-0.5" style={{ fontSize: 9 }}>
+                          {row.status}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="grid grid-cols-3 border-t border-[#E0E0E0]">
+                  {[
+                    { l: 'Items', v: '128' },
+                    { l: 'Approved', v: '94' },
+                    { l: 'Est. gross', v: '$58.4k' },
+                  ].map((m, i) => (
+                    <div key={m.l} className={`px-5 py-4 ${i < 2 ? 'border-r border-[#EFEFEF]' : ''}`}>
+                      <span className="label text-[#6B6B6B] block mb-1">{m.l}</span>
+                      <span className="text-[18px] price"
+                            style={{ fontFamily: 'var(--font-display-family)', fontWeight: 800 }}>
+                        {m.v}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="px-5 py-3 border-t border-[#E0E0E0] flex items-center justify-between">
+                  <span className="label text-[#6B6B6B]" style={{ fontSize: 9 }}>
+                    Anonymized · sample data only
+                  </span>
+                  <span className="label text-[#826DEE]" style={{ fontSize: 9 }}>
+                    Inventory · Appraisal · Sale
+                  </span>
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
 
-        {/* Trust strip */}
+        {/* Trust strip — mobile reads as readable chips, desktop is editorial */}
         <div className="border-t border-[#E0E0E0] bg-[#FAFAFA] sm:bg-white">
           <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-4 sm:py-5">
-            {/* Mobile: 2-column readable rows */}
-            <ul className="grid grid-cols-2 gap-x-5 gap-y-3 sm:hidden">
+            {/* Mobile: readable trust chips */}
+            <ul className="flex flex-wrap gap-2 sm:hidden" aria-label="Why families trust Estate Liquidity">
               {TRUST.map((t) => (
-                <li key={t} className="flex items-start gap-2">
-                  <span className="w-1 h-1 rounded-full bg-[#826DEE] mt-2 flex-shrink-0" aria-hidden />
-                  <span className="label text-[#6B6B6B] leading-snug" style={{ fontSize: 10.5, letterSpacing: '0.12em' }}>
+                <li key={t}>
+                  <span className="trust-chip">
+                    <span className="trust-chip-dot" aria-hidden />
                     {t}
                   </span>
                 </li>
               ))}
             </ul>
-            {/* Desktop: inline list */}
+            {/* Desktop: inline editorial list */}
             <div className="hidden sm:flex flex-wrap items-center gap-x-8 gap-y-3">
               {TRUST.map((t, i) => (
                 <span key={t} className="label text-[#6B6B6B] flex items-center gap-3">
@@ -262,7 +364,7 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <span className="label block mb-6">Why Estate Liquidity</span>
-            <h2 className="display-lg max-w-[20ch]">Estate sales are rarely just about selling things.</h2>
+            <h2 className="heading-advisory max-w-[20ch]">Estate sales are rarely just about selling things.</h2>
           </Reveal>
           <Reveal delay={80}>
             <p className="mt-8 max-w-3xl text-[17px] md:text-[19px] text-[#3a3a3a] leading-relaxed"
@@ -294,7 +396,7 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-24">
               <div>
                 <span className="label block mb-5">The Process</span>
-                <h2 className="display-lg">From Walkthrough<br />to Settlement.</h2>
+                <h2 className="heading-advisory">From walkthrough<br />to settlement.</h2>
               </div>
               <p className="body-light max-w-sm md:pb-2">
                 Six clear steps. You see every item, every approval, every sale price, and every payout — documented from intake to final report.
@@ -328,7 +430,7 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-24">
               <div>
                 <span className="label block mb-5">Services</span>
-                <h2 className="display-lg">Right Path<br />For Each Estate.</h2>
+                <h2 className="heading-advisory">The right path<br />for each estate.</h2>
               </div>
               <p className="body-light max-w-sm md:pb-2">
                 Different estates need different paths. We start with a walkthrough and recommend the strategy that fits the property, timeline, and item categories.
@@ -350,7 +452,7 @@ export default function HomePage() {
                   <p className="label text-[#6B6B6B] mb-2">Included</p>
                   <p className="body-light mb-7">{svc.included}</p>
                   <div className="mt-auto pt-2">
-                    <Link href={`/services#${svc.slug}`} className="label text-[#0A0A0A] hover:text-[#826DEE]">
+                    <Link href={`/services#${svc.slug}`} className="card-link">
                       Learn more →
                     </Link>
                   </div>
@@ -368,7 +470,7 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12 md:mb-16">
               <div>
                 <span className="label block mb-5">Example Sale Scenarios</span>
-                <h2 className="display-lg">What Different<br />Items Look Like.</h2>
+                <h2 className="heading-advisory">What different<br />items look like.</h2>
               </div>
               <p className="body-light max-w-sm md:pb-2">
                 Examples shown for illustrative purposes. Actual results depend on condition, provenance, market demand, and sale channel.
@@ -410,7 +512,7 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <span className="label-dark block mb-5">Authentication & Appraisal</span>
-            <h2 className="display-lg text-white max-w-[18ch]">
+            <h2 className="heading-advisory-dark max-w-[22ch]">
               We tell you what we <span className="text-[#FFDB15]">know</span>, what needs review, and what cannot be confirmed.
             </h2>
             <p className="body-light text-white/70 mt-8 max-w-3xl leading-relaxed">
@@ -455,7 +557,7 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <span className="label block mb-5">Why Our Model</span>
-            <h2 className="display-lg max-w-[20ch]">Better outcomes come from better routing.</h2>
+            <h2 className="heading-advisory max-w-[20ch]">Better outcomes come from better routing.</h2>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-[#E0E0E0] mt-12 md:mt-16">
             {[
@@ -497,7 +599,7 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12 md:mb-16">
               <div>
                 <span className="label block mb-5">Client Portal</span>
-                <h2 className="display-lg">You will never wonder<br />what happened to an item.</h2>
+                <h2 className="heading-advisory">You will never wonder<br />what happened to an item.</h2>
               </div>
               <p className="body-light max-w-sm md:pb-2">
                 Inventory, approvals, listings, offers, sale prices, fees, and net proceeds — visible at every step. Sample preview shown below.
@@ -541,7 +643,7 @@ export default function HomePage() {
                 <span className="label text-[#6B6B6B]">
                   Sample data only — does not reflect any real client estate.
                 </span>
-                <Link href="/portal" className="label text-[#0A0A0A] hover:text-[#826DEE]">
+                <Link href="/portal" className="card-link">
                   Open client portal preview →
                 </Link>
               </div>
@@ -556,7 +658,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
             <Reveal className="md:col-span-6">
               <span className="label block mb-5">Partner Program</span>
-              <h2 className="display-lg max-w-[16ch]">Help clients clear estates faster.</h2>
+              <h2 className="heading-advisory max-w-[18ch]">Help clients clear estates faster.</h2>
               <p className="body-light mt-6 max-w-md leading-relaxed">
                 Our partner program gives realtors, attorneys, fiduciaries, and estate professionals a reliable liquidation resource for clients who need inventory, valuation, sale coordination, and final settlement reporting.
               </p>
@@ -592,7 +694,7 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
           <Reveal>
             <span className="label block mb-5">Pricing & Fees</span>
-            <h2 className="display-lg max-w-[20ch]">Transparent fees. No mystery after the sale.</h2>
+            <h2 className="heading-advisory max-w-[22ch]">Transparent fees. No mystery after the sale.</h2>
             <p className="body-light mt-8 max-w-3xl leading-relaxed">
               Every estate is different. Fees depend on scope, timeline, item categories, labor requirements, sale channels, and whether specialist authentication, transport, storage, or cleanout coordination is needed. Before work begins, we explain the recommended strategy, expected costs, commission structure, and settlement timeline.
             </p>
@@ -622,7 +724,7 @@ export default function HomePage() {
           <Reveal delay={160}>
             <div className="mt-12 flex flex-wrap items-center gap-4">
               <Link href="/pricing" className="btn btn-ink">Request a Fee Review →</Link>
-              <Link href="/legal/fee-disclosure" className="label text-[#6B6B6B] hover:text-[#0A0A0A]">
+              <Link href="/legal/fee-disclosure" className="card-link text-[#6B6B6B]">
                 Read the full fee disclosure →
               </Link>
             </div>
@@ -637,9 +739,9 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12 md:mb-16">
               <div>
                 <span className="label block mb-5">Common Questions</span>
-                <h2 className="display-lg max-w-[16ch]">Clear answers, before you call.</h2>
+                <h2 className="heading-advisory max-w-[18ch]">Clear answers, before you call.</h2>
               </div>
-              <Link href="/faq" className="label text-[#0A0A0A] hover:text-[#826DEE]">
+              <Link href="/faq" className="card-link">
                 See all 20 answers →
               </Link>
             </div>
@@ -658,6 +760,48 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── WHAT HAPPENS AFTER YOU REQUEST ── */}
+      <section className="py-20 md:py-28 lg:py-32 bg-white border-t border-[#E0E0E0]">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24">
+          <Reveal>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-14">
+              <div>
+                <span className="label block mb-5">After You Request</span>
+                <h2 className="heading-advisory max-w-[22ch]">
+                  Five calm steps after you submit the form.
+                </h2>
+              </div>
+              <p className="body-light max-w-sm md:pb-2">
+                No pressure, no immediate account creation, no obligation. You decide what comes next at every step.
+              </p>
+            </div>
+          </Reveal>
+
+          <ol className="grid grid-cols-1 md:grid-cols-5 gap-0 border-t border-[#E0E0E0]">
+            {[
+              { n: '01', t: 'We review', b: 'Within one business day, we read your request and the situation.' },
+              { n: '02', t: 'We call you', b: 'A short call to clarify timeline, access, item categories, and concerns.' },
+              { n: '03', t: 'On-site walkthrough', b: 'We visit the property to assess scope, condition, and disposition options.' },
+              { n: '04', t: 'Written plan', b: 'A clear disposition plan with channel strategy, timeline, and expected fees.' },
+              { n: '05', t: 'You decide', b: 'You review the plan and decide what comes next. No obligation to proceed.' },
+            ].map((s, i) => (
+              <Reveal key={s.n} delay={i * 60}>
+                <li className="px-0 md:px-6 py-7 md:py-8 border-b border-[#E0E0E0] md:border-r md:border-b-0 last:border-r-0 h-full flex flex-col">
+                  <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-[#826DEE] mb-3">
+                    Step {s.n}
+                  </span>
+                  <p className="text-[16px] mb-2 leading-snug"
+                     style={{ fontFamily: 'var(--font-body-family)', fontWeight: 600 }}>
+                    {s.t}
+                  </p>
+                  <p className="body-light text-[14px] leading-relaxed">{s.b}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
         </div>
       </section>
 

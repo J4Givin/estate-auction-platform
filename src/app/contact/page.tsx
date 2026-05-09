@@ -31,11 +31,11 @@ export default function ContactPage() {
             <div className="mt-8 border-t border-[#E0E0E0]">
               {[
                 ['Service area', 'Los Angeles and surrounding markets.'],
-                ['Email', 'hello@example.com'],
-                ['Phone', 'Available after first contact.'],
+                ['Intake', <>Use the <Link href="/request-walkthrough" className="underline decoration-[#826DEE] underline-offset-4">walkthrough request form</Link>. We read every request within one business day.</>],
+                ['Phone', 'Direct line shared after first contact.'],
                 ['Hours', 'Mon–Fri, 9am–6pm Pacific. Saturdays by appointment.'],
-              ].map(([t, b]) => (
-                <div key={t} className="border-b border-[#E0E0E0] py-5">
+              ].map(([t, b], i) => (
+                <div key={i} className="border-b border-[#E0E0E0] py-5">
                   <p className="label text-[#6B6B6B] mb-1.5">{t}</p>
                   <p className="text-[16px]" style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>{b}</p>
                 </div>
