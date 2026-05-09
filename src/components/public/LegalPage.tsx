@@ -13,6 +13,14 @@ export function LegalPage({ eyebrow, title, intro, sections }: {
     <PublicShell>
       <PageHero eyebrow={eyebrow} title={title} intro={intro} />
       <Section>
+        <div role="note" aria-label="Pre-launch placeholder notice"
+             className="mb-10 md:mb-12 border-l-2 border-[#826DEE] bg-[#FAFAFA] px-5 py-4 max-w-3xl">
+          <span className="label text-[#826DEE] block mb-1">Pre-launch placeholder</span>
+          <p className="text-[14px] text-[#3a3a3a] leading-relaxed"
+             style={{ fontFamily: 'var(--font-body-family)', fontWeight: 400 }}>
+            This page is a structural placeholder. Final language will be reviewed by counsel and replaced before launch. It is shown so prospective clients can see the intended scope of the policy, not as a binding agreement.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <aside className="md:col-span-3">
             <span className="label block mb-4">On this page</span>

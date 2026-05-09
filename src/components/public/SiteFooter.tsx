@@ -58,12 +58,12 @@ export function SiteFooter() {
           {COLS.map(col => (
             <div key={col.title}>
               <span className="label text-white/50 block mb-5">{col.title}</span>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col">
                 {col.links.map(lk => (
                   <li key={lk.l}>
                     <Link href={lk.href}
-                      className="text-white/70 hover:text-white text-sm transition-colors"
-                      style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300 }}>
+                      className="text-white/70 hover:text-white text-sm transition-colors flex items-center"
+                      style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300, minHeight: 44, paddingTop: 6, paddingBottom: 6 }}>
                       {lk.l}
                     </Link>
                   </li>
@@ -75,13 +75,13 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             <span className="label text-white/40">© {new Date().getFullYear()} Estate Liquidity</span>
-            <Link href="/legal/privacy" className="label text-white/40 hover:text-white/70">Privacy</Link>
-            <Link href="/legal/terms" className="label text-white/40 hover:text-white/70">Terms</Link>
-            <Link href="/legal/seller-agreement" className="label text-white/40 hover:text-white/70">Seller Agreement</Link>
-            <Link href="/legal/buyer-terms" className="label text-white/40 hover:text-white/70">Buyer Terms</Link>
-            <Link href="/legal/fee-disclosure" className="label text-white/40 hover:text-white/70">Fee Disclosure</Link>
+            <Link href="/legal/privacy" className="label text-white/40 hover:text-white/70 inline-flex items-center" style={{ minHeight: 44 }}>Privacy</Link>
+            <Link href="/legal/terms" className="label text-white/40 hover:text-white/70 inline-flex items-center" style={{ minHeight: 44 }}>Terms</Link>
+            <Link href="/legal/seller-agreement" className="label text-white/40 hover:text-white/70 inline-flex items-center" style={{ minHeight: 44 }}>Seller Agreement</Link>
+            <Link href="/legal/buyer-terms" className="label text-white/40 hover:text-white/70 inline-flex items-center" style={{ minHeight: 44 }}>Buyer Terms</Link>
+            <Link href="/legal/fee-disclosure" className="label text-white/40 hover:text-white/70 inline-flex items-center" style={{ minHeight: 44 }}>Fee Disclosure</Link>
           </div>
           <span className="label text-white/30">Estimates and appraisal indications are not a guarantee of value.</span>
         </div>

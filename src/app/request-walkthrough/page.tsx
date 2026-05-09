@@ -56,9 +56,9 @@ export default function RequestWalkthroughPage() {
 
               <div className="mt-8 hidden lg:block">
                 <span className="label text-[#6B6B6B]">Prefer to talk first?</span>
-                <p className="text-[15px] text-[#0A0A0A] mt-2"
-                   style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
-                  Email <a href="mailto:hello@example.com" className="underline decoration-[#826DEE] underline-offset-4">hello@example.com</a>
+                <p className="text-[15px] text-[#0A0A0A] mt-2 leading-relaxed max-w-md"
+                   style={{ fontFamily: 'var(--font-body-family)', fontWeight: 400 }}>
+                  Use this form for intake — we read every request within one business day and call you to discuss before any walkthrough is scheduled.
                 </p>
               </div>
             </div>

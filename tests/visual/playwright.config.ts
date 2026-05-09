@@ -4,7 +4,7 @@ const PORT = Number(process.env.QA_PORT ?? 3100)
 
 export default defineConfig({
   testDir: __dirname,
-  testMatch: /(visual\.qa|header-overlap)\.spec\.ts$/,
+  testMatch: /(visual\.qa|header-overlap|form-a11y)\.spec\.ts$/,
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
