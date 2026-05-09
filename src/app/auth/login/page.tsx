@@ -75,32 +75,20 @@ export default function LoginPage() {
 
           <div className="mt-10 flex flex-col gap-3">
             <p className="label text-[#6B6B6B]">
-              No account?{' '}
-              <Link href="/auth/register" className="text-[#826DEE] hover:underline">Create one →</Link>
+              Don&apos;t have access yet?{' '}
+              <Link href="/request-walkthrough" className="text-[#826DEE] hover:underline">Request a walkthrough →</Link>
             </p>
             <p className="label text-[#BDBDBD]">By signing in you agree to our terms of service.</p>
           </div>
 
-          {/* Role shortcut buttons for demo */}
           <div className="mt-14 pt-8 border-t border-[#E0E0E0]">
-            <span className="label block mb-5 text-[#BDBDBD]">Demo Access</span>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: 'Client Portal', href: '/portal', color: '#826DEE' },
-                { label: 'Operations', href: '/ops', color: '#FFDB15' },
-                { label: 'QA Review', href: '/qa', color: '#FF99DC' },
-                { label: 'Admin', href: '/admin', color: '#F94500' },
-              ].map(r => (
-                <Link
-                  key={r.href}
-                  href={r.href}
-                  className="border border-[#E0E0E0] px-4 py-3 flex items-center gap-2.5 hover:bg-[#F5F5F5] transition-colors"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: r.color }} />
-                  <span className="label text-[#0A0A0A]">{r.label}</span>
-                </Link>
-              ))}
-            </div>
+            <span className="label block mb-3 text-[#6B6B6B]">New here?</span>
+            <p className="body-light text-[14px] mb-5">
+              Account access is created after we have spoken about your estate. Start with a free walkthrough.
+            </p>
+            <Link href="/request-walkthrough" className="btn btn-outline w-full justify-center">
+              Book a Free Walkthrough →
+            </Link>
           </div>
         </div>
       </div>

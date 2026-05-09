@@ -1,268 +1,89 @@
-import { AppShell, PageHeader, StatCard } from "@/components/layout/AppShell";
-import Link from "next/link";
-import {
-  ArrowRight,
-  Building2,
-  Scale,
-  Heart,
-  Truck,
-  Warehouse,
-  DollarSign,
-  Headphones,
-  FileText,
-  CheckCircle2,
-} from "lucide-react";
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { PublicShell } from '@/components/public/PublicShell'
+import { PageHero, Section, CTABanner } from '@/components/public/PageHero'
 
-const partnerTypes = [
-  {
-    slug: "realtor",
-    title: "Realtors",
-    description:
-      "Accelerate property sales with professional estate clearing. We handle the contents so you can focus on the real estate transaction.",
-    icon: Building2,
-    accentBorder: "border-l-sapphire",
-    accentBg: "bg-sapphire-muted",
-    accentText: "text-sapphire",
-  },
-  {
-    slug: "probate",
-    title: "Probate Attorneys",
-    description:
-      "Streamlined estate liquidation for your clients. Full documentation, transparent accounting, and court-ready reporting.",
-    icon: Scale,
-    accentBorder: "border-l-amethyst",
-    accentBg: "bg-amethyst-muted",
-    accentText: "text-amethyst",
-  },
-  {
-    slug: "senior",
-    title: "Senior Transition Specialists",
-    description:
-      "Compassionate downsizing with maximum recovery. We treat every item with care and help families through difficult transitions.",
-    icon: Heart,
-    accentBorder: "border-l-emerald",
-    accentBg: "bg-emerald-muted",
-    accentText: "text-emerald",
-  },
-  {
-    slug: "mover",
-    title: "Moving Companies",
-    description:
-      "Reduce load, increase revenue with liquidation referrals. Turn pre-move decluttering into a new revenue stream for your business.",
-    icon: Truck,
-    accentBorder: "border-l-gold-tone",
-    accentBg: "bg-gold-tone-muted",
-    accentText: "text-gold-tone",
-  },
-  {
-    slug: "storage",
-    title: "Storage Facilities",
-    description:
-      "Convert abandoned storage into revenue. We liquidate delinquent unit contents legally and efficiently, recovering value for all parties.",
-    icon: Warehouse,
-    accentBorder: "border-l-ruby",
-    accentBg: "bg-ruby-muted",
-    accentText: "text-ruby",
-  },
-];
+export const metadata: Metadata = {
+  title: 'Partner Program — Refer an Estate',
+  description:
+    'A reliable estate liquidation resource for realtors, attorneys, fiduciaries, senior move managers, organizers, and property professionals.',
+  alternates: { canonical: '/partners' },
+}
 
-const benefits = [
-  {
-    icon: DollarSign,
-    title: "Referral Fees",
-    description:
-      "Earn competitive referral fees on every estate we service through your introduction. Transparent tracking and timely payments.",
-  },
-  {
-    icon: Headphones,
-    title: "Dedicated Support",
-    description:
-      "Your own partner success manager handles onboarding, client coordination, and ensures a seamless experience every time.",
-  },
-  {
-    icon: FileText,
-    title: "Co-Branded Materials",
-    description:
-      "Professional marketing collateral with your branding. Flyers, digital assets, and presentation decks — all customized for you.",
-  },
-];
+const AUDIENCES = [
+  { t: 'Realtors', b: 'Faster client closings, less staging stress.', href: '/for/realtors' },
+  { t: 'Probate & trust attorneys', b: 'Court-ready inventory and itemized reports.', href: '/for/attorneys' },
+  { t: 'Fiduciaries', b: 'Documented disposition with seller approvals.', href: '/for/attorneys' },
+  { t: 'Senior move managers', b: 'Coordinated downsizing and donation receipts.', href: '/for/families' },
+  { t: 'Professional organizers', b: 'Sale-ready inventory plus cleanout.', href: '/for/families' },
+  { t: 'Property managers', b: 'Property-ready turnover after estate clearance.', href: '/for/realtors' },
+  { t: 'Assisted living communities', b: 'Compassionate transitions for incoming residents.', href: '/for/families' },
+  { t: 'Funeral homes & wealth managers', b: 'A trusted hand-off resource for sensitive moments.', href: '/for/attorneys' },
+]
+
+const BENEFITS = [
+  'Fast client intake and acknowledgement',
+  'Transparent process from walkthrough to settlement',
+  'Itemized reporting suitable for client and legal review',
+  'Referral tracking and shared updates',
+  'Estate-ready documentation for downstream needs',
+  'Cleanout coordination for property turnover',
+  'Reduced client burden and emotional load',
+  'Better recovery value through right-channel routing',
+]
 
 export default function PartnersPage() {
   return (
-    <AppShell role="partner" userName="Partner" orgName="Partner Portal">
-{/* Hero */}
-      <section className="bg-gradient-to-b from-ivory to-cream py-20 md:py-28">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1
-              className="text-4xl md:text-5xl text-onyx mb-6"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Partner With Estate Liquidity
-            </h1>
-            <p className="text-lg text-pewter leading-relaxed max-w-2xl mx-auto">
-              Join our network of trusted professionals. Earn referral fees,
-              access dedicated support, and provide your clients with
-              best-in-class estate liquidation services.
-            </p>
-          </div>
+    <PublicShell>
+      <PageHero
+        eyebrow="Partner Program"
+        title={<>Help clients clear estates faster, with less friction.</>}
+        intro={<>Our partner program gives realtors, attorneys, fiduciaries, and estate professionals a reliable liquidation resource for clients who need inventory, valuation, sale coordination, and final settlement reporting.</>}
+      />
+
+      <Section>
+        <span className="label block mb-5">Who we work with</span>
+        <h2 className="display-lg max-w-[18ch]">Built for the people clients trust.</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 mt-12 border-t border-[#E0E0E0]">
+          {AUDIENCES.map(a => (
+            <Link key={a.t} href={a.href}
+              className="group block px-0 md:px-6 py-8 border-b border-r border-[#E0E0E0] last:border-r-0">
+              <h3 className="text-[18px] md:text-[20px] mb-3 group-hover:text-[#826DEE] transition-colors"
+                  style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+                {a.t}
+              </h3>
+              <p className="body-light leading-relaxed text-[14px]">{a.b}</p>
+              <span className="label text-[#826DEE] mt-4 block">Learn more →</span>
+            </Link>
+          ))}
         </div>
-      </section>
+      </Section>
 
-      {/* Partner Types */}
-      <section className="py-20 md:py-24 bg-cream">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-4"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Partner Programs
-            </h2>
-            <p className="text-pewter text-lg max-w-2xl mx-auto">
-              Tailored programs for every type of estate services professional.
+      <Section id="program" className="bg-[#F5F5F5]">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+          <div className="md:col-span-5">
+            <span className="label block mb-5">Program benefits</span>
+            <h2 className="display-lg max-w-[14ch]">Designed for repeat collaboration.</h2>
+            <p className="body-light mt-6 max-w-md leading-relaxed">
+              Our partner program is for professionals who refer estate situations regularly. We track referrals, share status, and produce documentation your downstream work needs.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {partnerTypes.map((partner) => {
-              const Icon = partner.icon;
-              return (
-                <Link
-                  key={partner.slug}
-                  href={`/partners/${partner.slug}`}
-                >
-                  <div
-                    className={`bg-white rounded-xl p-6 border border-border/60 border-l-4 ${partner.accentBorder} hover:shadow-lg transition-all duration-200 cursor-pointer h-full`}
-                  >
-                    <div
-                      className={`w-12 h-12 rounded-lg ${partner.accentBg} flex items-center justify-center mb-4`}
-                    >
-                      <Icon
-                        className={`h-6 w-6 ${partner.accentText}`}
-                      />
-                    </div>
-                    <h3
-                      className="text-lg text-onyx mb-2"
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {partner.title}
-                    </h3>
-                    <p className="text-sm text-pewter leading-relaxed mb-4">
-                      {partner.description}
-                    </p>
-                    <span
-                      className={`inline-flex items-center gap-1 text-sm font-medium ${partner.accentText}`}
-                    >
-                      Learn more
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="py-20 md:py-24 bg-ivory">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-4"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Partnership Benefits
-            </h2>
-            <p className="text-pewter text-lg max-w-2xl mx-auto">
-              Every partner in our network receives these core benefits.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {benefits.map((benefit) => {
-              const Icon = benefit.icon;
-              return (
-                <div key={benefit.title} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-sapphire-muted flex items-center justify-center mx-auto mb-5">
-                    <Icon className="h-7 w-7 text-sapphire" />
-                  </div>
-                  <h3
-                    className="text-lg text-onyx mb-2"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {benefit.title}
-                  </h3>
-                  <p className="text-sm text-pewter leading-relaxed">
-                    {benefit.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Partners Choose Us */}
-      <section className="py-20 md:py-24 bg-cream">
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2
-              className="text-3xl md:text-4xl text-onyx mb-8 text-center"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-            >
-              Why Partners Choose Us
-            </h2>
-            <div className="space-y-4">
-              {[
-                "Transparent pricing with no hidden fees",
-                "Real-time reporting dashboard for every referral",
-                "Average recovery rate 30% higher than traditional estate sales",
-                "Professional handling of sensitive family situations",
-                "Full insurance and bonding for peace of mind",
-                "Fast turnaround — most estates cleared within 4 weeks",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3 bg-white rounded-xl p-4 border border-border/60"
-                >
-                  <CheckCircle2 className="h-5 w-5 text-emerald shrink-0 mt-0.5" />
-                  <span className="text-charcoal">{item}</span>
-                </div>
-              ))}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Link href="/partner" className="btn btn-ink">Open partner portal →</Link>
+              <Link href="/contact" className="btn btn-outline">Talk to us</Link>
             </div>
           </div>
+          <div className="md:col-span-7 border-t border-[#E0E0E0]">
+            {BENEFITS.map(b => (
+              <div key={b} className="border-b border-[#E0E0E0] py-4 flex items-start gap-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#826DEE] mt-2.5 flex-shrink-0" aria-hidden />
+                <span className="body-light text-[15px] text-[#0A0A0A]">{b}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </section>
+      </Section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-24 bg-ivory">
-        <div className="container max-w-screen-md mx-auto px-4 text-center">
-          <h2
-            className="text-3xl md:text-4xl text-onyx mb-4"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}
-          >
-            Become a Partner
-          </h2>
-          <p className="text-pewter text-lg mb-8">
-            Join our growing network of professionals who trust Estate Liquidity
-            for their clients&apos; estate liquidation needs.
-          </p>
-          <Link href="/book">
-            <button className="inline-flex items-center gap-2 bg-sapphire text-white px-8 py-3.5 rounded-lg text-base font-medium hover:bg-sapphire-light transition-colors shadow-md">
-              Become a Partner
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </Link>
-        </div>
-      </section>
-    </AppShell>
-  );
+      <CTABanner heading="Refer an estate or become a partner." body="Submit a referral or open the partner portal to get started." secondaryHref="/partner" secondaryLabel="Open Partner Portal" />
+    </PublicShell>
+  )
 }

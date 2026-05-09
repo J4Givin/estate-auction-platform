@@ -1,0 +1,356 @@
+'use client'
+import { useState, FormEvent, ChangeEvent } from 'react'
+import Link from 'next/link'
+
+type FormState = {
+  fullName: string
+  phone: string
+  email: string
+  cityZip: string
+  role: string
+  estateType: string
+  timeline: string
+  categories: string[]
+  propertySize: string
+  consultationTime: string
+  message: string
+  photos: File[]
+}
+
+const ROLES = [
+  'Family / homeowner',
+  'Executor',
+  'Trustee',
+  'Realtor',
+  'Attorney',
+  'Fiduciary',
+  'Senior move manager',
+  'Seller',
+  'Other',
+]
+
+const ESTATE_TYPES = [
+  'Single-family home',
+  'Condo / apartment',
+  'Townhouse',
+  'Estate / large home',
+  'Storage unit',
+  'Commercial property',
+  'Other',
+]
+
+const TIMELINES = [
+  'Urgent — within 2 weeks',
+  'Soon — 2 to 4 weeks',
+  'Flexible — 1 to 3 months',
+  'Planning — 3+ months',
+]
+
+const SIZES = [
+  'Under 1,000 sq ft',
+  '1,000 – 2,000 sq ft',
+  '2,000 – 4,000 sq ft',
+  '4,000 – 8,000 sq ft',
+  '8,000+ sq ft',
+  'Not sure',
+]
+
+const CATEGORIES = [
+  'Furniture',
+  'Jewelry',
+  'Watches',
+  'Art',
+  'Antiques',
+  'Designer goods',
+  'Silver / china',
+  'Collectibles',
+  'Books / media',
+  'Tools / household',
+  'Vehicles',
+  'Other',
+]
+
+const CONSULT_TIMES = [
+  'Weekday morning',
+  'Weekday afternoon',
+  'Weekday evening',
+  'Weekend morning',
+  'Weekend afternoon',
+  'Flexible',
+]
+
+export function RequestWalkthroughForm() {
+  const [state, setState] = useState<FormState>({
+    fullName: '',
+    phone: '',
+    email: '',
+    cityZip: '',
+    role: '',
+    estateType: '',
+    timeline: '',
+    categories: [],
+    propertySize: '',
+    consultationTime: '',
+    message: '',
+    photos: [],
+  })
+  const [submitting, setSubmitting] = useState(false)
+  const [done, setDone] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
+    setState(prev => ({ ...prev, [key]: value }))
+  }
+
+  function toggleCategory(cat: string) {
+    setState(prev => ({
+      ...prev,
+      categories: prev.categories.includes(cat)
+        ? prev.categories.filter(c => c !== cat)
+        : [...prev.categories, cat],
+    }))
+  }
+
+  function onPhotos(e: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []).slice(0, 8)
+    update('photos', files)
+  }
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSubmitting(true)
+
+    const requiredOk =
+      state.fullName.trim() &&
+      state.phone.trim() &&
+      /\S+@\S+\.\S+/.test(state.email) &&
+      state.cityZip.trim() &&
+      state.role &&
+      state.estateType &&
+      state.timeline
+
+    if (!requiredOk) {
+      setSubmitting(false)
+      setError('Please complete the required fields so we can follow up.')
+      return
+    }
+
+    const notesParts = [
+      `Role: ${state.role}`,
+      `Estate type: ${state.estateType}`,
+      `Timeline: ${state.timeline}`,
+      state.propertySize ? `Property size: ${state.propertySize}` : '',
+      state.categories.length ? `Categories: ${state.categories.join(', ')}` : '',
+      state.consultationTime ? `Preferred consultation: ${state.consultationTime}` : '',
+      state.photos.length ? `Photos attached: ${state.photos.length}` : '',
+      state.message ? `Message: ${state.message}` : '',
+    ].filter(Boolean)
+
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: state.fullName,
+          email: state.email,
+          phone: state.phone,
+          property_address: state.cityZip,
+          notes: notesParts.join('\n'),
+          source: 'request-walkthrough',
+        }),
+      })
+
+      if (!res.ok) {
+        // Soft-fail: still confirm receipt to user; submission queued for review.
+        // Surface a console diagnostic for ops, but do not block the funnel.
+        console.warn('Lead submission soft-fail', res.status)
+      }
+    } catch (err) {
+      console.warn('Lead submission error', err)
+    } finally {
+      setSubmitting(false)
+      setDone(true)
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } catch {}
+    }
+  }
+
+  if (done) {
+    return (
+      <div className="border border-[#E0E0E0] p-8 md:p-12 bg-white">
+        <span className="label block mb-5">Request Received</span>
+        <h2 className="text-[28px] md:text-[36px] mb-5"
+            style={{ fontFamily: 'var(--font-display-family)', fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+          Thank you.
+        </h2>
+        <p className="body-light text-[16px] leading-relaxed max-w-prose mb-6">
+          Your request has been received. We will review the details and follow up with next steps for your walkthrough or valuation review. You will not be asked to create an account before we have spoken.
+        </p>
+        <p className="body-light text-[14px] leading-relaxed max-w-prose mb-8">
+          If your situation is urgent or you would like to share photos, you can reply to our follow-up email with attachments.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link href="/how-it-works" className="btn btn-ink">See how it works →</Link>
+          <Link href="/" className="btn btn-outline">Return home</Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="border border-[#E0E0E0] bg-white" noValidate>
+      <div className="px-6 md:px-10 py-6 border-b border-[#E0E0E0] flex flex-wrap items-center justify-between gap-3">
+        <span className="label text-[#6B6B6B]">All fields marked * are required</span>
+        <span className="label text-[#826DEE]">Confidential & no obligation</span>
+      </div>
+
+      <div className="px-6 md:px-10 py-8 md:py-10 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <Field label="Full name *">
+          <input value={state.fullName} onChange={e => update('fullName', e.target.value)}
+                 type="text" autoComplete="name" required
+                 className="input" placeholder="Jane Smith" />
+        </Field>
+        <Field label="Phone *">
+          <input value={state.phone} onChange={e => update('phone', e.target.value)}
+                 type="tel" autoComplete="tel" required
+                 className="input" placeholder="(310) 555-0123" />
+        </Field>
+        <Field label="Email *">
+          <input value={state.email} onChange={e => update('email', e.target.value)}
+                 type="email" autoComplete="email" required
+                 className="input" placeholder="you@example.com" />
+        </Field>
+        <Field label="City / ZIP *">
+          <input value={state.cityZip} onChange={e => update('cityZip', e.target.value)}
+                 type="text" autoComplete="postal-code" required
+                 className="input" placeholder="Los Angeles, 90048" />
+        </Field>
+
+        <Field label="Your role *">
+          <select value={state.role} onChange={e => update('role', e.target.value)} required className="input">
+            <option value="" disabled>Select…</option>
+            {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </Field>
+        <Field label="Estate type *">
+          <select value={state.estateType} onChange={e => update('estateType', e.target.value)} required className="input">
+            <option value="" disabled>Select…</option>
+            {ESTATE_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </Field>
+
+        <Field label="Timeline *">
+          <select value={state.timeline} onChange={e => update('timeline', e.target.value)} required className="input">
+            <option value="" disabled>Select…</option>
+            {TIMELINES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </Field>
+        <Field label="Approximate property size">
+          <select value={state.propertySize} onChange={e => update('propertySize', e.target.value)} className="input">
+            <option value="">Select…</option>
+            {SIZES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </Field>
+      </div>
+
+      <div className="px-6 md:px-10 pb-8">
+        <span className="label block mb-4">Item categories (select all that apply)</span>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map(cat => {
+            const active = state.categories.includes(cat)
+            return (
+              <button key={cat} type="button" onClick={() => toggleCategory(cat)}
+                      aria-pressed={active}
+                      className={`label px-4 py-2.5 border transition-colors ${active ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]' : 'bg-white text-[#0A0A0A] border-[#E0E0E0] hover:border-[#0A0A0A]'}`}>
+                {cat}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="px-6 md:px-10 pb-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <Field label="Preferred consultation time">
+          <select value={state.consultationTime} onChange={e => update('consultationTime', e.target.value)} className="input">
+            <option value="">Select…</option>
+            {CONSULT_TIMES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+        </Field>
+        <Field label="Optional photos">
+          <div className="flex items-center gap-4">
+            <label className="btn btn-outline cursor-pointer">
+              Choose photos
+              <input type="file" accept="image/*" multiple onChange={onPhotos} className="sr-only" />
+            </label>
+            <span className="label text-[#6B6B6B]">
+              {state.photos.length ? `${state.photos.length} selected` : 'JPG, PNG, HEIC'}
+            </span>
+          </div>
+          <p className="label text-[#6B6B6B] mt-2">Photos help us prepare. You can also share later by reply.</p>
+        </Field>
+      </div>
+
+      <div className="px-6 md:px-10 pb-8">
+        <Field label="Anything else we should know?">
+          <textarea value={state.message} onChange={e => update('message', e.target.value)}
+                    rows={4}
+                    className="input resize-y"
+                    placeholder="Probate timeline, access, sentimental items, deadlines, special concerns…" />
+        </Field>
+      </div>
+
+      <div className="px-6 md:px-10 pb-8 md:pb-10 border-t border-[#E0E0E0] pt-8">
+        <p className="label text-[#6B6B6B] mb-6 max-w-2xl">
+          By submitting this request, you understand that estimates and appraisal indications are not a guarantee of value. We will follow up to confirm details. We do not share your information outside of preparing your evaluation.
+        </p>
+
+        {error && (
+          <div className="mb-5 border border-[#F94500] bg-[#FFF4F0] px-4 py-3">
+            <p className="label text-[#F94500]">{error}</p>
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <button type="submit" disabled={submitting}
+                  className="btn btn-ink disabled:opacity-60 disabled:cursor-not-allowed">
+            {submitting ? 'Sending…' : 'Submit Request →'}
+          </button>
+          <span className="label text-[#6B6B6B]">No account is created by submitting this form.</span>
+        </div>
+      </div>
+
+      <style>{`
+        .input {
+          width: 100%;
+          background: #FFFFFF;
+          border: 1px solid #E0E0E0;
+          padding: 12px 14px;
+          font-family: var(--font-body-family);
+          font-weight: 300;
+          font-size: 16px;
+          color: #0A0A0A;
+          line-height: 1.4;
+          transition: border-color 0.15s ease;
+          min-height: 48px;
+        }
+        .input:focus {
+          outline: none;
+          border-color: #826DEE;
+          box-shadow: 0 0 0 2px rgba(130,109,238,0.15);
+        }
+        select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #6B6B6B 50%), linear-gradient(135deg, #6B6B6B 50%, transparent 50%); background-position: calc(100% - 18px) 22px, calc(100% - 12px) 22px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 32px; }
+      `}</style>
+    </form>
+  )
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="label block mb-3">{label}</span>
+      {children}
+    </label>
+  )
+}

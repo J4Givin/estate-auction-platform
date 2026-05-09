@@ -40,7 +40,7 @@ const initialSections: DocSection[] = [
       "A letter of testamentary issued by the probate court confirms the named executor's legal authority to manage and distribute the estate's assets. This document is required before any items can be listed for sale.",
     status: "verified",
     documents: [
-      { id: "doc-01", name: "Letters_Testamentary_Mitchell.pdf", size: 245000, status: "verified" },
+      { id: "doc-01", name: "Letters_Testamentary_Sample.pdf", size: 245000, status: "verified" },
     ],
   },
   {
@@ -51,7 +51,7 @@ const initialSections: DocSection[] = [
       "If the estate is held in a revocable or irrevocable trust, the trust instrument identifies the successor trustee and their authority to liquidate trust assets. Required when property is titled in the name of a trust.",
     status: "needs_review",
     documents: [
-      { id: "doc-02", name: "Mitchell_Family_Trust_2018.pdf", size: 1850000, status: "needs_review" },
+      { id: "doc-02", name: "Sample_Family_Trust_2018.pdf", size: 1850000, status: "needs_review" },
     ],
   },
   {
@@ -80,7 +80,7 @@ const initialSections: DocSection[] = [
       "A certified copy of the death certificate establishes the passing of the estate owner. This is a foundational document required by financial institutions, title companies, and marketplace platforms before proceeds can be disbursed.",
     status: "verified",
     documents: [
-      { id: "doc-03", name: "Death_Certificate_Mitchell_R.pdf", size: 125000, status: "verified" },
+      { id: "doc-03", name: "Death_Certificate_Sample.pdf", size: 125000, status: "verified" },
     ],
   },
 ];

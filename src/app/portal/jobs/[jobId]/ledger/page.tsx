@@ -21,7 +21,7 @@ const ledgerEntries: LedgerEntry[] = [
     amount: 280000,
     description: "Eames Lounge Chair sold on 1stDibs to buyer in New York",
     date: "2026-04-15T14:30:00Z",
-    approved_by: "Sarah Chen",
+    approved_by: "Estate Coordinator (Sample)",
   },
   {
     id: "led-02",
@@ -36,7 +36,7 @@ const ledgerEntries: LedgerEntry[] = [
     amount: 420000,
     description: "Georgian Silver Tea Set sold via Heritage Auctions",
     date: "2026-04-12T10:15:00Z",
-    approved_by: "Sarah Chen",
+    approved_by: "Estate Coordinator (Sample)",
   },
   {
     id: "led-04",
@@ -58,7 +58,7 @@ const ledgerEntries: LedgerEntry[] = [
     amount: 180000,
     description: "Tiffany Table Lamp sold on Chairish to buyer in Los Angeles",
     date: "2026-04-08T16:45:00Z",
-    approved_by: "Sarah Chen",
+    approved_by: "Estate Coordinator (Sample)",
   },
   {
     id: "led-07",
@@ -73,7 +73,7 @@ const ledgerEntries: LedgerEntry[] = [
     amount: 350000,
     description: "Waterford Chandelier sold via private buyer referral",
     date: "2026-04-05T11:20:00Z",
-    approved_by: "Sarah Chen",
+    approved_by: "Estate Coordinator (Sample)",
   },
   {
     id: "led-09",
@@ -88,7 +88,7 @@ const ledgerEntries: LedgerEntry[] = [
     amount: 612000,
     description: "Steinway Baby Grand Piano sold to collector via Heritage Auctions",
     date: "2026-04-02T13:00:00Z",
-    approved_by: "Sarah Chen",
+    approved_by: "Estate Coordinator (Sample)",
   },
   {
     id: "led-11",
@@ -135,7 +135,7 @@ export default function LedgerPage() {
                   Financial Ledger
                 </h1>
                 <p className="mt-2 text-sm text-pewter">
-                  Complete financial record for the Mitchell Estate liquidation
+                  Complete financial record for the Sample Estate liquidation
                 </p>
               </div>
               <button

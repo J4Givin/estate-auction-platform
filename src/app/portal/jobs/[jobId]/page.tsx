@@ -53,10 +53,10 @@ export default function JobOverview() {
   const [job] = useState({
     id: jobId,
     status: "review" as const,
-    teamMember: "Sarah Chen",
+    teamMember: "Estate Coordinator (Sample)",
     scheduledDate: "March 15, 2026",
     address: "742 Evergreen Terrace, Pasadena, CA 91101",
-    propertyName: "Mitchell Estate",
+    propertyName: "Sample Estate",
     totalItems: 52,
     coverageScore: 78,
     gross: 1842000,

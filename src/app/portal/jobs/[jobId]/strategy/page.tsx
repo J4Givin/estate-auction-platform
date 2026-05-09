@@ -77,7 +77,7 @@ export default function StrategySelection() {
             </h1>
             <p className="mt-2 text-sm text-pewter">
               Choose how aggressively items should be priced and marked down over time.
-              This strategy applies to all items designated for sale in the Mitchell Estate.
+              This strategy applies to all items designated for sale in the Sample Estate.
             </p>
 
             {/* Strategy Cards */}

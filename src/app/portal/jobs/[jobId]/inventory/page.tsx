@@ -144,7 +144,7 @@ export default function InventoryReview() {
                   Inventory Review
                 </h1>
                 <p className="mt-1 text-sm text-pewter">
-                  Review cataloged items and assign dispositions for the Mitchell Estate
+                  Review cataloged items and assign dispositions for the Sample Estate
                 </p>
               </div>
               <CoverageScore score={coverageScore} className="shrink-0" />
