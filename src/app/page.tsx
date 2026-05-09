@@ -188,20 +188,20 @@ export default function HomePage() {
     <PublicShell>
       {/* ── HERO ── */}
       <section className="relative bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pt-16 md:pt-24 lg:pt-28 pb-20 md:pb-28">
-          <div className="flex items-center gap-3 mb-10 md:mb-14">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pt-10 sm:pt-14 md:pt-24 lg:pt-28 pb-16 md:pb-28">
+          <div className="flex items-center gap-3 mb-7 sm:mb-10 md:mb-14">
             <span className="w-1.5 h-1.5 rounded-full bg-[#826DEE]" aria-hidden />
-            <span className="label text-[#6B6B6B]">Los Angeles, California — Estate Advisory & Asset Disposition</span>
+            <span className="label text-[#6B6B6B]">Los Angeles, California — Estate Advisory</span>
           </div>
 
           <h1
-            className="text-[#0A0A0A] max-w-[18ch]"
+            className="text-[#0A0A0A] max-w-[20ch] hero-h1"
             style={{
               fontFamily: 'var(--font-display-family)',
-              fontWeight: 900,
-              fontSize: 'clamp(2.4rem, 7.5vw, 6.5rem)',
-              lineHeight: 0.95,
-              letterSpacing: '-0.02em',
+              fontWeight: 800,
+              fontSize: 'clamp(2.1rem, 6vw, 5rem)',
+              lineHeight: 1.02,
+              letterSpacing: '-0.015em',
               textTransform: 'uppercase',
             }}
           >
@@ -210,17 +210,17 @@ export default function HomePage() {
             And Sold With Care.
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 mt-10 md:mt-14">
-            <p className="md:col-span-6 lg:col-span-5 text-[17px] md:text-[19px] text-[#3a3a3a] leading-relaxed"
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-7 md:gap-12 mt-8 sm:mt-10 md:mt-14">
+            <p className="md:col-span-6 lg:col-span-5 text-[16px] sm:text-[17px] md:text-[19px] text-[#3a3a3a] leading-relaxed"
                style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300 }}>
               We inventory, appraise, authenticate, photograph, list, sell, and settle estate assets through the right channels — helping families, executors, trustees, and real estate professionals maximize value while reducing stress.
             </p>
             <div className="md:col-span-6 lg:col-span-7 flex flex-col gap-4 md:items-end md:justify-end">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/request-walkthrough" className="btn btn-ink">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <Link href="/request-walkthrough" className="btn btn-ink btn-mobile-primary justify-center">
                   Book a Free Estate Evaluation →
                 </Link>
-                <Link href="/how-it-works" className="btn btn-outline">
+                <Link href="/how-it-works" className="btn btn-outline btn-mobile-secondary justify-center">
                   See How It Works
                 </Link>
               </div>
@@ -230,14 +230,28 @@ export default function HomePage() {
         </div>
 
         {/* Trust strip */}
-        <div className="border-t border-[#E0E0E0]">
-          <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-5 flex flex-wrap items-center gap-x-8 gap-y-3">
-            {TRUST.map((t, i) => (
-              <span key={t} className="label text-[#6B6B6B] flex items-center gap-3">
-                {t}
-                {i < TRUST.length - 1 && <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BDBDBD]" aria-hidden />}
-              </span>
-            ))}
+        <div className="border-t border-[#E0E0E0] bg-[#FAFAFA] sm:bg-white">
+          <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-4 sm:py-5">
+            {/* Mobile: 2-column readable rows */}
+            <ul className="grid grid-cols-2 gap-x-5 gap-y-3 sm:hidden">
+              {TRUST.map((t) => (
+                <li key={t} className="flex items-start gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#826DEE] mt-2 flex-shrink-0" aria-hidden />
+                  <span className="label text-[#6B6B6B] leading-snug" style={{ fontSize: 10.5, letterSpacing: '0.12em' }}>
+                    {t}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {/* Desktop: inline list */}
+            <div className="hidden sm:flex flex-wrap items-center gap-x-8 gap-y-3">
+              {TRUST.map((t, i) => (
+                <span key={t} className="label text-[#6B6B6B] flex items-center gap-3">
+                  {t}
+                  {i < TRUST.length - 1 && <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BDBDBD]" aria-hidden />}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>

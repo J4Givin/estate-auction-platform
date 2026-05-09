@@ -191,13 +191,14 @@ export function PageHeader({
         {eyebrow && <span className="label block mb-2 sm:mb-3" style={{ color: '#826DEE' }}>{eyebrow}</span>}
         <div className="flex items-center gap-3 flex-wrap">
           <h1
+            className="hero-h1"
             style={{
               fontFamily: 'var(--font-display-family)',
-              fontWeight: 900,
-              // Tighten mobile sizing so big headlines don't cause horizontal pressure on 375w screens.
-              fontSize: 'clamp(1.7rem, 7vw, 6rem)',
-              lineHeight: 0.95,
-              letterSpacing: '-0.02em',
+              fontWeight: 800,
+              // Calmer desktop max so portal H1 stays premium, not poster-sized.
+              fontSize: 'clamp(1.65rem, 5.5vw, 4rem)',
+              lineHeight: 1.02,
+              letterSpacing: '-0.015em',
               textTransform: 'uppercase',
             }}
           >
@@ -437,7 +438,7 @@ export function AppShell({ children, role = 'customer', userName = 'User', orgNa
               : undefined,
         }}
       >
-        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 sm:py-12 md:py-20 lg:py-24">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-6 pb-10 sm:py-12 md:py-20 lg:py-24">
           {enablePullToRefresh ? (
             <PullToRefresh>{children}</PullToRefresh>
           ) : (

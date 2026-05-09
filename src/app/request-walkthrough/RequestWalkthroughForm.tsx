@@ -201,12 +201,12 @@ export function RequestWalkthroughForm() {
 
   return (
     <form onSubmit={onSubmit} className="border border-[#E0E0E0] bg-white" noValidate>
-      <div className="px-6 md:px-10 py-6 border-b border-[#E0E0E0] flex flex-wrap items-center justify-between gap-3">
+      <div className="px-5 sm:px-6 md:px-10 py-4 sm:py-6 border-b border-[#E0E0E0] flex flex-wrap items-center justify-between gap-3">
         <span className="label text-[#6B6B6B]">All fields marked * are required</span>
-        <span className="label text-[#826DEE]">Confidential & no obligation</span>
+        <span className="label text-[#826DEE]">Confidential · no obligation</span>
       </div>
 
-      <div className="px-6 md:px-10 py-8 md:py-10 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+      <div className="px-5 sm:px-6 md:px-10 py-6 sm:py-8 md:py-10 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 md:gap-8">
         <Field label="Full name *">
           <input value={state.fullName} onChange={e => update('fullName', e.target.value)}
                  type="text" autoComplete="name" required
@@ -255,15 +255,15 @@ export function RequestWalkthroughForm() {
         </Field>
       </div>
 
-      <div className="px-6 md:px-10 pb-8">
-        <span className="label block mb-4">Item categories (select all that apply)</span>
+      <div className="px-5 sm:px-6 md:px-10 pb-6 sm:pb-8">
+        <span className="form-section-label block mb-3 sm:mb-4">Item categories <span className="text-[#6B6B6B] normal-case tracking-normal">(select all that apply)</span></span>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map(cat => {
             const active = state.categories.includes(cat)
             return (
               <button key={cat} type="button" onClick={() => toggleCategory(cat)}
                       aria-pressed={active}
-                      className={`label px-4 py-2.5 border transition-colors ${active ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]' : 'bg-white text-[#0A0A0A] border-[#E0E0E0] hover:border-[#0A0A0A]'}`}>
+                      className={`category-chip ${active ? 'category-chip-active' : ''}`}>
                 {cat}
               </button>
             )
@@ -271,7 +271,7 @@ export function RequestWalkthroughForm() {
         </div>
       </div>
 
-      <div className="px-6 md:px-10 pb-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+      <div className="px-5 sm:px-6 md:px-10 pb-6 sm:pb-8 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 md:gap-8">
         <Field label="Preferred consultation time">
           <select value={state.consultationTime} onChange={e => update('consultationTime', e.target.value)} className="input">
             <option value="">Select…</option>
@@ -292,7 +292,7 @@ export function RequestWalkthroughForm() {
         </Field>
       </div>
 
-      <div className="px-6 md:px-10 pb-8">
+      <div className="px-5 sm:px-6 md:px-10 pb-6 sm:pb-8">
         <Field label="Anything else we should know?">
           <textarea value={state.message} onChange={e => update('message', e.target.value)}
                     rows={4}
@@ -301,8 +301,9 @@ export function RequestWalkthroughForm() {
         </Field>
       </div>
 
-      <div className="px-6 md:px-10 pb-8 md:pb-10 border-t border-[#E0E0E0] pt-8">
-        <p className="label text-[#6B6B6B] mb-6 max-w-2xl">
+      <div className="px-5 sm:px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 border-t border-[#E0E0E0] pt-6 sm:pt-8">
+        <p className="text-[12.5px] sm:text-[13px] text-[#6B6B6B] mb-5 sm:mb-6 max-w-2xl leading-relaxed"
+           style={{ fontFamily: 'var(--font-body-family)', fontWeight: 400 }}>
           By submitting this request, you understand that estimates and appraisal indications are not a guarantee of value. We will follow up to confirm details. We do not share your information outside of preparing your evaluation.
         </p>
 
@@ -312,9 +313,9 @@ export function RequestWalkthroughForm() {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
           <button type="submit" disabled={submitting}
-                  className="btn btn-ink disabled:opacity-60 disabled:cursor-not-allowed">
+                  className="btn btn-ink btn-mobile-primary justify-center disabled:opacity-60 disabled:cursor-not-allowed">
             {submitting ? 'Sending…' : 'Submit Request →'}
           </button>
           <span className="label text-[#6B6B6B]">No account is created by submitting this form.</span>
@@ -322,25 +323,69 @@ export function RequestWalkthroughForm() {
       </div>
 
       <style>{`
+        .form-section-label {
+          font-family: var(--font-body-family);
+          font-weight: 500;
+          font-size: 13px;
+          letter-spacing: 0.02em;
+          text-transform: none;
+          color: #0A0A0A;
+        }
+        .field-label {
+          font-family: var(--font-body-family);
+          font-weight: 500;
+          font-size: 13.5px;
+          letter-spacing: 0;
+          text-transform: none;
+          color: #0A0A0A;
+        }
         .input {
           width: 100%;
           background: #FFFFFF;
-          border: 1px solid #E0E0E0;
-          padding: 12px 14px;
+          border: 1px solid #DDDDDD;
+          padding: 13px 14px;
           font-family: var(--font-body-family);
-          font-weight: 300;
+          font-weight: 400;
           font-size: 16px;
           color: #0A0A0A;
           line-height: 1.4;
-          transition: border-color 0.15s ease;
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
           min-height: 48px;
         }
+        .input::placeholder {
+          color: #A0A0A0;
+          font-weight: 300;
+        }
+        .input:hover { border-color: #BDBDBD; }
         .input:focus {
           outline: none;
           border-color: #826DEE;
-          box-shadow: 0 0 0 2px rgba(130,109,238,0.15);
+          box-shadow: 0 0 0 3px rgba(130,109,238,0.12);
         }
         select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #6B6B6B 50%), linear-gradient(135deg, #6B6B6B 50%, transparent 50%); background-position: calc(100% - 18px) 22px, calc(100% - 12px) 22px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 32px; }
+        .category-chip {
+          font-family: var(--font-body-family);
+          font-weight: 500;
+          font-size: 13px;
+          letter-spacing: 0;
+          text-transform: none;
+          padding: 10px 16px;
+          background: #FFFFFF;
+          color: #0A0A0A;
+          border: 1px solid #DDDDDD;
+          transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+          min-height: 40px;
+          cursor: pointer;
+        }
+        .category-chip:hover { border-color: #0A0A0A; }
+        .category-chip-active {
+          background: #0A0A0A;
+          color: #FFFFFF;
+          border-color: #0A0A0A;
+        }
+        @media (max-width: 640px) {
+          .category-chip { min-height: 44px; padding: 11px 14px; font-size: 13.5px; }
+        }
       `}</style>
     </form>
   )
@@ -349,7 +394,7 @@ export function RequestWalkthroughForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="label block mb-3">{label}</span>
+      <span className="field-label block mb-2">{label}</span>
       {children}
     </label>
   )

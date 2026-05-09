@@ -91,27 +91,27 @@ body {
 
 .display-xl {
   font-family: var(--font-display-family);
-  font-weight: 900;
-  font-size: clamp(4rem, 14vw, 14rem);
-  line-height: 0.88;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 9vw, 6.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.018em;
   text-transform: uppercase;
 }
 
 .display-lg {
   font-family: var(--font-display-family);
-  font-weight: 900;
-  font-size: clamp(3rem, 8vw, 8rem);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: clamp(1.9rem, 5.5vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
   text-transform: uppercase;
 }
 
 .display-md {
   font-family: var(--font-display-family);
-  font-weight: 900;
-  font-size: clamp(2rem, 5vw, 5rem);
-  line-height: 1.0;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  line-height: 1.04;
   letter-spacing: -0.01em;
   text-transform: uppercase;
 }
@@ -221,6 +221,33 @@ body {
 
 /* ── Tap target ── */
 .tap-target { min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
+
+/* ── Mobile-native CTA polish ──
+   On phone widths, primary/secondary CTAs become full-width with comfy
+   height, slightly larger letterspaced label, and a calmer feel. */
+@media (max-width: 640px) {
+  .btn-mobile-primary,
+  .btn-mobile-secondary {
+    width: 100%;
+    min-height: 52px;
+    padding: 16px 22px;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+  }
+  .btn-mobile-secondary {
+    min-height: 48px;
+    padding: 14px 22px;
+    font-weight: 600;
+  }
+}
+
+/* ── Hero H1 scroll-margin & weight calm-down ──
+   When public hero H1 is anchored to the top, ensure the fixed header
+   doesn't clip its ascender. */
+.hero-h1 {
+  scroll-margin-top: calc(72px + env(safe-area-inset-top, 0px));
+  padding-top: 2px; /* protect uppercase ascenders from any visual clip */
+}
 
 /* ── Scroll X ── */
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
