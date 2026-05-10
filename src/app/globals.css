@@ -590,6 +590,124 @@ input:focus, textarea:focus, select:focus {
 .animate-fade-in { animation: fade-in 0.2s ease both; }
 
 /* ─────────────────────────────────────────────────────────────────────
+   ESTATE OBJECT CARDS — transparent item visuals with light shadow.
+   Used on the landing page item gallery. Background must remain
+   visually transparent (a hairline of warm parchment is fine) so each
+   object reads like a curated catalog object, not a tiled product card.
+   ───────────────────────────────────────────────────────────────────── */
+.object-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 22px 18px 20px;
+  background: rgba(251, 248, 241, 0.55);
+  border: 1px solid rgba(229, 222, 207, 0.55);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 12px 28px -18px rgba(30, 27, 23, 0.18),
+    0 4px 10px -6px rgba(30, 27, 23, 0.08);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.object-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(154, 122, 60, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 22px 44px -22px rgba(30, 27, 23, 0.24),
+    0 6px 14px -8px rgba(30, 27, 23, 0.1);
+}
+.object-card .object-svg-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the soft contact-shadow under each object */
+  filter: drop-shadow(0 12px 14px rgba(30, 27, 23, 0.14))
+          drop-shadow(0 2px 4px rgba(30, 27, 23, 0.08));
+}
+.object-card .object-name {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #1E1B17;
+  text-align: center;
+}
+.object-card .object-note {
+  font-family: var(--font-body-family);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #706A60;
+  text-align: center;
+  max-width: 22ch;
+}
+
+/* Soft halo behind hero gallery — gives the row a tactile contact field */
+.object-stage {
+  position: relative;
+}
+.object-stage::before {
+  content: '';
+  position: absolute;
+  inset: 8% 4% auto 4%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(154,122,60,0.10), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Compact mobile horizontal-scroll track */
+.object-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 64%;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 18px 18px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.object-track::-webkit-scrollbar { display: none; }
+.object-track > * { scroll-snap-align: center; }
+@media (min-width: 480px) {
+  .object-track { grid-auto-columns: 46%; }
+}
+
+/* Audience pathway card — softer than card-advisory, lighter weight */
+.path-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(229, 222, 207, 0.7);
+  border-radius: 14px;
+  padding: 28px 26px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 12px 28px -22px rgba(30, 27, 23, 0.16);
+}
+.path-card:hover {
+  border-color: rgba(154, 122, 60, 0.4);
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 36px -22px rgba(30, 27, 23, 0.2);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
    EDITORIAL VISUAL — Documentation Desk panel
    A premium CSS-rendered visual used on the home hero and other pages
    to evoke catalog sheets / inventory documentation without watermarked
