@@ -50,13 +50,13 @@ export function EstateBalanceCard() {
         </span>
       </div>
 
-      {/* ATM action row */}
+      {/* Estate actions — fiduciary-careful labels (no fintech gamification) */}
       <div className="grid grid-cols-4 border-b border-[#E0E0E0]">
         {[
-          { label: 'Withdraw', sub: fmt(a.cashAvailable), href: '/portal/ledger', testid: 'atm-withdraw' },
-          { label: 'Take Cash', sub: fmt(PORTFOLIO_SUMMARY.cashOfferAvailable), href: '/portal/offers', testid: 'atm-take-cash' },
-          { label: 'Donate', sub: 'Route', href: '/portal/donations', testid: 'atm-donate' },
-          { label: 'Concierge', sub: 'Now', href: '/portal/concierge', testid: 'atm-concierge' },
+          { label: 'Settlement ledger', sub: fmt(a.cashAvailable), href: '/portal/ledger', testid: 'atm-withdraw' },
+          { label: 'Cash offer review', sub: fmt(PORTFOLIO_SUMMARY.cashOfferAvailable), href: '/portal/offers', testid: 'atm-take-cash' },
+          { label: 'Donation routing', sub: 'Approve', href: '/portal/donations', testid: 'atm-donate' },
+          { label: 'Speak to advisor', sub: 'Available', href: '/portal/concierge', testid: 'atm-concierge' },
         ].map(b => (
           <Link
             key={b.label}

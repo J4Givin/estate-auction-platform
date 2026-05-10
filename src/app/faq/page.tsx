@@ -4,7 +4,7 @@ import { PublicShell } from '@/components/public/PublicShell'
 import { PageHero, Section, CTABanner } from '@/components/public/PageHero'
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions',
+  title: 'Frequently asked questions',
   description:
     'Twenty common questions about estate liquidation, appraisal, authentication, fees, and settlement.',
   alternates: { canonical: '/faq' },
@@ -46,29 +46,36 @@ export default function FAQPage() {
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Frequently Asked Questions"
-        title={<>Clear answers,<br/>before you call.</>}
+        eyebrow="Frequently asked"
+        title={<>Clear answers, before you call.</>}
         intro={<>Twenty common questions about estate liquidation, authentication, appraisal, fees, and settlement. Still have questions? We are happy to talk.</>}
       />
 
-      <Section>
-        <div className="border-t border-[#E0E0E0]">
+      <Section surface="parchment">
+        <div style={{ borderTop: '1px solid #E5DECF' }}>
           {FAQS.map((f, i) => (
-            <details key={f.q} className="group border-b border-[#E0E0E0]">
-              <summary className="cursor-pointer list-none py-6 md:py-7 flex items-start justify-between gap-6">
+            <details key={f.q} className="group" style={{ borderBottom: '1px solid #E5DECF' }}>
+              <summary className="cursor-pointer list-none py-7 md:py-8 flex items-start justify-between gap-6">
                 <div className="flex items-start gap-5">
-                  <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-[#826DEE] mt-2 w-7 flex-shrink-0">
+                  <span style={{
+                    fontFamily: 'var(--font-display-family)',
+                    fontStyle: 'italic', fontWeight: 400, fontSize: 18,
+                    color: '#9A7A3C', lineHeight: 1, marginTop: 6, width: 28, flexShrink: 0,
+                  }}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <p className="text-[18px] md:text-[20px] leading-snug"
-                     style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>
+                  <p style={{
+                    fontFamily: 'var(--font-display-family)',
+                    fontWeight: 400, fontSize: 21, lineHeight: 1.25,
+                    letterSpacing: '-0.012em', color: '#1E1B17',
+                  }}>
                     {f.q}
                   </p>
                 </div>
-                <span className="font-mono text-[16px] text-[#6B6B6B] transition-transform group-open:rotate-45 mt-1" aria-hidden>+</span>
+                <span className="transition-transform group-open:rotate-45 mt-1" aria-hidden style={{ fontFamily: 'var(--font-body-family)', fontSize: 18, color: '#9A7A3C' }}>+</span>
               </summary>
               <div className="pl-14 pr-4 pb-7">
-                <p className="body-light text-[15px] md:text-[16px] leading-relaxed max-w-3xl">
+                <p className="body-warm leading-relaxed max-w-3xl">
                   {f.a}
                 </p>
               </div>
@@ -77,12 +84,12 @@ export default function FAQPage() {
         </div>
 
         <div className="mt-12 flex flex-wrap gap-3">
-          <Link href="/request-walkthrough" className="btn btn-ink">Book a free walkthrough →</Link>
-          <Link href="/contact" className="btn btn-outline">Talk to us</Link>
+          <Link href="/request-walkthrough" className="btn btn-primary">Request a private review</Link>
+          <Link href="/contact" className="btn btn-outline">Speak with an advisor</Link>
         </div>
       </Section>
 
-      <CTABanner heading="Ready to get started?" body="Tell us about the estate. We will review and follow up with clear next steps." />
+      <CTABanner heading="Ready to begin?" body="Tell us about the estate. We will read the situation within one business day and follow up with clear next steps." />
 
       <script
         type="application/ld+json"

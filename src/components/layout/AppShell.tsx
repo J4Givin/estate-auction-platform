@@ -186,27 +186,38 @@ export function PageHeader({
   eyebrow?: string
 }) {
   return (
-    <div className="border-b border-[#E0E0E0] pb-6 sm:pb-12 mb-8 sm:mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div className="pb-6 sm:pb-10 mb-8 sm:mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4" style={{ borderBottom: '1px solid #E5DECF' }}>
       <div className="min-w-0">
-        {eyebrow && <span className="label block mb-2 sm:mb-3" style={{ color: '#826DEE' }}>{eyebrow}</span>}
+        {eyebrow && (
+          <div className="flex items-center gap-3 mb-3">
+            <span className="brass-rule" aria-hidden />
+            <span className="label" style={{ color: '#9A7A3C' }}>{eyebrow}</span>
+          </div>
+        )}
         <div className="flex items-center gap-3 flex-wrap">
           <h1
             className="hero-h1"
             style={{
               fontFamily: 'var(--font-display-family)',
-              fontWeight: 800,
-              // Calmer desktop max so portal H1 stays premium, not poster-sized.
-              fontSize: 'clamp(1.65rem, 5.5vw, 4rem)',
-              lineHeight: 1.02,
-              letterSpacing: '-0.015em',
-              textTransform: 'uppercase',
+              fontWeight: 400,
+              fontSize: 'clamp(1.6rem, 4.4vw, 3.2rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.014em',
+              textTransform: 'none',
+              color: '#1E1B17',
             }}
           >
             {title}
           </h1>
           {badge}
         </div>
-        {subtitle && <p className="body-light mt-2 sm:mt-3 max-w-lg" style={{ fontSize: 14 }}>{subtitle}</p>}
+        {subtitle && (
+          <p className="mt-3 sm:mt-4 max-w-lg" style={{
+            fontFamily: 'var(--font-body-family)',
+            fontWeight: 400, fontSize: 15, lineHeight: 1.65,
+            color: '#3A3530',
+          }}>{subtitle}</p>
+        )}
       </div>
       {actions && <div className="flex-shrink-0">{actions}</div>}
     </div>

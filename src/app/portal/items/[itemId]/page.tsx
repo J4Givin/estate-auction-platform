@@ -231,9 +231,9 @@ export default function ItemDetail() {
             Bonded climate-controlled storage. Adjustable monthly. You can sell, donate, or release this item from storage at any time.
           </p>
           <div className="flex gap-3">
-            <button className="btn btn-outline" data-testid="item-storage-list">List from Storage</button>
-            <button className="btn btn-outline" data-testid="item-storage-cash">Take Cash Offer</button>
-            <button className="btn btn-outline" data-testid="item-storage-release">Release to Family</button>
+            <button className="btn btn-outline" data-testid="item-storage-list">List from storage</button>
+            <button className="btn btn-outline" data-testid="item-storage-cash">Review cash offer</button>
+            <button className="btn btn-outline" data-testid="item-storage-release">Release to family</button>
           </div>
         </div>
       )}

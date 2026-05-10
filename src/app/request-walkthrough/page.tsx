@@ -3,9 +3,9 @@ import { PublicShell } from '@/components/public/PublicShell'
 import { RequestWalkthroughForm } from './RequestWalkthroughForm'
 
 export const metadata: Metadata = {
-  title: 'Request a Free Estate Walkthrough',
+  title: 'Request a private estate review',
   description:
-    'Tell us about the estate. We will review the situation and recommend the best disposition path — no obligation, no immediate account creation.',
+    'Tell us about the estate. We will review the situation and recommend the right disposition path — no obligation, no immediate account creation.',
   alternates: { canonical: '/request-walkthrough' },
   robots: { index: true, follow: true },
 }
@@ -13,51 +13,50 @@ export const metadata: Metadata = {
 export default function RequestWalkthroughPage() {
   return (
     <PublicShell>
-      <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 pb-12 md:pb-16"
-             style={{ paddingTop: 'clamp(2rem, 5vw, 5.5rem)' }}>
+      <section style={{ background: '#FBF8F1' }}>
+        <div
+          className="max-w-[1320px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 pb-14 md:pb-20"
+          style={{ paddingTop: 'clamp(2rem, 5vw, 5.5rem)' }}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-            {/* Left rail */}
+            {/* Left rail — concierge intake context */}
             <div className="lg:col-span-5">
-              <span className="label block mb-5 sm:mb-6">Estate Walkthrough</span>
-              <h1 className="text-[#0A0A0A] hero-h1"
-                  style={{
-                    fontFamily: 'var(--font-display-family)',
-                    fontWeight: 800,
-                    fontSize: 'clamp(1.85rem, 4.6vw, 3.6rem)',
-                    lineHeight: 1.04,
-                    letterSpacing: '-0.015em',
-                    textTransform: 'uppercase',
-                  }}>
-                Request a Free<br />Estate Walkthrough.
+              <div className="flex items-center gap-3 mb-6">
+                <span className="brass-rule" aria-hidden />
+                <span className="label">Estate walkthrough · By appointment</span>
+              </div>
+
+              <h1 className="display-xl hero-h1 max-w-[18ch]" style={{ fontSize: 'clamp(2rem, 4.4vw, 3.4rem)' }}>
+                Request a private estate review.
               </h1>
 
-              <p className="mt-6 sm:mt-8 text-[16px] sm:text-[17px] text-[#3a3a3a] leading-relaxed max-w-md"
-                 style={{ fontFamily: 'var(--font-body-family)', fontWeight: 300 }}>
-                Tell us what you are working through. We will review the estate, timeline, and item categories, then recommend the best path forward.
+              <p className="mt-6 sm:mt-8 lede max-w-md">
+                Tell us what you are working through. We will read the situation within one business day, recommend a path, and follow up to schedule a private walkthrough — at no cost and no obligation.
               </p>
 
-              <div className="mt-8 sm:mt-10 border-t border-[#E0E0E0]">
+              <div className="mt-9" style={{ borderTop: '1px solid #E5DECF' }}>
                 {[
-                  ['No obligation', 'We review the situation and recommend a path. You decide what comes next.'],
+                  ['No obligation', 'We read the situation and recommend a path. You decide what comes next.'],
                   ['No account required', 'You will not be asked to create an account before we have spoken.'],
-                  ['Itemized reporting', 'If you proceed, you see every item, approval, sale, fee, and payout.'],
+                  ['Itemized reporting', 'If you proceed, you see every item, every approval, every sale, fee, and payout.'],
                   ['Discreet & private', 'We do not publish estate names or client details.'],
                 ].map(([t, b]) => (
-                  <div key={t} className="border-b border-[#E0E0E0] py-4 sm:py-5 flex items-start gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#826DEE] mt-2 flex-shrink-0" aria-hidden />
+                  <div key={t} className="py-5 flex items-start gap-4" style={{ borderBottom: '1px solid #E5DECF' }}>
+                    <span className="brass-rule mt-3 flex-shrink-0" aria-hidden style={{ width: 18 }} />
                     <div>
-                      <p className="text-[15px] sm:text-[16px] mb-1" style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>{t}</p>
-                      <p className="body-light text-[13.5px] sm:text-[14px]">{b}</p>
+                      <p style={{
+                        fontFamily: 'var(--font-body-family)',
+                        fontWeight: 600, fontSize: 16, color: '#1E1B17', marginBottom: 4,
+                      }}>{t}</p>
+                      <p className="body-light text-[14px]">{b}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="mt-8 hidden lg:block">
-                <span className="label text-[#6B6B6B]">Prefer to talk first?</span>
-                <p className="text-[15px] text-[#0A0A0A] mt-2 leading-relaxed max-w-md"
-                   style={{ fontFamily: 'var(--font-body-family)', fontWeight: 400 }}>
+                <span className="label">Prefer to talk first?</span>
+                <p className="body-warm mt-2 max-w-md leading-relaxed">
                   Use this form for intake — we read every request within one business day and call you to discuss before any walkthrough is scheduled.
                 </p>
               </div>

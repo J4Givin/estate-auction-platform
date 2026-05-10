@@ -1,26 +1,31 @@
 import type { Metadata } from "next";
-import { DM_Sans, Barlow_Condensed, Space_Mono } from "next/font/google";
+import { Inter, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ActorRoleBadge } from "@/components/portal/ActorRoleBadge";
 import { AnalyticsBoot } from "@/components/AnalyticsBoot";
 
-const dmSans = DM_Sans({
+// Inter — humanist sans for body and UI. Quiet, neutral, premium.
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400", "500", "600"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const barlowCondensed = Barlow_Condensed({
+// Fraunces — editorial display serif for headings. Variable axis for "soft"
+// gives a humane, advisory feel rather than brutal/condensed display type.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
   variable: "--font-display",
   display: "swap",
 });
 
-const spaceMono = Space_Mono({
+// IBM Plex Mono — used very sparingly for tabular labels and small caps motifs.
+const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
 });
@@ -91,9 +96,9 @@ const ORG_LD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${barlowCondensed.variable} ${spaceMono.variable}`}>
-      <body className="font-sans bg-white text-[#0A0A0A]">
-        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-3 focus:py-2 focus:bg-[#0A0A0A] focus:text-white focus:label">
+    <html lang="en" className={`${inter.variable} ${fraunces.variable} ${plexMono.variable}`}>
+      <body className="font-sans bg-[#FBF8F1] text-[#1E1B17]">
+        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-3 focus:py-2 focus:bg-[#1E1B17] focus:text-[#FBF8F1] focus:rounded-md focus:label">
           Skip to main content
         </a>
         {children}

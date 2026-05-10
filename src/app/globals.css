@@ -1,62 +1,85 @@
 @import "tailwindcss";
 
-/* ── Dopamine Design Tokens ── */
+/* ─────────────────────────────────────────────────────────────────────
+   ESTATE LIQUIDITY — REFINED ADVISORY DESIGN SYSTEM
+   Direction: quiet authority, warmth, fiduciary care, editorial restraint.
+   This system replaces the prior brutalist/condensed display direction
+   with an editorial serif + humanist sans pairing on a warm ivory/stone
+   palette. Targeted at estate advisory, auction-house intake, family
+   office, and high-trust consignment contexts.
+   ───────────────────────────────────────────────────────────────────── */
+
 @theme inline {
-  --color-violet:     #826DEE;
-  --color-yellow:     #FFDB15;
-  --color-vermillion: #F94500;
-  --color-pink:       #FF99DC;
-  --color-ink:        #0A0A0A;
-  --color-white:      #FFFFFF;
-  --color-off-white:  #F5F5F5;
-  --color-muted:      #6B6B6B;
-  --color-hairline:   #E0E0E0;
+  /* ── Warm advisory palette ── */
+  --color-ivory:        #F6F1E8;  /* page surface, hero */
+  --color-parchment:    #FBF8F1;  /* secondary surface */
+  --color-stone:        #E5DECF;  /* hairline / soft borders */
+  --color-stone-deep:   #C9C0AC;  /* stronger border / divider */
+  --color-charcoal:     #1E1B17;  /* primary ink, headings */
+  --color-ink:          #1E1B17;  /* legacy alias */
+  --color-graphite:     #3A3530;  /* deep body text */
+  --color-warm-gray:    #706A60;  /* secondary text / labels */
+  --color-warm-gray-2:  #968F82;  /* tertiary text */
+  --color-brass:        #9A7A3C;  /* brass accent */
+  --color-brass-soft:   #B89A5A;  /* lighter brass */
+  --color-olive:        #343B2F;  /* deep advisory accent */
+  --color-sage:         #79846F;  /* muted sage */
+  --color-white:        #FFFFFF;
 
-  /* Semantic aliases for existing component usage */
-  --color-background:           #FFFFFF;
+  /* Functional / status — desaturated to fit the palette */
+  --color-success:      #4F6B4A;
+  --color-warning:      #B68A2E;
+  --color-danger:       #8C3A2B;
+
+  /* Semantic aliases (preserved for downstream component code) */
+  --color-background:           #FBF8F1;
   --color-surface:              #FFFFFF;
-  --color-foreground:           #0A0A0A;
-  --color-foreground-muted:     #6B6B6B;
-  --color-foreground-faint:     #6B6B6B;
-  --color-border:               #E0E0E0;
-  --color-border-subtle:        #E0E0E0;
-  --color-primary:              #826DEE;
-  --color-primary-hover:        #6a59d4;
-  --color-primary-foreground:   #FFFFFF;
-  --color-muted-foreground:     #6B6B6B;
-  --color-destructive:          #F94500;
+  --color-foreground:           #1E1B17;
+  --color-foreground-muted:     #706A60;
+  --color-foreground-faint:     #968F82;
+  --color-border:               #E5DECF;
+  --color-border-subtle:        #EBE6D8;
+  --color-primary:              #1E1B17;
+  --color-primary-hover:        #2A2520;
+  --color-primary-foreground:   #FBF8F1;
+  --color-muted-foreground:     #706A60;
+  --color-destructive:          #8C3A2B;
   --color-destructive-foreground: #FFFFFF;
-  --color-ring:                 #826DEE;
-  --color-input:                #E0E0E0;
+  --color-ring:                 #9A7A3C;
+  --color-input:                #E5DECF;
+  --color-hairline:             #E5DECF;
+  --color-muted:                #706A60;
 
-  /* Font roles */
-  --font-display-family: var(--font-display), 'Barlow Condensed', Impact, sans-serif;
-  --font-body-family:    var(--font-sans), 'DM Sans', system-ui, sans-serif;
-  --font-mono-family:    var(--font-mono), 'Space Mono', monospace;
+  /* Legacy "violet" mapped to brass for any leftover references —
+     gives a calm advisory accent rather than a tech-purple slab. */
+  --color-violet:               #9A7A3C;
 
-  /* Font stacks for Tailwind */
-  --font-sans:    'DM Sans', system-ui, sans-serif;
-  --font-display: 'Barlow Condensed', Impact, sans-serif;
-  --font-mono:    'Space Mono', monospace;
+  /* Font roles — editorial serif for display, humanist sans for body */
+  --font-display-family: var(--font-display), 'Fraunces', 'Cormorant Garamond', 'Source Serif Pro', Georgia, serif;
+  --font-body-family:    var(--font-sans), 'Inter', system-ui, sans-serif;
+  --font-mono-family:    var(--font-mono), 'IBM Plex Mono', 'Space Mono', monospace;
 
-  /* Radius */
-  --radius:     0px;
-  --radius-sm:  0px;
-  --radius-md:  0px;
-  --radius-lg:  0px;
-  --radius-xl:  0px;
-  --radius-2xl: 0px;
-  --radius-full: 0px;
+  --font-sans:    'Inter', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono:    'IBM Plex Mono', monospace;
 
-  /* Shadows — none in editorial design */
-  --shadow-xs:  none;
-  --shadow-sm:  none;
-  --shadow-md:  none;
-  --shadow-lg:  none;
-  --shadow-xl:  none;
-  --shadow-focus: 0 0 0 2px #826DEE;
+  /* Refined radii — soft, tactile, never pill-aggressive */
+  --radius:     10px;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  18px;
+  --radius-2xl: 22px;
+  --radius-full: 9999px;
 
-  /* Safe area */
+  /* Restrained shadows — paper-like, not floating */
+  --shadow-xs:  0 1px 0 rgba(30,27,23,0.04);
+  --shadow-sm:  0 1px 2px rgba(30,27,23,0.05);
+  --shadow-md:  0 6px 18px -8px rgba(30,27,23,0.08);
+  --shadow-lg:  0 16px 40px -16px rgba(30,27,23,0.12);
+  --shadow-xl:  0 24px 60px -24px rgba(30,27,23,0.16);
+  --shadow-focus: 0 0 0 3px rgba(154,122,60,0.28);
+
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -69,308 +92,487 @@ html {
 }
 
 body {
-  background: #FFFFFF;
-  color: #0A0A0A;
+  background: #FBF8F1;
+  color: #1E1B17;
   font-family: var(--font-body-family);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   padding-bottom: env(safe-area-inset-bottom);
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
 }
 
-/* ── Editorial Type ── */
-.display {
-  font-family: var(--font-display-family);
-  font-weight: 900;
-  line-height: 0.92;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-}
+/* ───────────────────────────────────────────────────────────────────────
+   TYPOGRAPHIC SYSTEM — Refined Advisory
+   • H1/H2: editorial serif (Fraunces), title case, gentle weight
+   • H3/H4: serif, lighter
+   • Body: humanist sans (Inter), warm-weight 400 with relaxed leading
+   • Eyebrows/labels: small-caps style, modest letter-spacing
+   ─────────────────────────────────────────────────────────────────────── */
 
+.serif { font-family: var(--font-display-family); }
+.sans  { font-family: var(--font-body-family); }
+
+/* Hero / page-defining titles — large, gentle, mixed case */
 .display-xl {
   font-family: var(--font-display-family);
-  font-weight: 800;
-  font-size: clamp(2.6rem, 9vw, 6.5rem);
-  line-height: 0.96;
+  font-weight: 380;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1.05;
   letter-spacing: -0.018em;
-  text-transform: uppercase;
+  color: #1E1B17;
+  font-variation-settings: 'opsz' 96, 'SOFT' 50;
 }
 
 .display-lg {
   font-family: var(--font-display-family);
-  font-weight: 800;
-  font-size: clamp(1.9rem, 5.5vw, 4.5rem);
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-}
-
-/* Calmer advisory section heading: same display family, but mixed-case
-   and lighter weight for warmth in supporting H2s (process, services,
-   pricing, faq). Hero H1 keeps the editorial all-caps identity. */
-.heading-advisory {
-  font-family: var(--font-display-family);
-  font-weight: 600;
-  font-size: clamp(1.85rem, 4.6vw, 3.4rem);
-  line-height: 1.06;
-  letter-spacing: -0.012em;
-  text-transform: none;
-  color: #0A0A0A;
-}
-.heading-advisory-dark {
-  font-family: var(--font-display-family);
-  font-weight: 600;
-  font-size: clamp(1.85rem, 4.6vw, 3.4rem);
-  line-height: 1.06;
-  letter-spacing: -0.012em;
-  text-transform: none;
-  color: #FFFFFF;
+  font-weight: 400;
+  font-size: clamp(2rem, 4.6vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.014em;
+  color: #1E1B17;
+  font-variation-settings: 'opsz' 84, 'SOFT' 50;
 }
 
 .display-md {
   font-family: var(--font-display-family);
-  font-weight: 800;
-  font-size: clamp(1.6rem, 4vw, 3.2rem);
-  line-height: 1.04;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  color: #1E1B17;
+  font-variation-settings: 'opsz' 60, 'SOFT' 60;
 }
 
+/* Section heading — replaces previous condensed display H2 */
+.heading-advisory {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  text-transform: none;
+  color: #1E1B17;
+  font-variation-settings: 'opsz' 72, 'SOFT' 60;
+}
+.heading-advisory-dark {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  text-transform: none;
+  color: #FBF8F1;
+  font-variation-settings: 'opsz' 72, 'SOFT' 60;
+}
+
+/* Subhead / list-item titles — used inside cards and rows */
+.heading-row {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: #1E1B17;
+}
+
+/* Eyebrow label — small, restrained tracking, NOT shouty */
 .label {
-  font-family: var(--font-mono-family);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  font-family: var(--font-body-family);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: #706A60;
+  line-height: 1.2;
 }
-
 .label-dark {
-  font-family: var(--font-mono-family);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  font-family: var(--font-body-family);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(251,248,241,0.62);
+  line-height: 1.2;
 }
 
+/* Pull quote / lede — used for first paragraph of a section */
+.lede {
+  font-family: var(--font-body-family);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.65;
+  color: #3A3530;
+  letter-spacing: -0.005em;
+}
+
+/* Body text variants */
 .body-light {
   font-family: var(--font-body-family);
-  font-weight: 300;
-  font-size: 15px;
+  font-weight: 400;
+  font-size: 15.5px;
   line-height: 1.7;
-  color: var(--color-muted);
+  color: #706A60;
+  letter-spacing: 0;
+}
+.body-warm {
+  font-family: var(--font-body-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #3A3530;
+  letter-spacing: 0;
 }
 
-/* ── Dopamine Accent Blocks ── */
-.accent-violet  { background-color: var(--color-violet);     color: #FFFFFF; }
-.accent-yellow  { background-color: var(--color-yellow);     color: var(--color-ink); }
-.accent-vermillion { background-color: var(--color-vermillion); color: #FFFFFF; }
-.accent-pink    { background-color: var(--color-pink);       color: var(--color-ink); }
-
-.text-violet     { color: var(--color-violet); }
-.text-yellow     { color: var(--color-yellow); }
-.text-vermillion { color: var(--color-vermillion); }
-.text-pink       { color: var(--color-pink); }
-
-/* ── Editorial Layout Utilities ── */
-.bleed-left  { margin-left: calc(-1 * (100vw - 100%) / 2); padding-left: calc((100vw - 100%) / 2); }
-.bleed-right { margin-right: calc(-1 * (100vw - 100%) / 2); padding-right: calc((100vw - 100%) / 2); }
-
-.editorial-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
+/* Italic editorial flourish — for serif emphasis in titles */
+.serif-italic {
+  font-family: var(--font-display-family);
+  font-style: italic;
+  font-weight: 400;
 }
 
-/* ── Hairline Dividers ── */
-.divider       { height: 1px; background: var(--color-hairline); }
-.divider-ink   { height: 1px; background: var(--color-ink); }
+/* ─────────────────────────────────────────────────────────────────────
+   SURFACES & SECTIONS
+   ───────────────────────────────────────────────────────────────────── */
 
-/* ── Buttons ── */
+.surface-ivory     { background-color: #F6F1E8; }
+.surface-parchment { background-color: #FBF8F1; }
+.surface-white     { background-color: #FFFFFF; }
+.surface-stone     { background-color: #EFE9DC; }
+.surface-charcoal  { background-color: #1E1B17; color: #FBF8F1; }
+.surface-olive     { background-color: #343B2F; color: #FBF8F1; }
+
+.text-charcoal     { color: #1E1B17; }
+.text-graphite     { color: #3A3530; }
+.text-warm-gray    { color: #706A60; }
+.text-brass        { color: #9A7A3C; }
+.text-olive        { color: #343B2F; }
+.text-sage         { color: #79846F; }
+.text-ivory        { color: #FBF8F1; }
+
+.bg-brass          { background-color: #9A7A3C; }
+.bg-charcoal       { background-color: #1E1B17; }
+.bg-olive          { background-color: #343B2F; }
+
+/* Hairline divider — soft warm-gray, never harsh black */
+.divider           { height: 1px; background: #E5DECF; }
+.divider-strong    { height: 1px; background: #C9C0AC; }
+.divider-ink       { height: 1px; background: #1E1B17; }
+
+/* Card — soft surface, warm hairline, generous padding (no heavy shadow) */
+.card-advisory {
+  background: #FFFFFF;
+  border: 1px solid #E5DECF;
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card-advisory:hover {
+  border-color: #C9C0AC;
+  box-shadow: 0 6px 24px -12px rgba(30,27,23,0.12);
+}
+
+.card-soft {
+  background: #FBF8F1;
+  border: 1px solid #EBE6D8;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* Brass accent rule — small detail line used in cards/sections */
+.brass-rule {
+  display: inline-block;
+  width: 28px;
+  height: 1.5px;
+  background: #9A7A3C;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   BUTTONS — refined, tactile, never giant black slabs
+   ───────────────────────────────────────────────────────────────────── */
+
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 14px 28px;
-  font-family: var(--font-mono-family);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border: none;
+  padding: 13px 22px;
+  font-family: var(--font-body-family);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.1s ease;
   text-decoration: none;
-  border-radius: 0;
+  border-radius: 10px;
   white-space: nowrap;
+  line-height: 1.2;
 }
-.btn:active { transform: scale(0.97); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
 
+/* Primary — charcoal, ivory text */
+.btn-primary,
 .btn-ink {
-  background: var(--color-ink);
-  color: #FFFFFF;
+  background: #1E1B17;
+  color: #FBF8F1;
+  border-color: #1E1B17;
 }
-.btn-ink:hover { background: #2a2a2a; }
+.btn-primary:hover,
+.btn-ink:hover { background: #2A2520; border-color: #2A2520; }
 
-.btn-violet {
-  background: var(--color-violet);
-  color: #FFFFFF;
+/* Brass — used sparingly, for premium emphasis (e.g. final CTA) */
+.btn-brass {
+  background: #9A7A3C;
+  color: #FBF8F1;
+  border-color: #9A7A3C;
 }
-.btn-violet:hover { background: #6a59d4; }
+.btn-brass:hover { background: #876A30; border-color: #876A30; }
 
-.btn-yellow {
-  background: var(--color-yellow);
-  color: var(--color-ink);
-}
-.btn-yellow:hover { background: #e8c800; }
-
+/* Outline — quiet, tactile, ivory/stone */
 .btn-outline {
   background: transparent;
-  color: var(--color-ink);
-  border: 1.5px solid var(--color-ink);
+  color: #1E1B17;
+  border-color: #C9C0AC;
 }
-.btn-outline:hover { background: var(--color-ink); color: #FFFFFF; }
+.btn-outline:hover {
+  background: #FBF8F1;
+  border-color: #1E1B17;
+}
 
 .btn-outline-white {
   background: transparent;
-  color: #FFFFFF;
-  border: 1.5px solid rgba(255,255,255,0.4);
+  color: #FBF8F1;
+  border-color: rgba(251,248,241,0.36);
 }
-.btn-outline-white:hover { border-color: #FFFFFF; background: rgba(255,255,255,0.08); }
+.btn-outline-white:hover {
+  background: rgba(251,248,241,0.06);
+  border-color: rgba(251,248,241,0.7);
+}
 
-/* ── Tap target ── */
+/* Subtle ghost — for secondary inline actions */
+.btn-ghost {
+  background: transparent;
+  color: #1E1B17;
+  border-color: transparent;
+  padding: 13px 16px;
+}
+.btn-ghost:hover { background: #F6F1E8; }
+
+/* Legacy aliases preserved for any references */
+.btn-violet { background: #9A7A3C; color: #FBF8F1; }
+.btn-violet:hover { background: #876A30; }
+.btn-yellow { background: #B89A5A; color: #1E1B17; }
+.btn-yellow:hover { background: #A1843E; }
+
+/* Tap target */
 .tap-target { min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
 
-/* ── Card CTA link ──
-   Ensures inline "Learn more →" / "Open preview →" type links inside cards
-   are at least 44px tappable on mobile, even when the visible label is
-   small editorial text. */
+/* Card link — small editorial inline link */
 .card-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 44px;
-  padding: 10px 0;
-  font-family: var(--font-mono-family);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-ink);
+  padding: 8px 0;
+  font-family: var(--font-body-family);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  color: #1E1B17;
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, gap 0.18s ease;
+  border-bottom: 1px solid transparent;
 }
-.card-link:hover { color: var(--color-violet); }
+.card-link:hover {
+  color: #9A7A3C;
+  gap: 10px;
+}
 
-/* ── Trust chip (mobile readable proof points) ── */
+/* ─────────────────────────────────────────────────────────────────────
+   TRUST CHIPS — used on hero and elsewhere as readable proof points
+   ───────────────────────────────────────────────────────────────────── */
 .trust-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   background: #FFFFFF;
-  border: 1px solid #EAEAEA;
+  border: 1px solid #E5DECF;
+  border-radius: 999px;
   font-family: var(--font-body-family);
   font-weight: 500;
   font-size: 12.5px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: #0A0A0A;
+  color: #3A3530;
   line-height: 1.2;
   white-space: nowrap;
 }
 .trust-chip-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--color-violet);
+  background: #9A7A3C;
   flex-shrink: 0;
 }
 
-/* ── Mobile-native CTA polish ──
-   On phone widths, primary/secondary CTAs become full-width with comfy
-   height, slightly larger letterspaced label, and a calmer feel. */
+/* Sample / preview tag — discreet ribbon for portal previews */
+.sample-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: #FBF8F1;
+  border: 1px solid #C9C0AC;
+  border-radius: 4px;
+  font-family: var(--font-body-family);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #706A60;
+}
+.sample-tag::before {
+  content: '';
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #9A7A3C;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   MOBILE — comfy CTA + form polish
+   ───────────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .btn-mobile-primary,
   .btn-mobile-secondary {
     width: 100%;
     min-height: 52px;
     padding: 16px 22px;
-    font-size: 11.5px;
-    letter-spacing: 0.12em;
+    font-size: 15px;
+    letter-spacing: -0.005em;
+    border-radius: 10px;
   }
   .btn-mobile-secondary {
     min-height: 48px;
-    padding: 14px 22px;
-    font-weight: 600;
   }
+
+  /* Slightly relaxed body for phone reading */
+  body { font-size: 16.5px; line-height: 1.7; }
 }
 
-/* ── Public fixed-header height token ──
-   Used by PublicShell <main> padding-top so hero content always begins
-   below the fixed header on every public page. Inline styles also
-   reference this var, but it is defined here so the value is shared. */
+/* Public fixed-header height token */
 :root {
-  --public-header-h: 64px;
+  --public-header-h: 68px;
 }
 
-/* ── Hero H1 scroll-margin & weight calm-down ──
-   When public hero H1 is anchored to the top, ensure the fixed header
-   doesn't clip its ascender. scroll-margin-top is for in-page anchor
-   navigation; the actual initial offset comes from <main> padding-top. */
+/* Hero H1 scroll-margin */
 .hero-h1 {
-  scroll-margin-top: calc(var(--public-header-h, 64px) + 16px + env(safe-area-inset-top, 0px));
-  padding-top: 2px; /* protect uppercase ascenders from any visual clip */
+  scroll-margin-top: calc(var(--public-header-h, 68px) + 16px + env(safe-area-inset-top, 0px));
+  padding-top: 2px;
 }
 
-/* Belt-and-suspenders: any <main> rendered inside PublicShell must have
-   at least header-height of top padding even if a Tailwind arbitrary
-   value class fails to compile. */
 main.public-main-with-header {
-  padding-top: calc(var(--public-header-h, 64px) + env(safe-area-inset-top, 0px));
+  padding-top: calc(var(--public-header-h, 68px) + env(safe-area-inset-top, 0px));
 }
 
-/* ── Scroll X ── */
+/* Scroll-x */
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .scroll-x::-webkit-scrollbar { display: none; }
 
-/* ── Mobile-native form controls ──
-   On phone widths, lift inputs/selects/textareas/buttons to a 44px tap
-   target and use 16px font-size so iOS Safari does not auto-zoom on
-   focus. Desktop styling is untouched. */
+/* ─────────────────────────────────────────────────────────────────────
+   FORM CONTROLS — concierge intake feel
+   ───────────────────────────────────────────────────────────────────── */
+input, textarea, select {
+  font-family: var(--font-body-family);
+  font-size: 16px;
+  color: #1E1B17;
+  border-radius: 10px;
+  outline: none;
+  background: #FFFFFF;
+  border: 1px solid #C9C0AC;
+  padding: 12px 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input::placeholder, textarea::placeholder { color: #968F82; }
+input:hover, textarea:hover, select:hover { border-color: #9A7A3C; }
+input:focus, textarea:focus, select:focus {
+  border-color: #9A7A3C;
+  box-shadow: 0 0 0 3px rgba(154,122,60,0.18);
+}
+
 @media (max-width: 640px) {
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
   select,
   textarea {
-    min-height: 44px;
+    min-height: 48px;
     font-size: 16px;
   }
-  button {
-    min-height: 44px;
-  }
+  button { min-height: 44px; }
 }
 
-/* ── Animations ── */
+/* ─────────────────────────────────────────────────────────────────────
+   FOCUS — premium ring (brass), accessible
+   ───────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #9A7A3C;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E5DECF; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #C9C0AC; }
+
+/* Base layer */
+@layer base {
+  * { border-color: #E5DECF; }
+  button { cursor: pointer; font-family: var(--font-body-family); }
+  ::selection { background: rgba(154,122,60,0.22); color: #1E1B17; }
+  a { color: inherit; text-decoration: none; }
+  strong, b { font-weight: 600; color: #1E1B17; }
+  em, i { font-style: italic; }
+  hr { border: none; border-top: 1px solid #E5DECF; }
+}
+
+/* Tabular nums for prices and metrics */
+.tabular { font-variant-numeric: tabular-nums lining-nums; }
+.price {
+  font-family: var(--font-body-family);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.005em;
+  font-weight: 500;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   ANIMATIONS — restrained, tactile
+   ───────────────────────────────────────────────────────────────────── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-/* Scroll-reveal base state — JS toggles opacity/transform inline */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(28px);
   transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal, .fade-up {
@@ -387,58 +589,60 @@ main.public-main-with-header {
 }
 .animate-fade-in { animation: fade-in 0.2s ease both; }
 
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+/* ─────────────────────────────────────────────────────────────────────
+   EDITORIAL VISUAL — Documentation Desk panel
+   A premium CSS-rendered visual used on the home hero and other pages
+   to evoke catalog sheets / inventory documentation without watermarked
+   stock photography.
+   ───────────────────────────────────────────────────────────────────── */
+.doc-desk {
+  background:
+    linear-gradient(180deg, #FBF8F1 0%, #F6F1E8 100%);
+  border: 1px solid #E5DECF;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
 }
-.marquee-track { animation: marquee 18s linear infinite; display: flex; gap: 0; }
-
-/* ── Input ── */
-input, textarea, select {
-  font-family: var(--font-body-family);
-  font-size: 16px;
-  border-radius: 0;
-  outline: none;
-  background: transparent;
-}
-
-/* ── Focus ── */
-:focus-visible {
-  outline: 2px solid var(--color-violet);
-  outline-offset: 2px;
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-hairline); }
-::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
-
-/* ── Base layer ── */
-@layer base {
-  * { border-color: var(--color-hairline); }
-  button { cursor: pointer; font-family: var(--font-body-family); }
-  ::selection { background: rgba(130,109,238,0.15); color: var(--color-violet); }
+.doc-desk::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(154,122,60,0.05) 0 1px, transparent 1px 32px);
+  pointer-events: none;
 }
 
-/* ── Tabular numbers ── */
-.tabular { font-variant-numeric: tabular-nums lining-nums; }
-.price {
-  font-family: var(--font-body-family);
-  font-variant-numeric: tabular-nums lining-nums;
-  letter-spacing: -0.01em;
+.spec-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #EBE6D8;
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-row .k {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #706A60;
+}
+.spec-row .v {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #1E1B17;
+  letter-spacing: -0.005em;
+}
+.spec-row .e {
+  font-size: 13px;
+  color: #706A60;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Status dot ── */
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ── Mobile ── */
+/* ─────────────────────────────────────────────────────────────────────
+   MOBILE / DESKTOP visibility helpers
+   ───────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
   .hide-mobile { display: none !important; }
   .show-mobile { display: block !important; }
@@ -446,3 +650,17 @@ input, textarea, select {
 @media (min-width: 768px) {
   .hide-desktop { display: none !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   LEGACY COMPAT — old class names that may still appear in components
+   are retained but mapped to the new design language.
+   ───────────────────────────────────────────────────────────────────── */
+.display { font-family: var(--font-display-family); font-weight: 400; line-height: 1.1; letter-spacing: -0.012em; text-transform: none; color: #1E1B17; }
+.accent-violet     { background-color: #9A7A3C; color: #FBF8F1; }
+.accent-yellow     { background-color: #B89A5A; color: #1E1B17; }
+.accent-vermillion { background-color: #8C3A2B; color: #FBF8F1; }
+.accent-pink       { background-color: #D7CEC0; color: #1E1B17; }
+.text-violet       { color: #9A7A3C; }
+.text-yellow       { color: #B89A5A; }
+.text-vermillion   { color: #8C3A2B; }
+.text-pink         { color: #79846F; }
