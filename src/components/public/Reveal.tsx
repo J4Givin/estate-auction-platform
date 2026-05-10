@@ -1,45 +1,24 @@
-'use client'
-import { useState, useEffect, useRef, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-export function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const reduce =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
-      const id = window.setTimeout(() => setVisible(true), 0)
-      return () => window.clearTimeout(id)
-    }
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          obs.disconnect()
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(28px)',
-        transition: `opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-        willChange: 'opacity, transform',
-      }}
-    >
-      {children}
-    </div>
-  )
+/**
+ * Pass-through wrapper. Previously animated entrance via IntersectionObserver,
+ * but a missed observation could leave entire sections invisible on real
+ * browsers and on screenshot capture. The animation is purely cosmetic and
+ * not worth the correctness risk on a landing page.
+ *
+ * Kept as a component so existing call sites (and the `delay` / `className`
+ * props) work unchanged. If we later want a fade-up, do it with a CSS-only
+ * approach scoped to elements that are guaranteed to be in the initial
+ * viewport.
+ */
+export function Reveal({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  if (!className) return <>{children}</>
+  return <div className={className}>{children}</div>
 }

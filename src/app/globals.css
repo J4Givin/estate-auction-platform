@@ -654,17 +654,20 @@ input:focus, textarea:focus, select:focus {
   max-width: 22ch;
 }
 
-/* Soft halo behind hero gallery — gives the row a tactile contact field */
+/* Soft halo behind hero gallery — small, contained, never extends layout */
 .object-stage {
   position: relative;
+  isolation: isolate;
 }
 .object-stage::before {
   content: '';
   position: absolute;
-  inset: 8% 4% auto 4%;
-  height: 70%;
+  left: 8%;
+  right: 8%;
+  top: 30%;
+  bottom: 30%;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(154,122,60,0.10), transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(154,122,60,0.08), transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
@@ -767,6 +770,498 @@ input:focus, textarea:focus, select:focus {
 }
 @media (min-width: 768px) {
   .hide-desktop { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   LANDING PAGE RHYTHM — controlled section padding, hero composition.
+   Replaces the prior `py-20 md:py-28` blanket which produced excessive
+   vertical space when combined with empty Reveal animations.
+   ───────────────────────────────────────────────────────────────────── */
+.hero-section { padding-bottom: 0; }
+.hero-inner {
+  padding-top: clamp(2.5rem, 6vw, 5.25rem);
+  padding-bottom: clamp(1.75rem, 3vw, 2.75rem);
+}
+.hero-gallery {
+  padding-top: clamp(0.5rem, 1.5vw, 1rem);
+  padding-bottom: clamp(2rem, 4vw, 3.25rem);
+}
+.hero-gallery-note {
+  margin-top: clamp(1.25rem, 2vw, 1.75rem);
+  font-family: var(--font-body-family);
+  font-size: 13px;
+  color: #706A60;
+  font-style: italic;
+  max-width: 60ch;
+  text-align: left;
+}
+
+.trust-strip {
+  border-top: 1px solid #E5DECF;
+  background: #F6F1E8;
+}
+
+/* Hero H1 — magnetic, calm, balanced. text-wrap: balance keeps the
+   final line from being a single word. */
+.home-h1 {
+  font-family: var(--font-display-family);
+  font-weight: 380;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+  color: #1E1B17;
+  max-width: 18ch;
+  text-wrap: balance;
+  hanging-punctuation: first;
+  font-variation-settings: 'opsz' 96, 'SOFT' 50;
+}
+@media (min-width: 1024px) {
+  .home-h1 { max-width: 16ch; }
+}
+
+/* Section rhythm — generous but not vast. Replaces blanket py-20/py-28. */
+.section-rhythm {
+  padding-top: clamp(3.25rem, 6vw, 5.25rem);
+  padding-bottom: clamp(3.25rem, 6vw, 5.25rem);
+}
+.section-rhythm-tight {
+  padding-top: clamp(2.75rem, 5vw, 4.25rem);
+  padding-bottom: clamp(2.75rem, 5vw, 4.25rem);
+}
+.cta-section {
+  padding-top: clamp(3.25rem, 6vw, 5.25rem);
+  padding-bottom: clamp(2.5rem, 4.5vw, 4rem);
+}
+
+/* Cards on the landing — title weight tuned for desktop and mobile */
+.path-title {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  color: #1E1B17;
+  margin-bottom: 12px;
+}
+
+.principle-card {
+  background: rgba(251, 248, 241, 0.65);
+  border: 1px solid rgba(229, 222, 207, 0.7);
+  border-radius: 14px;
+  padding: 24px 22px 22px;
+  box-shadow: 0 12px 28px -22px rgba(30, 27, 23, 0.16);
+}
+@media (min-width: 768px) {
+  .principle-card { padding: 28px 26px 26px; }
+}
+.principle-num {
+  font-family: var(--font-display-family);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 17px;
+  color: #9A7A3C;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+/* Reassurance row */
+.trust-card {
+  background: rgba(251, 248, 241, 0.7);
+  border: 1px solid rgba(229, 222, 207, 0.7);
+  border-radius: 12px;
+  padding: 20px 18px;
+  box-shadow: 0 8px 20px -16px rgba(30, 27, 23, 0.14);
+}
+@media (min-width: 768px) {
+  .trust-card { padding: 22px 20px; }
+}
+.trust-card-title {
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  font-size: 15px;
+  color: #1E1B17;
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+
+/* Marketplace teaser card */
+.market-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(229, 222, 207, 0.7);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 22px 50px -28px rgba(30, 27, 23, 0.22),
+    0 6px 16px -10px rgba(30, 27, 23, 0.1);
+  overflow: hidden;
+}
+.market-card-head {
+  padding: 18px 22px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid rgba(229, 222, 207, 0.7);
+}
+.market-card-title {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: 18px;
+  color: #1E1B17;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+.market-list { padding: 4px 10px; }
+.market-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(235, 230, 216, 0.7);
+}
+.market-row:last-child { border-bottom: none; }
+.market-name {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 14px;
+  color: #1E1B17;
+  letter-spacing: -0.005em;
+  margin-top: 2px;
+}
+.market-est {
+  font-family: var(--font-body-family);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 13px;
+  color: #3A3530;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.market-card-foot {
+  padding: 14px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid rgba(229, 222, 207, 0.7);
+  background: rgba(246, 241, 232, 0.6);
+}
+
+/* Hero document card (desktop only) */
+.hero-doc {
+  background: linear-gradient(180deg, #FBF8F1 0%, #F6F1E8 100%);
+  border: 1px solid #E5DECF;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 44px -24px rgba(30, 27, 23, 0.18);
+}
+.hero-doc-head {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #E5DECF;
+}
+.hero-doc-title {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: 16px;
+  color: #1E1B17;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+.hero-doc-list { padding: 2px 4px; }
+.hero-doc-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 14px;
+  border-bottom: 1px solid #EBE6D8;
+}
+.hero-doc-row:last-child { border-bottom: none; }
+.hero-doc-lot {
+  font-family: var(--font-body-family);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #706A60;
+}
+.hero-doc-name {
+  font-family: var(--font-body-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1E1B17;
+  letter-spacing: -0.005em;
+}
+.hero-doc-est {
+  font-family: var(--font-body-family);
+  font-size: 12px;
+  color: #706A60;
+  font-variant-numeric: tabular-nums;
+}
+.hero-doc-foot {
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #E5DECF;
+  background: #FBF8F1;
+  font-family: var(--font-display-family);
+  font-style: italic;
+  font-size: 12.5px;
+  color: #9A7A3C;
+}
+.hero-doc-link {
+  font-family: var(--font-body-family);
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1E1B17;
+  letter-spacing: -0.005em;
+}
+.hero-doc-link:hover { color: #9A7A3C; }
+
+/* Final CTA footer line — replaces a separate footer block */
+.cta-foot {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(251, 248, 241, 0.14);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   AUTH PAGES — register / login composition.
+   Mobile: tight charcoal strip above the form (no giant blank block).
+   Desktop: 50/50 editorial split with the dark advisory panel on the left.
+   ───────────────────────────────────────────────────────────────────── */
+.auth-page {
+  min-height: 100vh;
+  background: #FBF8F1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile: compact header strip. ~56px tall. Hidden on tablet+. */
+.auth-mobile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: #1E1B17;
+  color: #FBF8F1;
+  border-bottom: 1px solid rgba(251, 248, 241, 0.1);
+  padding-top: calc(14px + env(safe-area-inset-top, 0px));
+}
+@media (min-width: 768px) {
+  .auth-mobile-head { display: none; }
+}
+.auth-mobile-signin {
+  font-family: var(--font-body-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: #B89A5A;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
+.auth-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  .auth-grid { flex-direction: row; min-height: 100vh; }
+}
+
+.auth-aside {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #1E1B17;
+  color: #FBF8F1;
+  padding: 56px 56px 48px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .auth-aside {
+    display: flex;
+    width: 44%;
+    padding: 64px 56px 56px;
+  }
+}
+@media (min-width: 1024px) {
+  .auth-aside {
+    width: 50%;
+    padding: 80px 80px 72px;
+  }
+}
+
+.auth-aside-body { padding: 32px 0; max-width: 38ch; }
+.auth-aside-title {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: clamp(1.85rem, 2.8vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.014em;
+  color: #FBF8F1;
+  margin-bottom: 18px;
+}
+.auth-aside-copy {
+  font-family: var(--font-body-family);
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: rgba(251, 248, 241, 0.74);
+  max-width: 36ch;
+}
+.auth-aside-foot { margin-top: auto; padding-top: 24px; }
+.auth-aside-link {
+  display: inline-block;
+  font-family: var(--font-body-family);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #B89A5A;
+  border-bottom: 1px solid rgba(184, 154, 90, 0.5);
+  padding-bottom: 1px;
+}
+.auth-aside-link:hover { color: #FBF8F1; border-color: rgba(251, 248, 241, 0.6); }
+
+.auth-main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #FBF8F1;
+  padding: 32px 20px 48px;
+}
+@media (min-width: 768px) {
+  .auth-main {
+    padding: 64px 40px;
+    align-items: center;
+  }
+}
+@media (min-width: 1024px) {
+  .auth-main { padding: 80px; }
+}
+
+.auth-form-wrap { width: 100%; max-width: 440px; }
+
+.auth-h1 {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.014em;
+  color: #1E1B17;
+  margin-bottom: 14px;
+}
+
+/* Form fields — compact, accessible, no chunky border boxes */
+.auth-form { display: flex; flex-direction: column; gap: 0; }
+.auth-field {
+  border-top: 1px solid #E5DECF;
+  padding: 14px 0 12px;
+  display: flex;
+  flex-direction: column;
+}
+.auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.auth-label {
+  font-family: var(--font-body-family);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #706A60;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.auth-hint {
+  font-family: var(--font-body-family);
+  font-size: 11px;
+  color: #968F82;
+}
+.auth-input {
+  width: 100%;
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 0 !important;
+  font-family: var(--font-body-family);
+  font-size: 16px;
+  color: #1E1B17;
+  min-height: 32px;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+.auth-input:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+.auth-input::placeholder { color: #968F82; }
+
+.auth-submit {
+  margin-top: 18px;
+  width: 100%;
+  min-height: 50px;
+}
+
+.auth-fineprint {
+  margin-top: 18px;
+  font-family: var(--font-body-family);
+  font-size: 13px;
+  color: #706A60;
+  line-height: 1.6;
+}
+.auth-fineprint--soft { font-size: 12px; color: #968F82; margin-top: 8px; }
+.auth-inline-link {
+  color: #9A7A3C;
+  border-bottom: 1px solid rgba(154, 122, 60, 0.4);
+  padding-bottom: 1px;
+}
+.auth-inline-link--soft { color: #706A60; border-color: #C9C0AC; }
+
+.auth-aside-footnote {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #E5DECF;
+}
+
+/* Logo mark used on auth pages */
+.auth-logo-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #C9C0AC;
+  background: #FBF8F1;
+  font-family: var(--font-display-family);
+  font-weight: 500;
+  font-size: 13px;
+  color: #1E1B17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+}
+.auth-logo-mark--dark {
+  background: transparent;
+  border-color: rgba(251, 248, 241, 0.4);
+  color: #FBF8F1;
 }
 
 /* ─────────────────────────────────────────────────────────────────────
