@@ -51,12 +51,16 @@ const statusBadge: Record<string, { bg: string; text: string }> = {
   rejected: { bg: "bg-ruby/15", text: "text-ruby" },
 };
 
+// Sample data only. Names are intentionally generic archetypes — never
+// realistic personal names — so this portal preview cannot be mistaken
+// for real client data when shown in screenshots, demos, or analyst
+// reviews.
 const recentReferrals: RecentReferral[] = [
-  { id: "REF-024", clientName: "William & Dorothy Patterson", date: "2026-04-15", status: "submitted" },
-  { id: "REF-023", clientName: "Nakamura Family Trust", date: "2026-04-12", status: "contacted", jobValue: "$38,000" },
-  { id: "REF-022", clientName: "Eleanor Whitfield Estate", date: "2026-04-08", status: "converted", jobValue: "$52,400" },
-  { id: "REF-021", clientName: "Marcus & June Henderson", date: "2026-04-02", status: "paid", jobValue: "$28,700" },
-  { id: "REF-020", clientName: "The Cromwell Collection", date: "2026-03-28", status: "paid", jobValue: "$64,200" },
+  { id: "REF-024", clientName: "Sample Family Estate (Westside)", date: "2026-04-15", status: "submitted" },
+  { id: "REF-023", clientName: "Sample Family Trust", date: "2026-04-12", status: "contacted", jobValue: "$38,000" },
+  { id: "REF-022", clientName: "Sample Probate Estate", date: "2026-04-08", status: "converted", jobValue: "$52,400" },
+  { id: "REF-021", clientName: "Sample Downsizing Engagement", date: "2026-04-02", status: "paid", jobValue: "$28,700" },
+  { id: "REF-020", clientName: "Sample Estate Collection", date: "2026-03-28", status: "paid", jobValue: "$64,200" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -76,7 +80,10 @@ export default function PartnerDashboard() {
             Partner Dashboard
           </h1>
           <p className="text-sm text-pewter mt-1">
-            Welcome back, <span className="font-medium text-charcoal">Robert</span> from <span className="font-medium text-charcoal">Hargreaves Realty Group</span>
+            Sample partner portal · <span className="font-medium text-charcoal">Sample Realty Partner</span>
+          </p>
+          <p className="text-xs text-pewter/70 mt-1">
+            Demo data only — no real client information is displayed.
           </p>
         </div>
 

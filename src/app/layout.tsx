@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Barlow_Condensed, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ActorRoleBadge } from "@/components/portal/ActorRoleBadge";
+import { AnalyticsBoot } from "@/components/AnalyticsBoot";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -96,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         {children}
+        <AnalyticsBoot />
         {/* Server-rendered, role-aware dev badge. Hidden in production. */}
         <ActorRoleBadge />
         <script
