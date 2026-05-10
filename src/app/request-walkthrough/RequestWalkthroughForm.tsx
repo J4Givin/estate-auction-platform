@@ -215,7 +215,7 @@ export function RequestWalkthroughForm() {
           If your situation is urgent or you would like to share photos, you can reply to our follow-up email with attachments.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link href="/how-it-works" className="btn btn-ink">See how it works →</Link>
+          <Link href="/how-it-works" className="btn btn-primary">See how it works</Link>
           <Link href="/" className="btn btn-outline">Return home</Link>
         </div>
       </div>
@@ -225,13 +225,21 @@ export function RequestWalkthroughForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-white border border-[#E0E0E0]"
       noValidate
-      aria-label="Request a free estate walkthrough"
+      aria-label="Request a private estate review"
+      style={{
+        background: '#FFFFFF',
+        border: '1px solid #E5DECF',
+        borderRadius: 14,
+        overflow: 'hidden',
+      }}
     >
-      <div className="px-5 sm:px-6 md:px-10 py-4 sm:py-6 border-b border-[#E0E0E0] flex flex-wrap items-center justify-between gap-3 bg-[#FAFAFA]">
-        <span className="label text-[#6B6B6B]">All fields marked * are required</span>
-        <span className="label text-[#826DEE]">Confidential · no obligation</span>
+      <div
+        className="px-5 sm:px-6 md:px-10 py-5 flex flex-wrap items-center justify-between gap-3"
+        style={{ background: '#FBF8F1', borderBottom: '1px solid #E5DECF' }}
+      >
+        <span className="label">All fields marked * are required</span>
+        <span className="label" style={{ color: '#9A7A3C' }}>Confidential · no obligation</span>
       </div>
 
       {/* Section: contact */}
@@ -446,15 +454,32 @@ export function RequestWalkthroughForm() {
         </div>
       </fieldset>
 
-      <div className="px-5 sm:px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 border-t border-[#E0E0E0] pt-6 sm:pt-8 bg-[#FAFAFA]">
-        <p className="text-[12.5px] sm:text-[13px] text-[#6B6B6B] mb-5 sm:mb-6 max-w-2xl leading-relaxed"
-           style={{ fontFamily: 'var(--font-body-family)', fontWeight: 400 }}>
+      <div
+        className="px-5 sm:px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 pt-7"
+        style={{ background: '#FBF8F1', borderTop: '1px solid #E5DECF' }}
+      >
+        <p
+          className="mb-6 max-w-2xl leading-relaxed"
+          style={{
+            fontFamily: 'var(--font-body-family)',
+            fontWeight: 400, fontSize: 13, color: '#706A60',
+          }}
+        >
           By submitting this request, you understand that estimates and appraisal indications are not a guarantee of value. We will follow up to confirm details. We do not share your information outside of preparing your evaluation.
         </p>
 
         {error && (
-          <div role="alert" aria-live="polite" className="mb-5 border border-[#F94500] bg-[#FFF4F0] px-4 py-3">
-            <p className="label text-[#F94500]">{error}</p>
+          <div
+            role="alert"
+            aria-live="polite"
+            className="mb-5 px-4 py-3"
+            style={{
+              border: '1px solid #8C3A2B',
+              background: '#FBF1ED',
+              borderRadius: 8,
+            }}
+          >
+            <p className="label" style={{ color: '#8C3A2B' }}>{error}</p>
           </div>
         )}
 
@@ -463,98 +488,102 @@ export function RequestWalkthroughForm() {
             type="submit"
             data-cta="walkthrough-submit"
             disabled={submitting}
-            className="btn btn-ink btn-mobile-primary justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn btn-primary btn-mobile-primary justify-center disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {submitting ? 'Sending…' : 'Submit Request →'}
+            {submitting ? 'Sending…' : 'Submit private estate review'}
           </button>
-          <span className="label text-[#6B6B6B]">No account is created by submitting this form.</span>
+          <span className="label">No account is created by submitting this form.</span>
         </div>
       </div>
 
       <style>{`
         .form-section-title {
-          font-family: var(--font-body-family);
-          font-weight: 600;
-          font-size: 15px;
-          letter-spacing: 0;
-          text-transform: none;
-          color: #0A0A0A;
+          font-family: var(--font-display-family);
+          font-weight: 400;
+          font-size: 22px;
+          line-height: 1.2;
+          letter-spacing: -0.012em;
+          color: #1E1B17;
           padding: 0;
         }
         .form-section-help {
           font-family: var(--font-body-family);
           font-weight: 400;
-          font-size: 13px;
-          color: #6B6B6B;
+          font-size: 13.5px;
+          color: #706A60;
           margin-top: 4px;
-          line-height: 1.5;
+          line-height: 1.55;
         }
         .form-section-help-inline {
           font-family: var(--font-body-family);
           font-weight: 400;
           font-size: 13px;
-          color: #6B6B6B;
+          color: #706A60;
           margin-left: 6px;
         }
         .form-divider {
           height: 1px;
-          background: #EFEFEF;
-          margin: 0 0 0 0;
+          background: #EBE6D8;
+          margin: 0;
         }
         .field-label {
           font-family: var(--font-body-family);
           font-weight: 500;
           font-size: 13.5px;
-          letter-spacing: 0;
-          text-transform: none;
-          color: #0A0A0A;
+          color: #1E1B17;
         }
         .input {
           width: 100%;
           background: #FFFFFF;
-          border: 1px solid #DDDDDD;
+          border: 1px solid #C9C0AC;
           padding: 13px 14px;
           font-family: var(--font-body-family);
           font-weight: 400;
           font-size: 16px;
-          color: #0A0A0A;
+          color: #1E1B17;
           line-height: 1.4;
           transition: border-color 0.15s ease, box-shadow 0.15s ease;
           min-height: 48px;
+          border-radius: 10px;
         }
-        .input::placeholder {
-          color: #A0A0A0;
-          font-weight: 300;
-        }
-        .input:hover { border-color: #BDBDBD; }
+        .input::placeholder { color: #968F82; }
+        .input:hover { border-color: #9A7A3C; }
         .input:focus {
           outline: none;
-          border-color: #826DEE;
-          box-shadow: 0 0 0 3px rgba(130,109,238,0.12);
+          border-color: #9A7A3C;
+          box-shadow: 0 0 0 3px rgba(154,122,60,0.18);
         }
-        select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #6B6B6B 50%), linear-gradient(135deg, #6B6B6B 50%, transparent 50%); background-position: calc(100% - 18px) 22px, calc(100% - 12px) 22px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 32px; }
+        select.input {
+          appearance: none;
+          background-image:
+            linear-gradient(45deg, transparent 50%, #706A60 50%),
+            linear-gradient(135deg, #706A60 50%, transparent 50%);
+          background-position: calc(100% - 18px) 22px, calc(100% - 12px) 22px;
+          background-size: 6px 6px, 6px 6px;
+          background-repeat: no-repeat;
+          padding-right: 32px;
+        }
         .category-chip {
           font-family: var(--font-body-family);
           font-weight: 500;
-          font-size: 13px;
-          letter-spacing: 0;
-          text-transform: none;
+          font-size: 13.5px;
           padding: 10px 16px;
           background: #FFFFFF;
-          color: #0A0A0A;
-          border: 1px solid #DDDDDD;
+          color: #1E1B17;
+          border: 1px solid #C9C0AC;
           transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
           min-height: 40px;
           cursor: pointer;
+          border-radius: 999px;
         }
-        .category-chip:hover { border-color: #0A0A0A; }
+        .category-chip:hover { border-color: #9A7A3C; }
         .category-chip-active {
-          background: #0A0A0A;
-          color: #FFFFFF;
-          border-color: #0A0A0A;
+          background: #1E1B17;
+          color: #FBF8F1;
+          border-color: #1E1B17;
         }
         @media (max-width: 640px) {
-          .category-chip { min-height: 44px; padding: 11px 14px; font-size: 13.5px; }
+          .category-chip { min-height: 44px; padding: 11px 14px; font-size: 14px; }
         }
       `}</style>
     </form>
@@ -578,7 +607,7 @@ function Field({
     <div className="block">
       <label htmlFor={id} className={hideLabel ? 'sr-only' : 'field-label block mb-2'}>
         {label}
-        {required && <span aria-hidden className="text-[#826DEE]"> *</span>}
+        {required && <span aria-hidden style={{ color: '#9A7A3C' }}> *</span>}
         {required && <span className="sr-only"> (required)</span>}
       </label>
       {children}

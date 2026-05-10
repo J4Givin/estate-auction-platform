@@ -32,7 +32,7 @@ export default function ForRealtorsPage() {
               <Link href="/request-walkthrough" className="btn btn-outline">Request a walkthrough</Link>
             </div>
           </div>
-          <div className="md:col-span-7 border-t border-[#E0E0E0]">
+          <div className="md:col-span-7 border-t border-[#E5DECF]">
             {[
               ['Coordinated walkthrough', 'On your timeline, with a single contact for the family.'],
               ['Sentimental & excluded items', 'Flagged and not listed, so nothing is lost in the rush.'],
@@ -40,7 +40,7 @@ export default function ForRealtorsPage() {
               ['Shared status updates', 'You see progress without becoming the middle of every email thread.'],
               ['Documented settlement', 'Itemized statement family and attorney can use.'],
             ].map(([t, b]) => (
-              <div key={t} className="border-b border-[#E0E0E0] py-5">
+              <div key={t} className="border-b border-[#E5DECF] py-5">
                 <p className="text-[16px] mb-1" style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>{t}</p>
                 <p className="body-light text-[14px]">{b}</p>
               </div>

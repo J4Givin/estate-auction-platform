@@ -32,7 +32,7 @@ export default function ForAttorneysPage() {
               <Link href="/contact" className="btn btn-outline">Talk to us</Link>
             </div>
           </div>
-          <div className="md:col-span-7 border-t border-[#E0E0E0]">
+          <div className="md:col-span-7 border-t border-[#E5DECF]">
             {[
               ['Itemized inventory', 'Each item tracked from intake to payout with photos and condition notes.'],
               ['Documented approvals', 'Seller decisions logged before publication.'],
@@ -40,7 +40,7 @@ export default function ForAttorneysPage() {
               ['Reserves and unsold disposition', 'Floors set with seller approval. Unsold items dispositioned per direction with documentation.'],
               ['Settlement statement', 'Itemized record of sale prices, fees, net proceeds, and payouts.'],
             ].map(([t, b]) => (
-              <div key={t} className="border-b border-[#E0E0E0] py-5">
+              <div key={t} className="border-b border-[#E5DECF] py-5">
                 <p className="text-[16px] mb-1" style={{ fontFamily: 'var(--font-body-family)', fontWeight: 500 }}>{t}</p>
                 <p className="body-light text-[14px]">{b}</p>
               </div>
@@ -49,7 +49,7 @@ export default function ForAttorneysPage() {
         </div>
       </Section>
 
-      <Section className="bg-[#F5F5F5]">
+      <Section className="bg-[#F6F1E8]">
         <span className="label block mb-5">Disclosure</span>
         <p className="body-light max-w-3xl leading-relaxed">
           Estate Liquidity is not a law firm and does not provide legal advice. Estimates and appraisal indications are not a guarantee of value. We do not guarantee authenticity unless formal third-party authentication or appraisal has been completed.

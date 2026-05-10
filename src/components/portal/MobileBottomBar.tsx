@@ -31,10 +31,10 @@ interface Props {
 export function MobileBottomBar({
   cashAvailable,
   primaryHref = '/portal/offers',
-  primaryLabel = 'Take Cash',
+  primaryLabel = 'Review offer',
   secondaryHref = '/portal/concierge',
-  secondaryLabel = 'Concierge',
-  label = 'Cash now',
+  secondaryLabel = 'Advisor',
+  label = 'Available settlement',
   valueOverride,
 }: Props) {
   const value = valueOverride ?? fmt(cashAvailable)
@@ -75,8 +75,12 @@ export function MobileBottomBar({
         </Link>
         <Link
           href={primaryHref}
-          className="px-5 flex items-center justify-center label tap-target"
-          style={{ background: '#FFDB15', color: '#0A0A0A', fontWeight: 700, minWidth: 124 }}
+          className="px-5 flex items-center justify-center tap-target"
+          style={{
+            background: '#9A7A3C', color: '#FBF8F1',
+            fontFamily: 'var(--font-body-family)',
+            fontWeight: 600, fontSize: 13.5, minWidth: 124,
+          }}
           data-testid="mobile-bar-primary"
         >
           {primaryLabel} →

@@ -45,26 +45,26 @@ export default function PortalCommandCenter() {
       bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} />}
     >
       <PageHeader
-        eyebrow="Client Portal"
+        eyebrow="Client portal"
         title={P.estateName + '.'}
-        subtitle={`${P.itemsCataloged} items cataloged. Manage your estate like a financial account — sell, list, store, donate, or keep at any time.`}
+        subtitle={`${P.itemsCataloged} items documented. Review each item, approve a sale path, route to donation, or hold — at your pace.`}
         badge={
           <span
             className="inline-flex items-center gap-2 px-3 py-1.5"
-            style={{ background: '#82eda710', border: '1px solid #0E9F6E' }}
+            style={{ background: '#F6F1E8', border: '1px solid #C9C0AC', borderRadius: 999 }}
             data-testid="portal-active-badge"
           >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#0E9F6E' }} />
-            <span className="label" style={{ color: '#0E9F6E' }}>Active · Job {P.jobId}</span>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#9A7A3C' }} />
+            <span className="label" style={{ color: '#9A7A3C' }}>Active · File {P.jobId}</span>
           </span>
         }
         actions={
           <div className="hidden md:flex flex-col sm:flex-row gap-3">
-            <Link href="/portal/offers" className="btn btn-yellow" data-testid="portal-cta-review-offers">
-              Review Cash Offer →
+            <Link href="/portal/offers" className="btn btn-brass" data-testid="portal-cta-review-offers">
+              Review cash offer
             </Link>
-            <Link href="/portal/inventory" className="btn btn-ink" data-testid="portal-cta-decide-items">
-              Decide on Items
+            <Link href="/portal/inventory" className="btn btn-primary" data-testid="portal-cta-decide-items">
+              Approve items
             </Link>
           </div>
         }
@@ -80,7 +80,7 @@ export default function PortalCommandCenter() {
         <ConciergeStrip />
       </div>
 
-      {/* OFFER STACK — instant liquidity engine */}
+      {/* Cash offer review — fiduciary-careful, escrow-backed offer stack */}
       <div className="mb-10">
         <OfferStack />
       </div>

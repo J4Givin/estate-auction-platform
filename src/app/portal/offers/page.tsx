@@ -45,20 +45,20 @@ export default function OffersPage() {
       role="customer"
       userName="Sample User"
       orgName="Sample Estate"
-      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Take Cash" primaryHref="#stack" />}
+      bottomBar={<MobileBottomBar cashAvailable={ASSET_BALANCE.cashAvailable} primaryLabel="Review offer" primaryHref="#stack" />}
     >
       <PageHeader
-        eyebrow="Cash Offers"
-        title="Sell to Estate Liquidity."
-        subtitle="Funded escrow. Net cash. No channel risk. Each offer is backed by current comps and the live evidence snapshot."
+        eyebrow="Cash offer review"
+        title="Review a cash offer for the estate."
+        subtitle="Each offer is backed by current comparables and the documentation in your file. Funds are held in escrow before any pickup. You approve before anything moves."
         actions={
           <a href="#compare" className="btn btn-outline" data-testid="offers-compare-cta">
-            Compare with Managed Sale ↓
+            Compare with managed sale ↓
           </a>
         }
       />
 
-      {/* Instant liquidity engine */}
+      {/* Cash offer review */}
       <div id="stack" className="mb-12">
         <OfferStack />
       </div>
