@@ -38,11 +38,14 @@ const ROUTES = [
   '/portal/statements',
   '/portal/receipts',
   '/portal/items/ITM-1041',
-  '/ops',
-  '/ops/command',
-  '/ops/insights',
-  '/ops/audit',
 ] as const
+
+// Internal-console routes that must redirect anonymous visitors to the
+// sign-in page. We assert the redirect rather than screenshotting the
+// console — exposing internal surfaces to the QA harness would defeat the
+// gating itself. /admin is included so we have a stable regression check
+// alongside /ops and /qa.
+const INTERNAL_GATED_ROUTES = ['/admin', '/ops', '/ops/command', '/qa'] as const
 
 const VIEWPORTS = [
   { name: 'mobile-narrow', width: 375, height: 812 },
@@ -249,3 +252,15 @@ for (const vp of VIEWPORTS) {
     }
   })
 }
+
+test.describe('internal consoles gate anonymous visitors', () => {
+  for (const route of INTERNAL_GATED_ROUTES) {
+    test(`${route} redirects to /auth/login`, async ({ page }) => {
+      const resp = await page.goto(route, { waitUntil: 'domcontentloaded' })
+      expect(resp, `no response for ${route}`).not.toBeNull()
+      const finalUrl = new URL(page.url())
+      expect(finalUrl.pathname, `expected redirect for ${route}`).toBe('/auth/login')
+      expect(finalUrl.searchParams.get('redirect')).toBe(route)
+    })
+  }
+})
