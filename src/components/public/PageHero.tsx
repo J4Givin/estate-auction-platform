@@ -53,9 +53,9 @@ export function CTABanner({ heading, body, primaryHref = '/request-walkthrough',
             </p>
           )}
           <div className="flex flex-col sm:flex-row gap-3">
-            <a href={primaryHref} className="btn btn-yellow">{primaryLabel}</a>
+            <a href={primaryHref} data-cta="cta-banner-primary" className="btn btn-yellow">{primaryLabel}</a>
             {secondaryHref && secondaryLabel && (
-              <a href={secondaryHref} className="btn btn-outline-white">{secondaryLabel}</a>
+              <a href={secondaryHref} data-cta="cta-banner-secondary" className="btn btn-outline-white">{secondaryLabel}</a>
             )}
           </div>
         </div>

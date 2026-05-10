@@ -1,6 +1,7 @@
 'use client'
 import { useState, FormEvent, ChangeEvent, ReactNode } from 'react'
 import Link from 'next/link'
+import { trackEvent } from '@/lib/analytics'
 
 type FormState = {
   fullName: string
@@ -161,12 +162,35 @@ export function RequestWalkthroughForm() {
         }),
       })
 
-      if (!res.ok) {
+      if (res.ok) {
+        try {
+          const json = await res.json()
+          const delivered = json?.data?.delivered === true
+          trackEvent('lead_submitted', {
+            source: 'request-walkthrough',
+            delivered,
+            status: res.status,
+          })
+        } catch {
+          trackEvent('lead_submitted', {
+            source: 'request-walkthrough',
+            status: res.status,
+          })
+        }
+      } else {
         // Soft-fail keeps the funnel clean while ops still see the diagnostic.
         console.warn('Lead submission soft-fail', res.status)
+        trackEvent('lead_submit_failed', {
+          source: 'request-walkthrough',
+          status: res.status,
+        })
       }
     } catch (err) {
       console.warn('Lead submission error', err)
+      trackEvent('lead_submit_failed', {
+        source: 'request-walkthrough',
+        status: 0,
+      })
     } finally {
       setSubmitting(false)
       setDone(true)
@@ -437,6 +461,7 @@ export function RequestWalkthroughForm() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
           <button
             type="submit"
+            data-cta="walkthrough-submit"
             disabled={submitting}
             className="btn btn-ink btn-mobile-primary justify-center disabled:opacity-60 disabled:cursor-not-allowed"
           >

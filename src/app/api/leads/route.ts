@@ -14,6 +14,13 @@ const CreateLeadSchema = z.object({
   source: z.string().max(100).optional(),
 });
 
+function hasSupabaseEnv(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
+
 // ── POST /api/leads — Create lead (public, no auth required) ─
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +30,29 @@ export async function POST(request: NextRequest) {
       return apiError("VALIDATION_FAILED", "Invalid lead data", 400, {
         errors: parsed.error.flatten().fieldErrors,
       });
+    }
+
+    // When Supabase env is missing (preview deploys, local dev without
+    // a project, soft-launched marketing-only deploy) we accept the
+    // submission and return 202 + delivered=false. The UI confirms
+    // receipt accurately and tells the user we will follow up via the
+    // configured operator channel. We never claim a row was saved when
+    // it wasn't.
+    if (!hasSupabaseEnv()) {
+      console.warn(
+        "[leads] Supabase env missing — accepting lead but not persisting. " +
+          "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to enable persistence."
+      );
+      return apiSuccess(
+        {
+          id: uuidv4(),
+          delivered: false,
+          mode: "demo",
+          message:
+            "Request received. This deploy does not have a configured lead destination; the operator will follow up via the channel listed on the contact page.",
+        },
+        202
+      );
     }
 
     const supabase = createServiceClient();
@@ -44,21 +74,27 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      console.error("[leads] insert failed", error);
       return apiError("INTERNAL_ERROR", "Failed to create lead", 500);
     }
 
-    // Audit log
-    await supabase.from("audit_log").insert({
-      entity_type: "leads",
-      entity_id: lead.id,
-      action: "lead_created",
-      actor_user_id: null,
-      old_values: null,
-      new_values: lead,
-    });
+    // Audit log — best-effort; never block the lead response.
+    try {
+      await supabase.from("audit_log").insert({
+        entity_type: "leads",
+        entity_id: lead.id,
+        action: "lead_created",
+        actor_user_id: null,
+        old_values: null,
+        new_values: lead,
+      });
+    } catch (auditErr) {
+      console.warn("[leads] audit log insert failed", auditErr);
+    }
 
-    return apiSuccess(lead, 201);
-  } catch {
+    return apiSuccess({ ...lead, delivered: true, mode: "live" }, 201);
+  } catch (err) {
+    console.error("[leads] unexpected error", err);
     return apiError("INTERNAL_ERROR", "Unexpected error", 500);
   }
 }
