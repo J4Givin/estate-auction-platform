@@ -123,7 +123,7 @@ export function SiteHeader() {
 
         <div className="hidden lg:flex items-center gap-4">
           <Link
-            href="/portal"
+            href="/auth/login"
             className="transition-colors"
             style={{
               fontFamily: 'var(--font-body-family)',
@@ -132,9 +132,20 @@ export function SiteHeader() {
               color: '#706A60',
             }}
           >
-            Client portal
+            Sign in
           </Link>
-          <Link href="/request-walkthrough" className="btn btn-primary" style={{ padding: '10px 18px', fontSize: 13.5 }}>
+          <Link
+            href="/auth/register"
+            className="btn btn-outline"
+            style={{ padding: '10px 16px', fontSize: 13.5 }}
+          >
+            Create account
+          </Link>
+          <Link
+            href="/request-walkthrough"
+            className="btn btn-primary"
+            style={{ padding: '10px 18px', fontSize: 13.5 }}
+          >
             Request a private review
           </Link>
         </div>
@@ -221,11 +232,11 @@ export function SiteHeader() {
               </Link>
 
               <div className="mt-7 grid grid-cols-2 gap-3">
-                <Link href="/portal" onClick={close} className="btn btn-outline btn-mobile-secondary justify-center">
-                  Client portal
+                <Link href="/auth/login" onClick={close} className="btn btn-outline btn-mobile-secondary justify-center">
+                  Sign in
                 </Link>
-                <Link href="/partner" onClick={close} className="btn btn-outline btn-mobile-secondary justify-center">
-                  Partner portal
+                <Link href="/auth/register" onClick={close} className="btn btn-outline btn-mobile-secondary justify-center">
+                  Create account
                 </Link>
               </div>
 
